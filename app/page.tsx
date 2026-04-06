@@ -18,8 +18,8 @@ export default function Home() {
 
       <FeatureShowcase />
       <PinnedScroll />
-      <ProjectDemo />
       <BentoProjects />
+      <ProjectDemo />
       <CaseStudySlider />
       <AboutSection />
 

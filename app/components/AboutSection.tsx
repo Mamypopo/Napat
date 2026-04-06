@@ -41,17 +41,17 @@ export default function AboutSection() {
             minHeight: "560px",
             borderRight: "1px solid var(--hairline)",
             overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Image
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format&fit=crop&faces=1&facepad=2&h=900"
-            alt="Portrait of Napat"
-            fill
-            style={{
-              objectFit: "cover",
-              objectPosition: "top",
-              filter: "brightness(0.85) contrast(1.08) grayscale(0.15)",
-            }}
+            src="/avatar.png"
+            alt="Avatar of Napat"
+            width={200}
+            height={200}
+            style={{ borderRadius: "50%" }}
           />
           {/* Badge */}
           <div
