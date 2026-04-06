@@ -332,70 +332,47 @@ export default function FeatureShowcase() {
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}
     >
-      {/* ── Headline row ──────────────────────────────────── */}
-      <div
+      {/* ── Header ────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, ease }}
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          padding: "64px 64px 24px",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease }}
-          style={{
-            padding: "64px 64px",
-            borderRight: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <p
-            style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.3)",
-              marginBottom: "20px",
-            }}
-          >
+        <div>
+          <p style={{
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: "10px", letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.3)",
+            marginBottom: "10px",
+          }}>
             Tech Stack
           </p>
-          <h2
-            style={{
-              fontSize: "clamp(32px, 4vw, 52px)",
-              fontWeight: 700,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.0,
-              color: "#ffffff",
-            }}
-          >
-            เครื่องมือที่ใช้<br />
-            ทำให้งาน<br />
-            <span style={{ color: "#553F83" }}>เสร็จจริง.</span>
+          <h2 style={{
+            fontSize: "clamp(28px, 4vw, 48px)",
+            fontWeight: 700, letterSpacing: "-0.04em",
+            lineHeight: 1.0, color: "#fff",
+          }}>
+            เครื่องมือที่ใช้ทำให้งาน<span style={{ color: "#553F83" }}>เสร็จจริง</span>
           </h2>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease, delay: 0.1 }}
-          style={{ padding: "64px 64px", display: "flex", alignItems: "center" }}
-        >
-          <p
-            style={{
-              fontSize: "18px",
-              fontWeight: 300,
-              color: "rgba(255,255,255,0.5)",
-              lineHeight: 1.75,
-              maxWidth: "420px",
-            }}
-          >
-            ทุก stack ที่เลือกมีเหตุผล — ตั้งแต่ Frontend ที่ smooth
-            ไปจนถึง DevOps pipeline ที่ deploy ได้ทุกวันโดยไม่กลัว
-          </p>
-        </motion.div>
-      </div>
+        </div>
+        <p style={{
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: "10px", letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.2)",
+          flexShrink: 0,
+        }}>
+          Frontend · Backend · DevOps
+        </p>
+      </motion.div>
 
       {/* ── Visualization panel ───────────────────────────── */}
       <motion.div

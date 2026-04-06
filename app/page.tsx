@@ -5,6 +5,7 @@ import FeatureShowcase from "./components/FeatureShowcase";
 import PinnedScroll from "./components/PinnedScroll";
 import ProjectDemo from "./components/ProjectDemo";
 import BentoProjects from "./components/BentoProjects";
+import CaseStudySlider from "./components/CaseStudySlider";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 
@@ -19,6 +20,7 @@ export default function Home() {
       <PinnedScroll />
       <ProjectDemo />
       <BentoProjects />
+      <CaseStudySlider />
       <AboutSection />
 
       <Footer />

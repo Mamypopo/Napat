@@ -294,11 +294,48 @@ export default function PinnedScroll() {
   const light = isLight(item.accent);
 
   return (
-    /* ── Tall outer container — scroll happens here ────────── */
-    <div
-      ref={containerRef}
-      style={{ height: `${N * 100}vh`, position: "relative" }}
-    >
+    <div>
+      {/* ── Header — scrolls away normally ───────────────────── */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "220px 1fr 1fr",
+        background: "#111",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+      }}>
+        {/* Left cell — eyeline */}
+        <div style={{
+          borderRight: "1px solid rgba(255,255,255,0.08)",
+          padding: "28px 32px",
+          display: "flex", alignItems: "center", gap: "12px",
+        }}>
+          <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: "#553F83" }}>02</span>
+          <span style={{ display: "block", width: "20px", height: "1px", background: "rgba(255,255,255,0.12)" }} />
+          <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>How I Work</span>
+        </div>
+
+        {/* Center cell — big headline */}
+        <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "48px 56px" }}>
+          <h2 style={{ fontSize: "clamp(32px, 3.5vw, 52px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
+            วิธีที่ผมทำงาน<br />
+            <span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
+          </h2>
+        </div>
+
+        {/* Right cell — description */}
+        <div style={{ padding: "48px 56px", display: "flex", alignItems: "center" }}>
+          <p style={{ fontSize: "15px", fontWeight: 300, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: "380px" }}>
+            Scroll เพื่อ explore แต่ละ discipline —
+            หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ
+          </p>
+        </div>
+      </div>
+
+      {/* ── Tall outer container — scroll happens here ────────── */}
+      <div
+        ref={containerRef}
+        style={{ height: `${N * 100}vh`, position: "relative" }}
+      >
       {/* ── Sticky inner panel ─────────────────────────────── */}
       <div style={{
         position: "sticky",
@@ -306,82 +343,17 @@ export default function PinnedScroll() {
         height: "100vh",
         display: "grid",
         gridTemplateColumns: "220px 1fr 1fr",
-        gridTemplateRows: "auto 1fr",
+        gridTemplateRows: "1fr",
         background: "#0a0a0a",
         borderTop: "1px solid rgba(255,255,255,0.08)",
         overflow: "hidden",
       }}>
-        {/* ── Header row — spans all 3 columns ─────────────── */}
-        <div style={{
-          gridColumn: "1 / -1",
-          display: "grid",
-          gridTemplateColumns: "220px 1fr 1fr",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-        }}>
-          {/* Left cell — eyeline */}
-          <div style={{
-            borderRight: "1px solid rgba(255,255,255,0.08)",
-            padding: "28px 32px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-          }}>
-            <span style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px", letterSpacing: "0.1em",
-              color: "#553F83",
-            }}>02</span>
-            <span style={{
-              display: "block", width: "20px", height: "1px",
-              background: "rgba(255,255,255,0.12)",
-            }} />
-            <span style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px", letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.3)",
-            }}>How I Work</span>
-          </div>
-
-          {/* Center cell — big headline */}
-          <div style={{
-            borderRight: "1px solid rgba(255,255,255,0.08)",
-            padding: "40px 56px",
-          }}>
-            <h2 style={{
-              fontSize: "clamp(28px, 3vw, 44px)",
-              fontWeight: 700,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.0,
-              color: "#fff",
-            }}>
-              วิธีที่ผมทำงาน<br />
-              <span style={{ color: item.accent, transition: "color 0.4s ease" }}>
-                ตั้งแต่ต้นจนจบ
-              </span>
-            </h2>
-          </div>
-
-          {/* Right cell — description */}
-          <div style={{ padding: "40px 48px", display: "flex", alignItems: "center" }}>
-            <p style={{
-              fontSize: "15px", fontWeight: 300,
-              color: "rgba(255,255,255,0.4)",
-              lineHeight: 1.7,
-              maxWidth: "380px",
-            }}>
-              Scroll เพื่อ explore แต่ละ discipline —
-              หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ
-            </p>
-          </div>
-        </div>
-        <div style={{ gridColumn: "1 / -1", gridRow: 2, position: "absolute", inset: 0, pointerEvents: "none" }}>
+        <div style={{ gridColumn: "1 / -1", position: "absolute", inset: 0, pointerEvents: "none" }}>
           <DotGrid />
         </div>
 
         {/* ── Left: numbered nav ───────────────────────────── */}
         <div style={{
-          gridRow: 2,
           position: "relative", zIndex: 2,
           borderRight: "1px solid rgba(255,255,255,0.08)",
           display: "flex",
@@ -483,7 +455,6 @@ export default function PinnedScroll() {
 
         {/* ── Center: content ──────────────────────────────── */}
         <div style={{
-          gridRow: 2,
           position: "relative", zIndex: 2,
           borderRight: "1px solid rgba(255,255,255,0.08)",
           display: "flex",
@@ -593,7 +564,6 @@ export default function PinnedScroll() {
 
         {/* ── Right: code visual ───────────────────────────── */}
         <div style={{
-          gridRow: 2,
           position: "relative", zIndex: 2,
           padding: "48px 48px",
           display: "flex",
@@ -625,6 +595,7 @@ export default function PinnedScroll() {
             transition: "background 0.4s ease",
           }}
         />
+      </div>
       </div>
     </div>
   );
