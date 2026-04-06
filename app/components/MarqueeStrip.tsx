@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 const items = [
   "Next.js", "TypeScript", "React", "Node.js", "PostgreSQL",
   "Framer Motion", "Tailwind CSS", "Go", "Docker", "Vercel",
@@ -8,20 +10,24 @@ const items = [
 
 export default function MarqueeStrip() {
   const doubled = [...items, ...items];
+  const [paused, setPaused] = useState(false);
 
   return (
     <div
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
       style={{
         borderBottom: "1px solid var(--hairline)",
         borderTop: "1px solid var(--hairline)",
         overflow: "hidden",
         background: "var(--surface)",
         padding: "20px 0",
+        cursor: "default",
       }}
     >
       <div
         className="animate-marquee"
-        style={{ display: "flex", gap: "0", whiteSpace: "nowrap", width: "max-content" }}
+        style={{ display: "flex", gap: "0", whiteSpace: "nowrap", width: "max-content", animationPlayState: paused ? "paused" : "running" }}
       >
         {doubled.map((item, i) => (
           <span

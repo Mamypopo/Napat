@@ -61,7 +61,7 @@ function DotGrid({ opacity = 0.18 }: { opacity?: number }) {
       }}
     >
       <defs>
-        <pattern id="dotgrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+        <pattern id="dotgrid" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="1" fill="#ffffff" />
         </pattern>
       </defs>
