@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Thai, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const ibmPlexSansThai = IBM_Plex_Sans_Thai({
@@ -29,25 +30,19 @@ export default function RootLayout({
       lang="th"
       suppressHydrationWarning
     >
-      <head>
-        {/* Inline script: set theme class before first paint to avoid flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var t = localStorage.getItem('theme');
-                if (t === 'light') document.documentElement.classList.add('light');
-                else document.documentElement.classList.add('dark');
-              } catch(e) {
-                document.documentElement.classList.add('dark');
-              }
-            `,
-          }}
-        />
-      </head>
+      <head />
       <body
         className={`${ibmPlexSansThai.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <Script id="theme-init" strategy="beforeInteractive">{`
+          try {
+            var t = localStorage.getItem('theme');
+            if (t === 'light') document.documentElement.classList.add('light');
+            else document.documentElement.classList.add('dark');
+          } catch(e) {
+            document.documentElement.classList.add('dark');
+          }
+        `}</Script>
         {children}
       </body>
     </html>
