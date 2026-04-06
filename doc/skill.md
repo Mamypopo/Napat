@@ -102,43 +102,121 @@ Use these as building blocks — swap content/colors, keep the interaction model
 **Structure:**
 - `gridTemplateColumns: "1fr 2fr 1fr"` — side panels thin, active panel 2x wide
 - Active panel: fills with a **vivid accent color** (orange `#F04E00`, yellow `#FFE600`, blue `#0085FF`)
-- Inactive panels: `#111` background + dot grid SVG + centered mono label + `[ CLICK TO VIEW ]`
+- Inactive panels: `#111` background + dense dot grid (10×10px) + dashed center box + `[ CLICK TO CHAT ]`
 - Tab bar below mirrors panel order with `layoutId` sliding indicator
 
 **Key details:**
-- **Corner brackets** `⌐ ¬` via 4 absolutely-positioned `<span>` with partial borders — purely decorative, no extra libs
-- **Contrast helper** `isLight(hex)` — computes luminance to auto-switch `fg`/`fgStrong` tokens so text is always readable regardless of accent color (critical for yellow panels)
-- Inner black panel `#0a0a0a` floats inside the accent background — creates the "window in a frame" depth
-- Suggested questions are `<button>` that populate the input on click
-- `STATUS: [BADGE]` footer bar uses same contrast tokens
+- **Corner brackets** — 4 `<span>` with partial borders, `22×22px`, `2px` weight
+- **Contrast helper** `isLight(hex)` — luminance check, auto-switches `fg`/`fgStrong` (critical for yellow)
+- **Inner panel** `#0a0a0a` with `border: 1px solid rgba(255,255,255,0.12)` — "window in frame" depth
+- **Dashed center box** on inactive: `border: 1px dashed`, `background: rgba(0,0,0,0.35)` — click target hint
+- **Header pattern**: `AGENT CONTEXT` left / `CURRENT CONTEXT: [TAG]` right
+- **Footer pattern**: `STATUS: [BADGE]` left / `LEARN MORE →` right
+- Input placeholder: `ASK THE AI AGENT A QUESTION...`
 
 **Sanity accent colors (exact):**
 ```
 Orange  → #F04E00
-Yellow  → #FFE600  (light bg: use black text)
+Yellow  → #FFE600  (isLight = true → use black text)
 Blue    → #0085FF
 ```
 
-**Animation:** `AnimatePresence mode="wait"` on inner content, `motion.div layout` on panel background, Framer Motion `layoutId="demo-tab-indicator"` for tab underline.
+**Animation:** `AnimatePresence mode="wait"` on inner content, `motion.div layout` on panel bg, `layoutId="demo-tab-indicator"` for tab underline.
 
 ---
 
-### 7.2 Sanity.io — Full-bleed Feature Showcase (`FeatureShowcase`)
-**File:** `app/components/FeatureShowcase.tsx`
+### 7.2 Career Timeline with Node Graph (`FeatureShowcase`)
+**File:** `app/components/FeatureShowcase.tsx`  
+**Repurposed from:** Sanity-style feature showcase → Career/Education timeline
 
-**Structure:**
-- Split headline row: `gridTemplateColumns: "1fr 1fr"` with hairline divider
-- Visualization area: 2-panel `gridTemplateColumns: "1fr 1fr"`, height fixed `440px`
-  - Left: **Code panel** — fake macOS window chrome (3 colored circles) + animate-in code lines
-  - Right: **Graph panel** — SVG `<line>` with `pathLength` 0→1 draw-in + floating node labels
-- **Floating toast card** — absolute bottom-left, `AnimatePresence` swap on tab change
-- **Tab bar** — 3 tabs, `layoutId="tab-indicator"` top border slides between tabs
-- **Dot grid background** — `<svg>` `<pattern>` `<circle r="1">` repeated at 28×28px, `opacity: 0.18`
-
-**Per-tab data shape:**
-```ts
-{ nodes[], lines[], code: string, card: { title, sub, badge } }
+**Structure (3-column):**
 ```
+gridTemplateColumns: "360px 1fr 1fr"
+```
+- **Left (360px):** `TimelineStrip` — vertical spine + year dots + event labels
+- **Center (1fr):** `DetailPanel` — period, role, org, description, highlights, badge
+- **Right (1fr):** `GraphPanel` — skill node graph with clickable nodes + detail tooltip
+
+**Timeline strip details:**
+- SVG vertical spine at `x=64` with `pathLength` 0→1 draw-in animation
+- Year markers: purple dot (`#553F83` + glow) + horizontal tick line → year label
+- Event labels (dim): `fontSize: 10px, opacity: 0.28`, stagger animate-in
+- Data shape: `{ label, x, y, dim? }[]` — `dim: true` = event, `dim: false` = year marker
+
+**Graph panel details:**
+- Static dim track line + animated `pathLength 1.8s` draw-in line (stays, no loop)
+- Nodes are `<button>` — click toggles `activeNode` state
+- Tooltip card at `bottom: 20px, left: 20px` — `AnimatePresence` fade in/out
+- Node derives `null` automatically when tab changes (no useEffect reset needed)
+
+**Auto-advance pattern:**
+- `setInterval(advance, 5500)` — cycles through tabs
+- `useCallback` with functional `setActiveTab` updater (stable ref, no deps)
+- Pause on `onMouseEnter` / resume on `onMouseLeave`
+- Progress bar: `motion.span key={tab.id}` animates `width: 0% → 100%` over `5.5s linear`
+- Both interval and progress bar duration **must match exactly**
+
+**Dot grid trick:**
+- `inset: "16px"` on the SVG keeps dots away from borders — cleaner edge
+
+**Tab data shape:**
+```ts
+{
+  period, role, org, location, description,
+  highlights: string[],
+  badge, badgeAccent?: boolean,
+  milestones: { label, x, y, dim? }[],
+  nodes: { id, x, y, label, accent?, detail? }[],
+  lines: { x1, y1, x2, y2 }[]
+}
+```
+
+---
+
+### 7.3 Pinned Scroll Section (`PinnedScroll`)
+**File:** `app/components/PinnedScroll.tsx`
+
+**Core pattern:**
+- Outer container: `height: "500vh"`, `ref={containerRef}`
+- Inner sticky panel: `position: sticky, top: 0, height: "100vh"`
+- `useScroll({ target: containerRef, offset: ["start start", "end end"] })` → `scrollYProgress` 0→1
+- `useMotionValueEvent` maps progress to `active` index: `Math.min(N-1, Math.floor(v * N))`
+- `scrollToItem(i)` — programmatic scroll to item slot: `containerTop + (i/N) * containerHeight`
+
+**Header placement:** Header is **outside** the tall container so it scrolls away normally. Sticky panel is content-only.
+
+**Layout (3-col sticky panel):**
+```
+gridTemplateColumns: "220px 1fr 1fr"
+Left: clickable nav (numbered, active dot layoutId, progress bar)
+Center: AnimatePresence content swap
+Right: CodeVisual (fake macOS window chrome)
+```
+
+---
+
+### 7.4 Full-screen Case Study Slider (`CaseStudySlider`)
+**File:** `app/components/CaseStudySlider.tsx`
+
+**Structure:** `height: "100vh"`, `position: relative`, `overflow: hidden`
+
+**Key details:**
+- Background: `<Image fill>` with `brightness(0.28) contrast(1.1)` + gradient overlay
+- Layout: `gridTemplateColumns: "1fr auto 1fr"` — title left, stats card center
+- Stats card: glassmorphism — `background: rgba(10,10,10,0.82)`, `backdropFilter: blur(20px)`
+- Slide counter: numbered buttons top-right, active = white bg
+- Progress bar: `motion.div key={current}` animates `width 0%→100%` over 5s linear
+- Auto-play: `setInterval(next, 5000)`, pause `onMouseEnter`
+- Keyboard: `ArrowLeft` / `ArrowRight` via `window.addEventListener`
+
+---
+
+### 7.5 Marquee Strip (`MarqueeStrip`)
+**File:** `app/components/MarqueeStrip.tsx`
+
+- CSS `animate-marquee` keyframe (defined in `globals.css`)
+- Doubled items array for seamless loop
+- `animationPlayState: paused ? "paused" : "running"` — pause on hover via `useState`
 
 ---
 
