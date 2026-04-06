@@ -337,7 +337,6 @@ export default function ProjectDemo() {
       }}>
         <div style={{
           padding: "56px 64px",
-          borderRight: "1px solid rgba(255,255,255,0.08)",
         }}>
           <p style={{
             fontFamily: "var(--font-mono), monospace",
