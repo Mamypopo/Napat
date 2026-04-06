@@ -73,15 +73,15 @@ function DotGrid({ opacity = 0.18 }: { opacity?: number }) {
 /* ── Corner brackets ──────────────────────────────────────── */
 function Brackets() {
   const s: React.CSSProperties = {
-    position: "absolute", width: "16px", height: "16px",
-    borderColor: "rgba(255,255,255,0.4)", borderStyle: "solid",
+    position: "absolute", width: "22px", height: "22px",
+    borderColor: "rgba(255,255,255,0.55)", borderStyle: "solid",
   };
   return (
     <>
-      <span style={{ ...s, top: 0, left: 0,  borderWidth: "1px 0 0 1px" }} />
-      <span style={{ ...s, top: 0, right: 0, borderWidth: "1px 1px 0 0" }} />
-      <span style={{ ...s, bottom: 0, left: 0,  borderWidth: "0 0 1px 1px" }} />
-      <span style={{ ...s, bottom: 0, right: 0, borderWidth: "0 1px 1px 0" }} />
+      <span style={{ ...s, top: 0, left: 0,  borderWidth: "2px 0 0 2px" }} />
+      <span style={{ ...s, top: 0, right: 0, borderWidth: "2px 2px 0 0" }} />
+      <span style={{ ...s, bottom: 0, left: 0,  borderWidth: "0 0 2px 2px" }} />
+      <span style={{ ...s, bottom: 0, right: 0, borderWidth: "0 2px 2px 0" }} />
     </>
   );
 }
@@ -128,15 +128,20 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
           fontSize: "10px", letterSpacing: "0.1em",
           color: fg,
         }}>
-          PROJECT CONTEXT
+          AGENT CONTEXT
         </span>
         <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.08em",
-          background: fgStrong, color: light ? "#fff" : "#000",
-          padding: "3px 10px", borderRadius: "2px",
+          color: fg,
         }}>
-          {panel.context}
+          CURRENT CONTEXT:{" "}
+          <span style={{
+            background: fgStrong, color: light ? "#fff" : "#000",
+            padding: "2px 8px", borderRadius: "2px",
+          }}>
+            {panel.context}
+          </span>
         </span>
       </div>
 
@@ -145,6 +150,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
         <div style={{
           flex: 1,
           background: "#0a0a0a",
+          border: "1px solid rgba(255,255,255,0.12)",
           position: "relative",
           borderRadius: "2px",
           display: "flex",
@@ -212,7 +218,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="ASK ABOUT THIS PROJECT..."
+            placeholder="ASK THE AI AGENT A QUESTION..."
             style={{
               flex: 1,
               fontFamily: "var(--font-mono), monospace",
@@ -263,7 +269,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
           fontSize: "10px", letterSpacing: "0.06em",
           color: fg, cursor: "pointer",
         }}>
-          VIEW PROJECT →
+          LEARN MORE →
         </span>
       </div>
     </motion.div>
@@ -296,27 +302,44 @@ function InactivePanel({
       <DotGrid opacity={0.14} />
       <div style={{ position: "relative", zIndex: 1 }} />
 
-      {/* Label center */}
+      {/* Dashed center box */}
       <div style={{
-        position: "relative", zIndex: 1,
-        textAlign: "center",
-        fontFamily: "var(--font-mono), monospace",
-        fontSize: "11px", letterSpacing: "0.1em",
-        color: "rgba(255,255,255,0.3)",
-        textTransform: "uppercase",
+        position: "absolute", zIndex: 1,
+        top: "50%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "70%", height: "40%",
+        border: "1px dashed rgba(255,255,255,0.18)",
+        borderRadius: "2px",
+        background: "rgba(0,0,0,0.35)",
+        display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        {panel.label}
+        <span style={{
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: "13px", letterSpacing: "0.1em",
+          color: "rgba(255,255,255,0.35)",
+          textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}>
+          {panel.label}
+        </span>
       </div>
 
       {/* Click to chat */}
       <div style={{
-        position: "relative", zIndex: 1,
-        textAlign: "center",
-        fontFamily: "var(--font-mono), monospace",
-        fontSize: "10px", letterSpacing: "0.08em",
-        color: "rgba(255,255,255,0.2)",
+        position: "absolute", zIndex: 1,
+        bottom: "20px", left: 0, right: 0,
+        display: "flex", justifyContent: "center",
       }}>
-        [ CLICK TO VIEW ]
+        <span style={{
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: "10px", letterSpacing: "0.1em",
+          color: "rgba(255,255,255,0.35)",
+          background: "rgba(0,0,0,0.5)",
+          padding: "4px 12px",
+          borderRadius: "2px",
+        }}>
+          [ CLICK TO CHAT ]
+        </span>
       </div>
     </motion.div>
   );
