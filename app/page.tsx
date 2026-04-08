@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import MarqueeStrip from "./components/MarqueeStrip";
+import LivePreview from "./components/LivePreview";
 import FeatureShowcase from "./components/FeatureShowcase";
 import PinnedScroll from "./components/PinnedScroll";
 import ProjectDemo from "./components/ProjectDemo";
@@ -15,6 +16,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <MarqueeStrip />
+      <LivePreview />
 
       <FeatureShowcase />
       <PinnedScroll />
