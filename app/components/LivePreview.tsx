@@ -201,10 +201,20 @@ function JsonPanel({ headlineText, userDesc, imgIdx, filterIdx, published, setUs
 
 export default function LivePreview() {
   /* image + theme + filter state */
-  const [imgIdx, setImgIdx] = useState(0);
-  const themeIdx = 0;
+  const [imgIdx, setImgIdx]         = useState(0);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const [themeIdx, setThemeIdx] = useState(0);
   const [filterIdx, setFilterIdx] = useState(0);
   const [published, setPublished] = useState(false);
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setUploadedUrl(url);
+    setImgIdx(IMAGES.length); // index beyond presets = uploaded
+  };
 
   /* typewriter state */
   const [displayed, setDisplayed] = useState("");
@@ -278,7 +288,7 @@ export default function LivePreview() {
 
   const headlineText  = userInput || displayed;
   const previewDesc   = userDesc;
-  const previewImg    = imgIdx;
+  const previewImgSrc = imgIdx === IMAGES.length ? (uploadedUrl ?? IMAGES[0]) : IMAGES[imgIdx];
   const previewFilter = FILTERS[filterIdx];
   const theme = THEMES[themeIdx];
 
@@ -308,7 +318,7 @@ export default function LivePreview() {
             style={{ position: "absolute", inset: 0 }}
           >
             <Image
-              src={IMAGES[previewImg]}
+              src={previewImgSrc}
               alt="Hero background"
               fill
               style={{
@@ -613,17 +623,14 @@ export default function LivePreview() {
             >
               IMAGE
             </label>
-            <div style={{ display: "flex", gap: 6 }}>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {IMAGES.map((src, i) => (
                 <button
                   key={i}
                   onClick={() => setImgIdx(i)}
                   style={{
                     padding: 0,
-                    border:
-                      imgIdx === i
-                        ? "2px solid #553F83"
-                        : "2px solid rgba(255,255,255,0.1)",
+                    border: imgIdx === i ? "2px solid #553F83" : "2px solid rgba(255,255,255,0.1)",
                     borderRadius: 4,
                     cursor: "pointer",
                     background: "transparent",
@@ -635,15 +642,62 @@ export default function LivePreview() {
                   }}
                   aria-label={`Select image ${i + 1}`}
                 >
-                  <Image
-                    src={src}
-                    alt={`Thumbnail ${i + 1}`}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    unoptimized
-                  />
+                  <Image src={src} alt={`Thumbnail ${i + 1}`} fill style={{ objectFit: "cover" }} unoptimized />
                 </button>
               ))}
+
+              {/* Uploaded thumbnail */}
+              {uploadedUrl && (
+                <button
+                  onClick={() => setImgIdx(IMAGES.length)}
+                  style={{
+                    padding: 0,
+                    border: imgIdx === IMAGES.length ? "2px solid #553F83" : "2px solid rgba(255,255,255,0.1)",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                    background: "transparent",
+                    overflow: "hidden",
+                    position: "relative",
+                    width: 60,
+                    height: 40,
+                    flexShrink: 0,
+                  }}
+                  aria-label="Uploaded image"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={uploadedUrl} alt="Uploaded" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </button>
+              )}
+
+              {/* Upload button */}
+              <button
+                onClick={() => uploadInputRef.current?.click()}
+                style={{
+                  width: 60,
+                  height: 40,
+                  border: "1px dashed rgba(255,255,255,0.2)",
+                  borderRadius: 4,
+                  background: "transparent",
+                  color: "rgba(255,255,255,0.4)",
+                  cursor: "pointer",
+                  fontSize: 18,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+                aria-label="Upload image"
+                title="Upload image"
+              >
+                +
+              </button>
+              <input
+                ref={uploadInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                style={{ display: "none" }}
+              />
             </div>
           </div>
         </div>
@@ -658,15 +712,47 @@ export default function LivePreview() {
             overflow: "auto",
           }}
         >
+          {/* Theme */}
+          <div style={{ fontSize: 10, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", ...MONO }}>
+            THEME
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            {THEMES.map((t, i) => (
+              <button
+                key={t.label}
+                onClick={() => setThemeIdx(i)}
+                title={t.label}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "6px 4px",
+                  background: themeIdx === i ? "rgba(255,255,255,0.06)" : "transparent",
+                  border: themeIdx === i ? `1px solid ${t.accent}` : "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: "50%",
+                  background: t.accent,
+                  boxShadow: themeIdx === i ? `0 0 8px ${t.accent}90` : "none",
+                }} />
+                <span style={{ fontSize: 8, color: themeIdx === i ? "#fff" : "rgba(255,255,255,0.35)", ...MONO, letterSpacing: "0.04em" }}>
+                  {t.label.toUpperCase()}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }} />
+
           {/* Filter */}
-          <div
-            style={{
-              fontSize: 10,
-              letterSpacing: "0.1em",
-              color: "rgba(255,255,255,0.3)",
-              ...MONO,
-            }}
-          >
+          <div style={{ fontSize: 10, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", ...MONO }}>
             FILTER
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -701,7 +787,7 @@ export default function LivePreview() {
                   }}
                 >
                   <Image
-                    src={IMAGES[imgIdx]}
+                    src={IMAGES[Math.min(imgIdx, IMAGES.length - 1)]}
                     alt=""
                     fill
                     style={{
