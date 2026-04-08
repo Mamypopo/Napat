@@ -274,15 +274,13 @@ export default function LivePreview() {
     };
   }, [userInput, tick]);
 
-  /* publish mock — reset after 2.5s */
-  const handlePublish = () => {
-    setPublished(true);
-    setTimeout(() => setPublished(false), 2500);
-  };
+  const handlePublish = () => setPublished(v => !v);
 
-  const headlineText = userInput || displayed;
+  const headlineText  = userInput || displayed;
+  const previewDesc   = userDesc;
+  const previewImg    = imgIdx;
+  const previewFilter = FILTERS[filterIdx];
   const theme = THEMES[themeIdx];
-  const filter = FILTERS[filterIdx];
 
   /* ── Render ──────────────────────────────────────────────── */
 
@@ -294,7 +292,11 @@ export default function LivePreview() {
       }}
     >
       {/* ── Preview area ─────────────────────────────────────── */}
-      <div style={{ height: "60vh", position: "relative", overflow: "hidden" }}>
+      <motion.div
+        animate={{ boxShadow: published ? "inset 0 0 0 2px #4ade80" : "inset 0 0 0 0px #4ade80" }}
+        transition={{ duration: 0.4 }}
+        style={{ height: "60vh", position: "relative", overflow: "hidden" }}
+      >
         {/* Background image */}
         <AnimatePresence mode="sync">
           <motion.div
@@ -306,12 +308,12 @@ export default function LivePreview() {
             style={{ position: "absolute", inset: 0 }}
           >
             <Image
-              src={IMAGES[imgIdx]}
+              src={IMAGES[previewImg]}
               alt="Hero background"
               fill
               style={{
                 objectFit: "cover",
-                filter: filter.css === "none" ? undefined : filter.css,
+                filter: previewFilter.css === "none" ? undefined : previewFilter.css,
               }}
               priority
               unoptimized
@@ -420,8 +422,9 @@ export default function LivePreview() {
         </div>
 
         {/* Description — bottom right */}
-        {userDesc && (
+        {previewDesc && (
           <motion.p
+            key={previewDesc}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
@@ -438,7 +441,7 @@ export default function LivePreview() {
               textShadow: "0 2px 16px rgba(0,0,0,0.6)",
             }}
           >
-            {userDesc}
+            {previewDesc}
           </motion.p>
         )}
 
@@ -448,7 +451,7 @@ export default function LivePreview() {
             position: "absolute",
             bottom: 48,
             left: 48,
-            right: userDesc ? "440px" : "48px",
+            right: previewDesc ? "440px" : "48px",
             zIndex: 2,
           }}
         >
@@ -463,7 +466,19 @@ export default function LivePreview() {
               textShadow: "0 2px 24px rgba(0,0,0,0.5)",
             }}
           >
-            {headlineText}
+            <AnimatePresence mode="popLayout">
+              {headlineText.split("").map((char, i) => (
+                <motion.span
+                  key={`${i}-${char}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.15, delay: i * 0.012 }}
+                  style={{ display: "inline-block", whiteSpace: "pre" }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </AnimatePresence>
             <span
               style={{
                 opacity: cursorVisible ? 1 : 0,
@@ -476,7 +491,7 @@ export default function LivePreview() {
             </span>
           </h2>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── Editor panel ─────────────────────────────────────── */}
       <div
