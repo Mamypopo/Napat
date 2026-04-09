@@ -5,6 +5,8 @@ export type LabItem = {
   label: string;
   unit: string;
   ref?: (age: number, gender: Gender) => [number, number];
+  critLow?: number;
+  critHigh?: number;
   step?: number;
   options?: string[];
   normalValues?: string[];
@@ -20,14 +22,14 @@ export type LabPanel = {
 
 /* ── CBC ──────────────────────────────────────────────────── */
 const CBC_ITEMS: LabItem[] = [
-  { key: "wbc",   label: "WBC",        unit: "×10³/μL",  ref: () => [4.5, 11.0],                                  step: 0.1  },
+  { key: "wbc",   label: "WBC",        unit: "×10³/μL",  ref: () => [4.5, 11.0],                                  critLow: 2.0,  critHigh: 30.0, step: 0.1  },
   { key: "rbc",   label: "RBC",        unit: "×10⁶/μL",  ref: (_, g) => g === "M" ? [4.5, 5.5] : [4.0, 5.0],    step: 0.01 },
-  { key: "hgb",   label: "Hemoglobin", unit: "g/dL",     ref: (_, g) => g === "M" ? [13.5, 17.5] : [12.0, 15.5], step: 0.1  },
+  { key: "hgb",   label: "Hemoglobin", unit: "g/dL",     ref: (_, g) => g === "M" ? [13.5, 17.5] : [12.0, 15.5], critLow: 7.0,  critHigh: 20.0, step: 0.1  },
   { key: "hct",   label: "Hematocrit", unit: "%",        ref: (_, g) => g === "M" ? [41, 53] : [36, 46],          step: 0.1  },
   { key: "mcv",   label: "MCV",        unit: "fL",       ref: () => [80, 100],                                     step: 0.1  },
   { key: "mch",   label: "MCH",        unit: "pg",       ref: () => [27, 33],                                      step: 0.1  },
   { key: "mchc",  label: "MCHC",       unit: "g/dL",     ref: () => [32, 36],                                      step: 0.1  },
-  { key: "plt",   label: "Platelets",  unit: "×10³/μL",  ref: () => [150, 400],                                    step: 1    },
+  { key: "plt",   label: "Platelets",  unit: "×10³/μL",  ref: () => [150, 400],                                    critLow: 50,   critHigh: 1000, step: 1    },
 ];
 
 /* ── UA (Urinalysis) ──────────────────────────────────────── */
@@ -51,10 +53,10 @@ const UA_ITEMS: LabItem[] = [
 
 /* ── Chemistry ────────────────────────────────────────────── */
 const CHEM_ITEMS: LabItem[] = [
-  { key: "fbs",  label: "Sugar (FBS)",  unit: "mg/dL", ref: () => [70, 100],                                        step: 1    },
-  { key: "hba1c",label: "HbA1c",        unit: "%",     ref: () => [4.0, 5.6],                                       step: 0.1  },
-  { key: "bun",  label: "BUN",          unit: "mg/dL", ref: () => [7, 20],                                          step: 0.1  },
-  { key: "cr",   label: "Creatinine",   unit: "mg/dL", ref: (_, g) => g === "M" ? [0.74, 1.35] : [0.59, 1.04],    step: 0.01 },
+  { key: "fbs",  label: "Sugar (FBS)",  unit: "mg/dL", ref: () => [70, 100],                                        critLow: 50,  critHigh: 500, step: 1    },
+  { key: "hba1c",label: "HbA1c",        unit: "%",     ref: () => [4.0, 5.6],                                                                    step: 0.1  },
+  { key: "bun",  label: "BUN",          unit: "mg/dL", ref: () => [7, 20],                                          critHigh: 100,              step: 0.1  },
+  { key: "cr",   label: "Creatinine",   unit: "mg/dL", ref: (_, g) => g === "M" ? [0.74, 1.35] : [0.59, 1.04],    critHigh: 10,               step: 0.01 },
 ];
 
 /* ── Lipid ────────────────────────────────────────────────── */

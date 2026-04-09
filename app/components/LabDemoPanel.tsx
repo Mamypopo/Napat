@@ -8,7 +8,12 @@ import type { Gender } from "../lib/labConfig";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 
-function getStatus(val: number, low: number, high: number): "L" | "N" | "H" {
+function getStatus(
+  val: number, low: number, high: number,
+  critLow?: number, critHigh?: number
+): "LL" | "L" | "N" | "H" | "HH" {
+  if (critLow !== undefined && val < critLow) return "LL";
+  if (critHigh !== undefined && val > critHigh) return "HH";
   if (val < low) return "L";
   if (val > high) return "H";
   return "N";
@@ -185,20 +190,24 @@ export default function LabDemoPanel() {
                     const selVal = values[item.key] ?? "";
                     const hasVal = selVal !== "";
 
-                    let status: "L" | "N" | "H" | null = null;
+                    let status: "LL" | "L" | "N" | "H" | "HH" | null = null;
                     let statusColor = "#4ade80";
                     if (isSelect) {
                       if (hasVal) {
                         const s = getSelectStatus(selVal, item.normalValues ?? []);
                         status = s;
-                        statusColor = s === "H" ? "#f87171" : "#4ade80";
+                        statusColor = s === "H" ? "#fb923c" : "#4ade80";
                       }
                     } else {
                       const [low, high] = item.ref!(ageNum, genderVal);
                       const numVal = parseFloat(selVal);
                       if (!isNaN(numVal) && hasVal) {
-                        status = getStatus(numVal, low, high);
-                        statusColor = status === "H" ? "#f87171" : status === "L" ? "#60a5fa" : "#4ade80";
+                        status = getStatus(numVal, low, high, item.critLow, item.critHigh);
+                        statusColor =
+                          status === "HH" ? "#ef4444" :
+                          status === "H"  ? "#fb923c" :
+                          status === "LL" ? "#a855f7" :
+                          status === "L"  ? "#60a5fa" : "#4ade80";
                       }
                     }
 
@@ -222,7 +231,7 @@ export default function LabDemoPanel() {
                           )}
                           {isSelect ? (
                             <Select.Root
-                              value={selVal || undefined}
+                              value={selVal}
                               onValueChange={(v) => setValues((prev) => ({ ...prev, [item.key]: v }))}
                             >
                               <Select.Trigger style={{
