@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LAB_PANELS } from "../lib/labConfig";
+import type { Gender } from "../lib/labConfig";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -86,19 +88,254 @@ function Brackets() {
   );
 }
 
-/* ── Is accent light? (for contrast) ─────────────────────── */
-function isLight(hex: string) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return (r * 299 + g * 587 + b * 114) / 1000 > 160;
+const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
+
+function getStatus(val: number, low: number, high: number): "L" | "N" | "H" {
+  if (val < low) return "L";
+  if (val > high) return "H";
+  return "N";
 }
+
+/* ── Lab Demo Panel (panel 1) ─────────────────────────────── */
+function LabDemoPanel() {
+  const [step, setStep] = useState<"info" | "lab">("info");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState<Gender | "">("");
+  const [activeTab, setActiveTab] = useState("cbc");
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  const canProceed = age !== "" && parseInt(age) > 0 && gender !== "";
+  const ageNum = parseInt(age) || 0;
+  const genderVal = gender as Gender;
+  const currentPanel = LAB_PANELS.find((p) => p.id === activeTab)!;
+  const items = currentPanel.items;
+  const hasAnyValue = items.some((item) => values[item.key] !== undefined && values[item.key] !== "");
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
+      {/* Header */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        padding: "14px 20px",
+        borderBottom: "1px solid rgba(0,0,0,0.15)",
+      }}>
+        <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.1em", color: "rgba(0,0,0,0.5)" }}>
+          LAB MODULE · HIS
+        </span>
+        <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.08em", color: "rgba(0,0,0,0.5)" }}>
+          PANEL:{" "}
+          <span style={{ background: "#ffffff", color: "#0a0a0a", padding: "2px 8px", borderRadius: "2px" }}>
+            {step === "info" ? "INFO" : activeTab.toUpperCase()}
+          </span>
+        </span>
+      </div>
+
+      {/* Body */}
+      <div style={{ flex: 1, padding: "14px 20px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <AnimatePresence mode="wait">
+          {step === "info" ? (
+            <motion.div
+              key="info"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.2 }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}
+            >
+              <div style={{
+                flex: 1, background: "#0a0a0a",
+                border: "1px solid rgba(255,255,255,0.15)", borderRadius: "2px",
+                padding: "20px", position: "relative",
+                display: "flex", flexDirection: "column", gap: 16,
+              }}>
+                <Brackets />
+                <p style={{ ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.65)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  ข้อมูลผู้ป่วย
+                </p>
+                {/* Age */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.65)", letterSpacing: "0.1em", textTransform: "uppercase" }}>อายุ (ปี)</label>
+                  <input
+                    type="number" value={age} onChange={(e) => setAge(e.target.value)}
+                    placeholder="เช่น 35" min={1} max={120}
+                    style={{
+                      ...MONO, background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px",
+                      color: "#fff", fontSize: "13px", padding: "8px 12px", outline: "none", width: "100%",
+                    }}
+                  />
+                </div>
+                {/* Gender */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.65)", letterSpacing: "0.1em", textTransform: "uppercase" }}>เพศ</label>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {(["M", "F"] as const).map((g) => (
+                      <button key={g} onClick={() => setGender(g)} style={{
+                        flex: 1, padding: "8px",
+                        background: gender === g ? "#F04E00" : "rgba(255,255,255,0.05)",
+                        border: `1px solid ${gender === g ? "#F04E00" : "rgba(255,255,255,0.08)"}`,
+                        borderRadius: "2px",
+                        color: gender === g ? "#fff" : "rgba(255,255,255,0.4)",
+                        cursor: "pointer", ...MONO, fontSize: "11px", letterSpacing: "0.06em", transition: "all 0.15s",
+                      }}>
+                        {g === "M" ? "ชาย" : "หญิง"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => canProceed && setStep("lab")}
+                style={{
+                  ...MONO, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase",
+                  padding: "12px",
+                  background: canProceed ? "#ffffff" : "rgba(0,0,0,0.10)",
+                  border: "none", borderRadius: "2px",
+                  color: canProceed ? "#F04E00" : "rgba(0,0,0,0.30)",
+                  cursor: canProceed ? "pointer" : "not-allowed", transition: "all 0.2s",
+                }}
+              >
+                ถัดไป — กรอกผล Lab →
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="lab"
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.2 }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}
+            >
+            <div style={{
+                flex: 1, display: "flex", flexDirection: "column", gap: 0, overflow: "hidden",
+                background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "2px",
+              }}
+            >
+              {/* Sub-tabs */}
+              <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                {LAB_PANELS.map((lp) => (
+                  <button key={lp.id} onClick={() => { setActiveTab(lp.id); setValues({}); }} style={{
+                    ...MONO, fontSize: "9px", letterSpacing: "0.08em", padding: "6px 12px",
+                    background: activeTab === lp.id ? "rgba(255,255,255,0.05)" : "transparent",
+                    border: "none",
+                    borderBottom: activeTab === lp.id ? "2px solid #F04E00" : "2px solid transparent",
+                    color: activeTab === lp.id ? "#fff" : "rgba(255,255,255,0.25)",
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}>
+                    {lp.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Lab table */}
+              <div style={{ flex: 1, overflow: "auto", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px" }}>
+                <div style={{
+                  display: "grid", gridTemplateColumns: "1fr 80px 100px 80px",
+                  padding: "8px 12px", background: "rgba(255,255,255,0.05)",
+                  borderBottom: "1px solid rgba(255,255,255,0.08)", position: "sticky", top: 0,
+                }}>
+                  {["PARAMETER", "UNIT", "REF RANGE", "VALUE"].map((h) => (
+                    <span key={h} style={{ ...MONO, fontSize: "8px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em" }}>{h}</span>
+                  ))}
+                </div>
+                {items.map((item) => {
+                  const [low, high] = item.ref(ageNum, genderVal);
+                  const val = parseFloat(values[item.key] ?? "");
+                  const hasVal = !isNaN(val) && values[item.key] !== "";
+                  const status = hasVal ? getStatus(val, low, high) : null;
+                  const statusColor = status === "H" ? "#f87171" : status === "L" ? "#60a5fa" : "#4ade80";
+                  return (
+                    <div key={item.key} style={{
+                      display: "grid", gridTemplateColumns: "1fr 80px 100px 80px",
+                      alignItems: "center", padding: "7px 12px",
+                      borderBottom: "1px solid rgba(255,255,255,0.08)",
+                      background: hasVal && status !== "N" ? `${statusColor}08` : "transparent",
+                      transition: "background 0.2s",
+                    }}>
+                      <div style={{ fontSize: "11px", fontWeight: 600, color: "#fff" }}>{item.label}</div>
+                      <div style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.4)" }}>{item.unit}</div>
+                      <div style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.4)" }}>{low} – {high}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <input
+                          type="number" step={item.step}
+                          value={values[item.key] ?? ""}
+                          onChange={(e) => setValues((v) => ({ ...v, [item.key]: e.target.value }))}
+                          style={{
+                            ...MONO, width: "52px",
+                            background: "rgba(255,255,255,0.05)",
+                            border: `1px solid ${hasVal && status !== "N" ? statusColor : "rgba(255,255,255,0.08)"}`,
+                            borderRadius: "2px",
+                            color: hasVal && status !== "N" ? statusColor : "#fff",
+                            fontSize: "11px", fontWeight: hasVal && status !== "N" ? 700 : 400,
+                            padding: "3px 6px", outline: "none", transition: "all 0.2s",
+                          }}
+                        />
+                        {status && status !== "N" && (
+                          <span style={{ ...MONO, fontSize: "9px", color: statusColor, fontWeight: 700 }}>{status}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Interpretation */}
+              {hasAnyValue && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                  style={{ padding: "10px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px" }}
+                >
+                  <p style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", marginBottom: 4 }}>INTERPRETATION</p>
+                  <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
+                    {currentPanel.interpret(values, ageNum, genderVal)}
+                  </p>
+                </motion.div>
+              )}
+            </div>
+
+              <button
+                onClick={() => { setStep("info"); setValues({}); }}
+                style={{
+                  ...MONO, fontSize: "9px", letterSpacing: "0.08em",
+                  background: "transparent", border: "none",
+                  color: "rgba(255,255,255,0.65)", cursor: "pointer", textAlign: "left", padding: "6px 0 2px",
+                }}
+              >
+                ← เปลี่ยนข้อมูลผู้ป่วย ({gender === "M" ? "ชาย" : "หญิง"}, {age} ปี)
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        padding: "12px 20px", borderTop: "1px solid rgba(0,0,0,0.15)",
+      }}>
+        <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>REF: WHO · ADULT RANGE</span>
+        <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>HIS MODULE · LAB →</span>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── On-accent map (fixed — not theme-dependent) ──────────── */
+const ON_ACCENT: Record<string, { fg: string; fgMuted: string; fgFaint: string; line: string; badge: string }> = {
+  "#F04E00": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
+  "#FFE600": { fg: "#0F0D12", fgMuted: "rgba(15,13,18,0.65)",   fgFaint: "rgba(15,13,18,0.35)",   line: "rgba(0,0,0,0.12)", badge: "rgba(0,0,0,0.08)" },
+  "#0085FF": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
+};
 
 /* ── Active panel content ─────────────────────────────────── */
 function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
-  const light = isLight(panel.accent);
-  const fg = light ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.55)";
-  const fgStrong = light ? "#000" : "#fff";
+  const on = ON_ACCENT[panel.accent];
   const [input, setInput] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -121,23 +358,23 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "16px 20px",
-        borderBottom: `1px solid ${light ? "rgba(0,0,0,0.15)" : "rgba(255,255,255,0.15)"}`,
+        borderBottom: `1px solid ${on.line}`,
       }}>
         <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.1em",
-          color: fg,
+          color: on.fgMuted,
         }}>
           AGENT CONTEXT
         </span>
         <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.08em",
-          color: fg,
+          color: on.fgMuted,
         }}>
           CURRENT CONTEXT:{" "}
           <span style={{
-            background: fgStrong, color: light ? "#fff" : "#000",
+            background: on.fg, color: panel.accent,
             padding: "2px 8px", borderRadius: "2px",
           }}>
             {panel.context}
@@ -150,7 +387,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
         <div style={{
           flex: 1,
           background: "#0a0a0a",
-          border: "1px solid rgba(255,255,255,0.12)",
+          border: `1px solid ${on.line}`,
           position: "relative",
           borderRadius: "2px",
           display: "flex",
@@ -171,7 +408,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
             style={{
               fontFamily: "var(--font-mono), monospace",
               fontSize: "11px", letterSpacing: "0.08em",
-              color: "rgba(255,255,255,0.3)",
+              color: "rgba(255,255,255,0.25)",
               textTransform: "uppercase",
               marginBottom: "8px",
             }}
@@ -191,18 +428,18 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
                 fontFamily: "var(--font-mono), monospace",
                 fontSize: "10px", letterSpacing: "0.06em",
                 padding: "7px 12px",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.08)",
                 borderRadius: "2px",
-                color: "rgba(255,255,255,0.75)",
+                color: "rgba(255,255,255,0.65)",
                 cursor: "pointer",
                 textAlign: "left",
                 textTransform: "uppercase",
                 transition: "background 0.15s",
                 width: "100%",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.14)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
             >
               {q}
             </motion.button>
@@ -210,10 +447,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
         </div>
 
         {/* Input bar */}
-        <div style={{
-          display: "flex", gap: "8px",
-          marginTop: "12px",
-        }}>
+        <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -225,7 +459,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
               fontSize: "10px", letterSpacing: "0.06em",
               padding: "10px 14px",
               background: "#0a0a0a",
-              border: "1px solid rgba(0,0,0,0.25)",
+              border: `1px solid ${on.line}`,
               borderRadius: "2px",
               color: "#fff",
               outline: "none",
@@ -236,11 +470,11 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
             onClick={handleSend}
             style={{
               width: "36px", height: "36px",
-              background: "#000",
+              background: on.badge,
               border: "none", borderRadius: "50%",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#fff", flexShrink: 0,
+              color: on.fg, flexShrink: 0,
               transition: "opacity 0.2s",
             }}
           >
@@ -253,12 +487,12 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "12px 20px",
-        borderTop: `1px solid ${light ? "rgba(0,0,0,0.15)" : "rgba(255,255,255,0.15)"}`,
+        borderTop: `1px solid ${on.line}`,
       }}>
-        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: fg }}>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: on.fgMuted }}>
           STATUS:{" "}
           <span style={{
-            background: fgStrong, color: light ? "#fff" : "#000",
+            background: on.fg, color: panel.accent,
             padding: "2px 8px", borderRadius: "2px",
           }}>
             {panel.status}
@@ -267,7 +501,7 @@ function ActiveContent({ panel }: { panel: (typeof panels)[number] }) {
         <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.06em",
-          color: fg, cursor: "pointer",
+          color: on.fgMuted, cursor: "pointer",
         }}>
           LEARN MORE →
         </span>
@@ -400,7 +634,7 @@ export default function ProjectDemo() {
       }}>
         {panels.map((panel, i) => {
           const isActive = panel.id === active;
-          const isLeft = i === 0;
+
           const isRight = i === panels.length - 1;
 
           return (
@@ -417,7 +651,11 @@ export default function ProjectDemo() {
             >
               {isActive ? (
                 <AnimatePresence mode="wait">
-                  <ActiveContent key={panel.id} panel={panel} />
+                  {panel.id === "frontend" ? (
+                    <LabDemoPanel key="lab" />
+                  ) : (
+                    <ActiveContent key={panel.id} panel={panel} />
+                  )}
                 </AnimatePresence>
               ) : (
                 <InactivePanel panel={panel} onClick={() => setActive(panel.id)} />

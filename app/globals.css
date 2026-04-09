@@ -8,12 +8,22 @@
   --color-primary:     #553F83;
   --color-primary-dim: rgba(85, 63, 131, 0.15);
 
+  /* Accent palette */
+  --color-accent-orange: #F04E00;
+  --color-accent-yellow: #FFE600;
+  --color-accent-blue:   #0085FF;
+
+
   /* Dark (default) */
   --color-bg:          #111111;
   --color-surface:     #1A1A1A;
+  --color-canvas:      #0A0A0A;
   --color-text-high:   #FFFFFF;
+  --color-text-mid:    rgba(255, 255, 255, 0.60);
   --color-text-muted:  rgba(255, 255, 255, 0.40);
+  --color-text-subtle: rgba(255, 255, 255, 0.25);
   --color-hairline:    rgba(255, 255, 255, 0.10);
+  --color-hairline-strong: rgba(255, 255, 255, 0.15);
   --color-glow:        rgba(85, 63, 131, 0.15);
   --color-scrim:       rgba(17, 17, 17, 0.90);
   --color-badge:       rgba(255, 255, 255, 0.05);
@@ -22,25 +32,59 @@
 /* ── CSS VARIABLES per theme class ────────────────────────── */
 :root,
 html.dark {
+  /* Accent */
+  --accent-orange: #F04E00;
+  --accent-yellow: #FFE600;
+  --accent-blue:   #0085FF;
+
+
+  /* Surface */
   --bg:         #111111;
   --surface:    #1A1A1A;
-  --text-high:  #FFFFFF;
-  --text-muted: rgba(255, 255, 255, 0.40);
-  --hairline:   rgba(255, 255, 255, 0.10);
-  --glow:       rgba(85, 63, 131, 0.15);
-  --scrim:      rgba(17, 17, 17, 0.90);
-  --badge:      rgba(255, 255, 255, 0.05);
+  --canvas:     #0A0A0A;
+
+  /* Text */
+  --text-high:   #FFFFFF;
+  --text-mid:    rgba(255, 255, 255, 0.60);
+  --text-muted:  rgba(255, 255, 255, 0.40);
+  --text-subtle: rgba(255, 255, 255, 0.25);
+
+  /* Border */
+  --hairline:        rgba(255, 255, 255, 0.10);
+  --hairline-strong: rgba(255, 255, 255, 0.15);
+
+  /* Misc */
+  --glow:  rgba(85, 63, 131, 0.15);
+  --scrim: rgba(17, 17, 17, 0.90);
+  --badge: rgba(255, 255, 255, 0.05);
 }
 
 html.light {
+  /* Accent (same across themes) */
+  --accent-orange: #F04E00;
+  --accent-yellow: #FFE600;
+  --accent-blue:   #0085FF;
+
+
+  /* Surface */
   --bg:         #FAFAFC;
   --surface:    #FFFFFF;
-  --text-high:  #0F0D12;
-  --text-muted: rgba(15, 13, 18, 0.55);
-  --hairline:   rgba(15, 13, 18, 0.10);
-  --glow:       rgba(85, 63, 131, 0.12);
-  --scrim:      rgba(250, 250, 252, 0.90);
-  --badge:      rgba(15, 13, 18, 0.06);
+  --canvas:     #F2F2F5;
+
+  /* Text */
+  --text-high:   #0F0D12;
+  --text-mid:    rgba(15, 13, 18, 0.70);
+  --text-muted:  rgba(15, 13, 18, 0.55);
+  --text-subtle: rgba(15, 13, 18, 0.35);
+
+  /* Border */
+  --hairline:        rgba(15, 13, 18, 0.10);
+  --hairline-strong: rgba(15, 13, 18, 0.18);
+
+  /* Misc */
+  --glow:  rgba(85, 63, 131, 0.12);
+  --scrim: rgba(250, 250, 252, 0.90);
+  --badge: rgba(15, 13, 18, 0.06);
 }
 
 /* ── BASE ──────────────────────────────────────────────────── */
