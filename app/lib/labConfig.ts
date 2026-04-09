@@ -4,8 +4,10 @@ export type LabItem = {
   key: string;
   label: string;
   unit: string;
-  ref: (age: number, gender: Gender) => [number, number];
-  step: number;
+  ref?: (age: number, gender: Gender) => [number, number];
+  step?: number;
+  options?: string[];
+  normalValues?: string[];
   group?: string;
 };
 
@@ -29,13 +31,22 @@ const CBC_ITEMS: LabItem[] = [
 ];
 
 /* ── UA (Urinalysis) ──────────────────────────────────────── */
+const DIPSTICK = ["Negative", "Trace", "1+", "2+", "3+", "4+"];
 const UA_ITEMS: LabItem[] = [
-  { key: "ua_ph",  label: "pH",            unit: "",       ref: () => [4.5, 8.0],    step: 0.1   },
-  { key: "ua_sg",  label: "Specific Grav", unit: "g/mL",  ref: () => [1.005, 1.030], step: 0.001 },
-  { key: "ua_glu", label: "Glucose (UA)",  unit: "mg/dL", ref: () => [0, 0],          step: 1     },
-  { key: "ua_pro", label: "Protein (UA)",  unit: "mg/dL", ref: () => [0, 14],         step: 1     },
-  { key: "ua_wbc", label: "WBC (UA)",      unit: "/hpf",  ref: () => [0, 5],          step: 1     },
-  { key: "ua_rbc", label: "RBC (UA)",      unit: "/hpf",  ref: () => [0, 2],          step: 1     },
+  { key: "ua_color",   label: "Color",           unit: "", options: ["Yellow","Pale Yellow","Amber","Brown","Red","Colorless"], normalValues: ["Yellow","Pale Yellow"] },
+  { key: "ua_appear",  label: "Appearance",      unit: "", options: ["Clear","Slightly turbid","Turbid","Cloudy"],              normalValues: ["Clear"]               },
+  { key: "ua_ph",      label: "pH",              unit: "", ref: () => [4.5, 8.0],    step: 0.5  },
+  { key: "ua_sg",      label: "Sp. Gravity",     unit: "", ref: () => [1.005, 1.030], step: 0.001 },
+  { key: "ua_glu",     label: "Glucose",         unit: "", options: DIPSTICK,                normalValues: ["Negative"]               },
+  { key: "ua_pro",     label: "Protein",         unit: "", options: DIPSTICK,                normalValues: ["Negative","Trace"]       },
+  { key: "ua_blood",   label: "Blood",           unit: "", options: ["Negative","Trace","1+","2+","3+"], normalValues: ["Negative"]   },
+  { key: "ua_nitrite", label: "Nitrite",         unit: "", options: ["Negative","Positive"],             normalValues: ["Negative"]   },
+  { key: "ua_ketone",  label: "Ketone",          unit: "", options: ["Negative","Trace","1+","2+","3+"], normalValues: ["Negative"]   },
+  { key: "ua_bili",    label: "Bilirubin",       unit: "", options: ["Negative","1+","2+","3+"],         normalValues: ["Negative"]   },
+  { key: "ua_ubg",     label: "Urobilinogen",    unit: "", options: ["Normal","2+","4+","8+"],           normalValues: ["Normal"]     },
+  { key: "ua_le",      label: "Leukocyte Est",   unit: "", options: ["Negative","Trace","1+","2+","3+"], normalValues: ["Negative"]   },
+  { key: "ua_wbc",     label: "WBC (micro)",     unit: "/hpf", ref: () => [0, 5],  step: 1 },
+  { key: "ua_rbc",     label: "RBC (micro)",     unit: "/hpf", ref: () => [0, 2],  step: 1 },
 ];
 
 /* ── Chemistry ────────────────────────────────────────────── */
@@ -86,15 +97,25 @@ function interpretCBC(values: Record<string, string>, _age: number, gender: Gend
 }
 
 function interpretUA(values: Record<string, string>): string {
-  const glu = parseFloat(values.ua_glu);
-  const pro = parseFloat(values.ua_pro);
+  const out: string[] = [];
+  if (values.ua_glu && values.ua_glu !== "Negative")
+    out.push(`Glucosuria (${values.ua_glu}) — พิจารณาตรวจ FBS / HbA1c`);
+  if (values.ua_pro && !["Negative","Trace"].includes(values.ua_pro))
+    out.push(`Proteinuria (${values.ua_pro}) — ควรติดตามการทำงานของไต`);
+  if (values.ua_blood && values.ua_blood !== "Negative")
+    out.push(`Hematuria (${values.ua_blood}) — ควรตรวจสอบสาเหตุ`);
+  if (values.ua_nitrite === "Positive")
+    out.push("Nitrite positive — อาจมีการติดเชื้อทางเดินปัสสาวะ");
+  if (values.ua_le && values.ua_le !== "Negative")
+    out.push(`Leukocyte Est (${values.ua_le}) — สงสัย UTI`);
+  if (values.ua_ketone && values.ua_ketone !== "Negative")
+    out.push(`Ketonuria (${values.ua_ketone})`);
+  if (values.ua_bili && values.ua_bili !== "Negative")
+    out.push(`Bilirubinuria (${values.ua_bili}) — ตรวจการทำงานของตับ`);
   const wbc = parseFloat(values.ua_wbc);
   const rbc = parseFloat(values.ua_rbc);
-  const out: string[] = [];
-  if (!isNaN(glu) && glu > 0) out.push("Glucosuria — พิจารณาตรวจ FBS / HbA1c");
-  if (!isNaN(pro) && pro > 14) out.push("Proteinuria — ควรติดตามการทำงานของไต");
   if (!isNaN(wbc) && wbc > 5) out.push("Pyuria — อาจมีการติดเชื้อทางเดินปัสสาวะ");
-  if (!isNaN(rbc) && rbc > 2) out.push("Hematuria — ควรตรวจสอบสาเหตุ");
+  if (!isNaN(rbc) && rbc > 2) out.push("Hematuria (microscopy) — ควรตรวจสอบสาเหตุ");
   return out.length ? out.join(" · ") : "ผลปัสสาวะอยู่ในเกณฑ์ปกติ";
 }
 
