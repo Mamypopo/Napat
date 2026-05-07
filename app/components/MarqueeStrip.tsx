@@ -17,11 +17,9 @@ export default function MarqueeStrip() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       style={{
-        borderBottom: "1px solid var(--hairline)",
-        borderTop: "1px solid var(--hairline)",
         overflow: "hidden",
-        background: "var(--surface)",
-        padding: "20px 0",
+        background: "#553F83",
+        padding: "14px 0",
         cursor: "default",
       }}
     >
@@ -42,11 +40,11 @@ export default function MarqueeStrip() {
               fontWeight: 500,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "var(--text-muted)",
+              color: "rgba(255,255,255,0.7)",
             }}
           >
             {item}
-            <span style={{ color: "#553F83", fontSize: "8px" }}>◆</span>
+            <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "8px" }}>◆</span>
           </span>
         ))}
       </div>
