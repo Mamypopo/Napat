@@ -9,6 +9,7 @@ import BentoProjects from "./components/BentoProjects";
 import TechStack from "./components/TechStack";
 import CaseStudySlider from "./components/CaseStudySlider";
 import AboutSection from "./components/AboutSection";
+import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
       <PinnedScroll />
       <CaseStudySlider />
       <AboutSection />
+      <ContactCTA />
 
       {/* <LivePreview /> */}
 
