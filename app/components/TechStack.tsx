@@ -1,0 +1,173 @@
+"use client";
+
+import { motion } from "framer-motion";
+import {
+  SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
+  SiNodedotjs, SiGo, SiGraphql, SiTrpc,
+  SiPostgresql, SiPrisma, SiRedis,
+  SiDocker, SiVercel,
+  SiFigma, SiGit,
+} from "react-icons/si";
+import { FaAws } from "react-icons/fa";
+
+const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
+
+type Skill = {
+  name: string;
+  icon: React.ReactNode;
+  primary?: boolean;
+};
+
+type Group = {
+  label: string;
+  skills: Skill[];
+};
+
+const GROUPS: Group[] = [
+  {
+    label: "Frontend",
+    skills: [
+      { name: "React",         icon: <SiReact />,       primary: true  },
+      { name: "Next.js",       icon: <SiNextdotjs />,   primary: true  },
+      { name: "TypeScript",    icon: <SiTypescript />,  primary: true  },
+      { name: "Tailwind CSS",  icon: <SiTailwindcss />                 },
+      { name: "Framer Motion", icon: <SiFramer />                      },
+    ],
+  },
+  {
+    label: "Backend",
+    skills: [
+      { name: "Node.js",  icon: <SiNodedotjs />, primary: true },
+      { name: "Go",       icon: <SiGo />,        primary: true },
+      { name: "tRPC",     icon: <SiTrpc />                     },
+      { name: "GraphQL",  icon: <SiGraphql />                  },
+    ],
+  },
+  {
+    label: "Database",
+    skills: [
+      { name: "PostgreSQL", icon: <SiPostgresql />, primary: true },
+      { name: "Prisma",     icon: <SiPrisma />                    },
+      { name: "Redis",      icon: <SiRedis />                     },
+    ],
+  },
+  {
+    label: "DevOps",
+    skills: [
+      { name: "Docker", icon: <SiDocker />,              primary: true },
+      { name: "Vercel", icon: <SiVercel />                            },
+      { name: "AWS",    icon: <FaAws />                               },
+    ],
+  },
+  {
+    label: "Tools",
+    skills: [
+      { name: "Figma", icon: <SiFigma /> },
+      { name: "Git",   icon: <SiGit />   },
+    ],
+  },
+];
+
+function SkillCard({ skill }: { skill: Skill }) {
+  return (
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.15 }}
+      style={{
+        display: "flex", alignItems: "center", gap: 8,
+        padding: skill.primary ? "8px 12px" : "6px 10px",
+        background: skill.primary ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+        border: `1px solid ${skill.primary ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)"}`,
+        borderRadius: "4px",
+        cursor: "default",
+        transition: "border-color 0.2s, background 0.2s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "rgba(240,78,0,0.5)";
+        e.currentTarget.style.background = "rgba(240,78,0,0.08)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = skill.primary ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)";
+        e.currentTarget.style.background = skill.primary ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)";
+      }}
+    >
+      <span style={{
+        fontSize: skill.primary ? "15px" : "13px",
+        color: skill.primary ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
+        display: "flex", alignItems: "center",
+      }}>
+        {skill.icon}
+      </span>
+      <span style={{
+        ...MONO,
+        fontSize: skill.primary ? "11px" : "10px",
+        fontWeight: skill.primary ? 500 : 400,
+        letterSpacing: "0.06em",
+        color: skill.primary ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.35)",
+        whiteSpace: "nowrap",
+      }}>
+        {skill.name}
+      </span>
+    </motion.div>
+  );
+}
+
+export default function TechStack() {
+  return (
+    <section style={{
+      background: "#0a0a0a",
+      borderTop: "1px solid rgba(255,255,255,0.08)",
+      padding: "80px 64px",
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: "52px" }}>
+        <p style={{
+          ...MONO, fontSize: "10px", letterSpacing: "0.14em",
+          textTransform: "uppercase", color: "rgba(255,255,255,0.25)",
+          marginBottom: "16px",
+        }}>
+          Tech Stack
+        </p>
+        <h2 style={{
+          fontSize: "clamp(24px, 3vw, 40px)", fontWeight: 700,
+          letterSpacing: "-0.03em", color: "#fff", lineHeight: 1.1,
+        }}>
+          เครื่องมือที่ใช้งาน<br />
+          <span style={{ color: "rgba(255,255,255,0.3)" }}>จริงใน production.</span>
+        </h2>
+      </div>
+
+      {/* Groups */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(5, 1fr)",
+        gap: "48px 32px",
+      }}>
+        {GROUPS.map((group) => (
+          <div key={group.label}>
+            <p style={{
+              ...MONO, fontSize: "9px", letterSpacing: "0.14em",
+              textTransform: "uppercase", color: "#F04E00",
+              marginBottom: "16px",
+            }}>
+              {group.label}
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {group.skills.map((skill) => (
+                <SkillCard key={skill.name} skill={skill} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer note */}
+      <p style={{
+        ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.2)",
+        marginTop: "52px", letterSpacing: "0.06em",
+      }}>
+        * primary skills — used daily in production projects
+      </p>
+    </section>
+  );
+}
