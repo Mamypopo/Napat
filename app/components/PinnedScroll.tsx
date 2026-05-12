@@ -294,88 +294,72 @@ export default function PinnedScroll() {
   const item = items[active];
   const light = isLight(item.accent);
 
-  if (isMobile) {
-    return (
-      <div style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-        {/* Mobile header */}
+  return (
+    <div style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+      {/* ── Header ─────────────────────────────────────────────── */}
+      {isMobile ? (
         <div style={{ padding: "40px 24px 32px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: "12px" }}>
-            How I Work
-          </p>
+          <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: "12px" }}>How I Work</p>
           <h2 style={{ fontSize: "clamp(28px, 7vw, 40px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
             วิธีที่ผมทำงาน<br /><span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
           </h2>
         </div>
-        {/* Mobile stacked items */}
-        {items.map((it) => (
-          <div key={it.num} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "32px 24px" }}>
-            <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: it.accent, marginBottom: "16px" }}>
-              {it.num} · {it.label}
-            </p>
-            <h3 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#fff", marginBottom: "16px", whiteSpace: "pre-line" }}>
-              {it.title}
-            </h3>
-            <p style={{ fontSize: "14px", fontWeight: 300, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, marginBottom: "20px" }}>
-              {it.desc}
-            </p>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "8px" }}>
-              {it.bullets.map((b) => (
-                <li key={b} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: it.accent, flexShrink: 0 }} />
-                  <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "11px", letterSpacing: "0.06em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>{b}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {/* ── Header — scrolls away normally ───────────────────── */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "220px 1fr 1fr",
-        background: "#111",
-        borderTop: "1px solid rgba(255,255,255,0.08)",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-      }}>
-        {/* Left cell — eyeline */}
+      ) : (
         <div style={{
-          borderRight: "1px solid rgba(255,255,255,0.08)",
-          padding: "28px 32px",
-          display: "flex", alignItems: "center", gap: "12px",
+          display: "grid",
+          gridTemplateColumns: "220px 1fr 1fr",
+          background: "#111",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}>
-          <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: "#553F83" }}>02</span>
-          <span style={{ display: "block", width: "20px", height: "1px", background: "rgba(255,255,255,0.12)" }} />
-          <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>How I Work</span>
+          <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "28px 32px", display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: "#553F83" }}>02</span>
+            <span style={{ display: "block", width: "20px", height: "1px", background: "rgba(255,255,255,0.12)" }} />
+            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>How I Work</span>
+          </div>
+          <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "48px 56px" }}>
+            <h2 style={{ fontSize: "clamp(32px, 3.5vw, 52px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
+              วิธีที่ผมทำงาน<br /><span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
+            </h2>
+          </div>
+          <div style={{ padding: "48px 56px", display: "flex", alignItems: "center" }}>
+            <p style={{ fontSize: "15px", fontWeight: 300, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: "380px" }}>
+              Scroll เพื่อ explore แต่ละ discipline — หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ
+            </p>
+          </div>
         </div>
+      )}
 
-        {/* Center cell — big headline */}
-        <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "48px 56px" }}>
-          <h2 style={{ fontSize: "clamp(32px, 3.5vw, 52px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
-            วิธีที่ผมทำงาน<br />
-            <span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
-          </h2>
-        </div>
-
-        {/* Right cell — description */}
-        <div style={{ padding: "48px 56px", display: "flex", alignItems: "center" }}>
-          <p style={{ fontSize: "15px", fontWeight: 300, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: "380px" }}>
-            Scroll เพื่อ explore แต่ละ discipline —
-            หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ
-          </p>
-        </div>
-      </div>
-
-      {/* ── Tall outer container — scroll happens here ────────── */}
+      {/* ── Outer container — ref always attached ──────────────── */}
       <div
         ref={containerRef}
-        style={{ height: `${N * 100}vh`, position: "relative" }}
+        style={{ height: isMobile ? "auto" : `${N * 100}vh`, position: "relative" }}
       >
-      {/* ── Sticky inner panel ─────────────────────────────── */}
+      {isMobile ? (
+        /* ── Mobile: stacked list ──────────────────────────────── */
+        <>
+          {items.map((it) => (
+            <div key={it.num} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "32px 24px" }}>
+              <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: it.accent, marginBottom: "16px" }}>
+                {it.num} · {it.label}
+              </p>
+              <h3 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#fff", marginBottom: "16px", whiteSpace: "pre-line" }}>
+                {it.title}
+              </h3>
+              <p style={{ fontSize: "14px", fontWeight: 300, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, marginBottom: "20px" }}>
+                {it.desc}
+              </p>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "8px" }}>
+                {it.bullets.map((b) => (
+                  <li key={b} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: it.accent, flexShrink: 0 }} />
+                    <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "11px", letterSpacing: "0.06em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </>
+      ) : (
       <div style={{
         position: "sticky",
         top: 0,
@@ -635,6 +619,7 @@ export default function PinnedScroll() {
           }}
         />
       </div>
+      )}
       </div>
     </div>
   );
