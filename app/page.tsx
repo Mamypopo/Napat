@@ -10,6 +10,7 @@ import TechStack from "./components/TechStack";
 import CaseStudySlider from "./components/CaseStudySlider";
 import AboutSection from "./components/AboutSection";
 import ContactCTA from "./components/ContactCTA";
+import FadeIn from "./components/FadeIn";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -19,14 +20,14 @@ export default function Home() {
       <Navbar />
       <Hero />
       <MarqueeStrip />
-      <TechStack />
-      <FeatureShowcase />
-      <BentoProjects />
-      <ProjectDemo />
-      <PinnedScroll />
-      <CaseStudySlider />
-      <AboutSection />
-      <ContactCTA />
+      <FadeIn><TechStack /></FadeIn>
+      <FadeIn><FeatureShowcase /></FadeIn>
+      <FadeIn><BentoProjects /></FadeIn>
+      <FadeIn><ProjectDemo /></FadeIn>
+      <FadeIn><PinnedScroll /></FadeIn>
+      <FadeIn><CaseStudySlider /></FadeIn>
+      <FadeIn><AboutSection /></FadeIn>
+      <FadeIn><ContactCTA /></FadeIn>
 
       {/* <LivePreview /> */}
 

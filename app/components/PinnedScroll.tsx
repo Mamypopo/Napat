@@ -8,6 +8,7 @@ import {
   useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -268,6 +269,7 @@ function CodeVisual({ item }: { item: (typeof items)[number] }) {
 export default function PinnedScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const isMobile = useIsMobile();
 
   const N = items.length;
 
@@ -276,7 +278,6 @@ export default function PinnedScroll() {
     const rect = containerRef.current.getBoundingClientRect();
     const containerTop = rect.top + window.scrollY;
     const containerHeight = containerRef.current.offsetHeight;
-    // Place scroll so item i is at the start of its "slot"
     const target = containerTop + (i / N) * containerHeight;
     window.scrollTo({ top: target, behavior: "smooth" });
   }
@@ -287,11 +288,49 @@ export default function PinnedScroll() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActive(Math.min(N - 1, Math.floor(v * N)));
+    if (!isMobile) setActive(Math.min(N - 1, Math.floor(v * N)));
   });
 
   const item = items[active];
   const light = isLight(item.accent);
+
+  if (isMobile) {
+    return (
+      <div style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        {/* Mobile header */}
+        <div style={{ padding: "40px 24px 32px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: "12px" }}>
+            How I Work
+          </p>
+          <h2 style={{ fontSize: "clamp(28px, 7vw, 40px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
+            วิธีที่ผมทำงาน<br /><span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
+          </h2>
+        </div>
+        {/* Mobile stacked items */}
+        {items.map((it) => (
+          <div key={it.num} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "32px 24px" }}>
+            <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: it.accent, marginBottom: "16px" }}>
+              {it.num} · {it.label}
+            </p>
+            <h3 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#fff", marginBottom: "16px", whiteSpace: "pre-line" }}>
+              {it.title}
+            </h3>
+            <p style={{ fontSize: "14px", fontWeight: 300, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, marginBottom: "20px" }}>
+              {it.desc}
+            </p>
+            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "8px" }}>
+              {it.bullets.map((b) => (
+                <li key={b} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: it.accent, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "11px", letterSpacing: "0.06em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div>

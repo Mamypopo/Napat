@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useIsMobile } from "../hooks/useMediaQuery";
 import { SiGithub, SiLine } from "react-icons/si";
 import { HiOutlineMail, HiOutlineDownload } from "react-icons/hi";
 
@@ -29,6 +30,7 @@ const LINKS = [
 ];
 
 export default function ContactCTA() {
+  const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
 
   function copyEmail() {
@@ -41,7 +43,7 @@ export default function ContactCTA() {
     <section style={{
       background: "#0a0a0a",
       borderTop: "1px solid rgba(255,255,255,0.08)",
-      padding: "100px 64px",
+      padding: isMobile ? "64px 24px" : "100px 64px",
       position: "relative",
       overflow: "hidden",
     }}>

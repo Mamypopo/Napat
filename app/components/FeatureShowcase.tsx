@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -490,6 +491,7 @@ export default function FeatureShowcase() {
   const [paused, setPaused] = useState(false);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const isMobile = useIsMobile();
 
   const advance = useCallback(() => {
     setActiveTab((cur) => {
@@ -521,10 +523,12 @@ export default function FeatureShowcase() {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, ease }}
         style={{
-          padding: "64px 64px 24px",
+          padding: isMobile ? "40px 24px 20px" : "64px 64px 24px",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           display: "flex",
-          alignItems: "flex-end",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "flex-start" : "flex-end",
+          gap: isMobile ? "8px" : "0",
           justifyContent: "space-between",
         }}
       >
@@ -546,15 +550,17 @@ export default function FeatureShowcase() {
             เส้นทางที่<span style={{ color: "#553F83" }}>เดินมา</span>
           </h2>
         </div>
-        <p style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: "10px", letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "rgba(255,255,255,0.2)",
-          flexShrink: 0,
-        }}>
-          Education · Experience · Freelance
-        </p>
+        {!isMobile && (
+          <p style={{
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: "10px", letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.2)",
+            flexShrink: 0,
+          }}>
+            Education · Experience · Freelance
+          </p>
+        )}
       </motion.div>
 
       {/* ── Panels ────────────────────────────────────────── */}
@@ -564,50 +570,54 @@ export default function FeatureShowcase() {
         transition={{ duration: 0.5, ease, delay: 0.2 }}
         style={{
           display: "grid",
-          gridTemplateColumns: "360px 1fr 1fr",
-          height: "440px",
+          gridTemplateColumns: isMobile ? "1fr" : "360px 1fr 1fr",
+          height: isMobile ? "auto" : "440px",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           overflow: "hidden",
         }}
       >
-        {/* Timeline strip — leftmost */}
-        <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab + "-strip"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              style={{ height: "100%" }}
-            >
-              <TimelineStrip tab={activeTab} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        {/* Timeline strip — hidden on mobile */}
+        {!isMobile && (
+          <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab + "-strip"}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                style={{ height: "100%" }}
+              >
+                <TimelineStrip tab={activeTab} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
 
-        {/* Detail panel — center */}
-        <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
+        {/* Detail panel */}
+        <div style={{ borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
           <AnimatePresence mode="wait">
             <DetailPanel key={activeTab} tab={activeTab} />
           </AnimatePresence>
         </div>
 
-        {/* Graph panel — right */}
-        <div style={{ position: "relative" }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab + "-graph"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              style={{ height: "100%", position: "relative" }}
-            >
-              <GraphPanel tab={activeTab} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        {/* Graph panel — hidden on mobile */}
+        {!isMobile && (
+          <div style={{ position: "relative" }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab + "-graph"}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ height: "100%", position: "relative" }}
+              >
+                <GraphPanel tab={activeTab} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
       </motion.div>
 
       {/* ── Tab bar ───────────────────────────────────────── */}
@@ -619,7 +629,7 @@ export default function FeatureShowcase() {
             style={{
               position: "relative",
               flex: 1,
-              padding: "20px 32px",
+              padding: isMobile ? "16px 12px" : "20px 32px",
               background: "transparent",
               border: "none",
               borderRight: i < tabs.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",

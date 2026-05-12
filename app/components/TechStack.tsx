@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useIsMobile, useIsTablet } from "../hooks/useMediaQuery";
 import {
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
   SiNodedotjs, SiGo, SiGraphql, SiTrpc,
@@ -113,11 +114,17 @@ function SkillCard({ skill }: { skill: Skill }) {
 }
 
 export default function TechStack() {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+
+  const cols = isMobile ? "repeat(2, 1fr)" : isTablet ? "repeat(3, 1fr)" : "repeat(5, 1fr)";
+  const px = isMobile ? "24px" : "64px";
+
   return (
     <section style={{
       background: "#0a0a0a",
       borderTop: "1px solid rgba(255,255,255,0.08)",
-      padding: "80px 64px",
+      padding: `80px ${px}`,
     }}>
       {/* Header */}
       <div style={{ marginBottom: "52px" }}>
@@ -140,8 +147,8 @@ export default function TechStack() {
       {/* Groups */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(5, 1fr)",
-        gap: "48px 32px",
+        gridTemplateColumns: cols,
+        gap: "40px 24px",
       }}>
         {GROUPS.map((group) => (
           <div key={group.label}>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -14,6 +15,8 @@ const skills = [
 ];
 
 export default function AboutSection() {
+  const isMobile = useIsMobile();
+
   return (
     <section
       id="about"
@@ -26,7 +29,7 @@ export default function AboutSection() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
           borderBottom: "1px solid var(--hairline)",
         }}
       >
@@ -38,8 +41,9 @@ export default function AboutSection() {
           transition={{ duration: 0.65, ease }}
           style={{
             position: "relative",
-            minHeight: "560px",
-            borderRight: "1px solid var(--hairline)",
+            minHeight: isMobile ? "260px" : "560px",
+            borderRight: isMobile ? "none" : "1px solid var(--hairline)",
+            borderBottom: isMobile ? "1px solid var(--hairline)" : "none",
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
@@ -81,7 +85,7 @@ export default function AboutSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.65, ease, delay: 0.1 }}
-          style={{ padding: "72px 64px", display: "flex", flexDirection: "column", justifyContent: "center" }}
+          style={{ padding: isMobile ? "36px 24px" : "72px 64px", display: "flex", flexDirection: "column", justifyContent: "center" }}
         >
           <p className="eyeline" style={{ marginBottom: "24px" }}>About Me</p>
           <h2
@@ -169,7 +173,7 @@ export default function AboutSection() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
           borderBottom: "1px solid var(--hairline)",
         }}
       >
@@ -186,8 +190,11 @@ export default function AboutSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.45, ease, delay: i * 0.07 }}
             style={{
-              padding: "48px 48px",
-              borderRight: i < 3 ? "1px solid var(--hairline)" : "none",
+              padding: isMobile ? "24px 20px" : "48px 48px",
+              borderRight: isMobile
+                ? (i % 2 === 0 ? "1px solid var(--hairline)" : "none")
+                : (i < 3 ? "1px solid var(--hairline)" : "none"),
+              borderBottom: isMobile && i < 2 ? "1px solid var(--hairline)" : "none",
               transition: "background 0.25s ease",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}

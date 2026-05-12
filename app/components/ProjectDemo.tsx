@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LabDemoPanel from "./LabDemoPanel";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -344,17 +345,18 @@ function InactivePanel({
 export default function ProjectDemo() {
   const [active, setActive] = useState<PanelId>("fullstack");
   const activePanel = panels.find((p) => p.id === active)!;
+  const isMobile = useIsMobile();
 
   return (
     <section style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
 
       {/* Headline row */}
       <div style={{
-        display: "grid", gridTemplateColumns: "1fr 1fr",
+        display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}>
         <div style={{
-          padding: "56px 64px",
+          padding: isMobile ? "40px 24px" : "56px 64px",
         }}>
           <p style={{
             fontFamily: "var(--font-mono), monospace",
@@ -375,28 +377,31 @@ export default function ProjectDemo() {
             <span style={{ color: activePanel.accent }}>กันเลย.</span>
           </h2>
         </div>
-        <div style={{ padding: "56px 64px", display: "flex", alignItems: "center" }}>
-          <p style={{
-            fontSize: "17px", fontWeight: 300,
-            color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: "380px",
-          }}>
-            แต่ละโปรเจกต์มีบริบทและ stack ที่ต่างกัน — คลิกเพื่อดูรายละเอียด
-            และ explore วิธีที่ผมแก้ปัญหาในแต่ละ context
-          </p>
-        </div>
+        {!isMobile && (
+          <div style={{ padding: "56px 64px", display: "flex", alignItems: "center" }}>
+            <p style={{
+              fontSize: "17px", fontWeight: 300,
+              color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: "380px",
+            }}>
+              แต่ละโปรเจกต์มีบริบทและ stack ที่ต่างกัน — คลิกเพื่อดูรายละเอียด
+              และ explore วิธีที่ผมแก้ปัญหาในแต่ละ context
+            </p>
+          </div>
+        )}
       </div>
 
       {/* 3-panel row */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr",
-        height: "520px",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+        height: isMobile ? "480px" : "520px",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}>
         {panels.map((panel, i) => {
           const isActive = panel.id === active;
-
           const isRight = i === panels.length - 1;
+
+          if (isMobile && !isActive) return null;
 
           return (
             <motion.div
@@ -406,7 +411,7 @@ export default function ProjectDemo() {
                 position: "relative",
                 overflow: "hidden",
                 background: isActive ? panel.accent : "#111",
-                borderRight: !isRight ? "1px solid rgba(255,255,255,0.08)" : "none",
+                borderRight: !isMobile && !isRight ? "1px solid rgba(255,255,255,0.08)" : "none",
               }}
               transition={{ duration: 0.4, ease }}
             >
@@ -439,13 +444,13 @@ export default function ProjectDemo() {
               onClick={() => setActive(panel.id)}
               style={{
                 position: "relative",
-                padding: "18px 24px",
+                padding: isMobile ? "14px 8px" : "18px 24px",
                 background: "transparent",
                 border: "none",
                 borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
                 cursor: "pointer",
                 fontFamily: "var(--font-mono), monospace",
-                fontSize: "10px", letterSpacing: "0.1em",
+                fontSize: isMobile ? "8px" : "10px", letterSpacing: isMobile ? "0.04em" : "0.1em",
                 textTransform: "uppercase",
                 color: isActive ? "#fff" : "rgba(255,255,255,0.25)",
                 transition: "color 0.2s",

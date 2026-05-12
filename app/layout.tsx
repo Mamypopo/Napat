@@ -20,6 +20,20 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Napat — Full-Stack Developer",
   description: "Ship software peacefully. Portfolio of Napat — Full-Stack Developer based in Bangkok.",
+  metadataBase: new URL("https://napat.dev"),
+  openGraph: {
+    title: "Napat — Full-Stack Developer",
+    description: "Full-Stack Developer based in Bangkok. React, Next.js, Node.js, Go.",
+    url: "https://napat.dev",
+    siteName: "Napat Portfolio",
+    locale: "th_TH",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Napat — Full-Stack Developer",
+    description: "Full-Stack Developer based in Bangkok. React, Next.js, Node.js, Go.",
+  },
 };
 
 export default function RootLayout({

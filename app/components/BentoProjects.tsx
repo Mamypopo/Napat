@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { projects } from "../lib/projects";
 import type { Project } from "../lib/projects";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -138,10 +139,12 @@ function BentoCell({
   project,
   index,
   onOpenModal,
+  isMobile,
 }: {
   project: Project;
   index: number;
   onOpenModal: (p: Project) => void;
+  isMobile: boolean;
 }) {
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -260,9 +263,11 @@ function BentoCell({
     </motion.div>
   );
 
+  const colSpan = isMobile ? (isLarge ? 2 : 1) : project.span;
+
   if (isLarge) {
     return (
-      <div style={{ gridColumn: `span ${project.span}` }}>
+      <div style={{ gridColumn: `span ${colSpan}` }}>
         <Link
           href={`/projects/${project.slug}`}
           style={{ textDecoration: "none", display: "block", height: "100%" }}
@@ -275,7 +280,7 @@ function BentoCell({
   }
 
   return (
-    <div style={{ gridColumn: `span ${project.span}` }} onClick={() => onOpenModal(project)}>
+    <div style={{ gridColumn: `span ${colSpan}` }} onClick={() => onOpenModal(project)}>
       {inner}
     </div>
   );
@@ -287,6 +292,7 @@ export default function BentoProjects() {
   const headRef = useRef(null);
   const headInView = useInView(headRef, { once: true, margin: "-60px" });
   const [activeModal, setActiveModal] = useState<Project | null>(null);
+  const isMobile = useIsMobile();
 
   const large = projects.filter((p) => p.type === "case-study");
   const small = projects.filter((p) => p.type === "project");
@@ -297,10 +303,12 @@ export default function BentoProjects() {
       <div
         ref={headRef}
         style={{
-          padding: "80px 64px 24px",
+          padding: isMobile ? "40px 24px 16px" : "80px 64px 24px",
           borderBottom: "1px solid var(--hairline)",
           display: "flex",
-          alignItems: "flex-end",
+          alignItems: isMobile ? "flex-start" : "flex-end",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? "12px" : "0",
           justifyContent: "space-between",
         }}
       >
@@ -338,21 +346,21 @@ export default function BentoProjects() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(12, 1fr)",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(12, 1fr)",
           borderLeft: "1px solid var(--hairline)",
           borderRight: "1px solid var(--hairline)",
           borderTop: "1px solid var(--hairline)",
         }}
       >
         {large.map((project, i) => (
-          <BentoCell key={project.id} project={project} index={i} onOpenModal={setActiveModal} />
+          <BentoCell key={project.id} project={project} index={i} onOpenModal={setActiveModal} isMobile={isMobile} />
         ))}
       </div>
 
       {/* Small projects header */}
       <div
         style={{
-          padding: "32px 64px 16px",
+          padding: isMobile ? "20px 24px 12px" : "32px 64px 16px",
           borderTop: "1px solid var(--hairline)",
           borderBottom: "1px solid var(--hairline)",
         }}
@@ -364,13 +372,13 @@ export default function BentoProjects() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(12, 1fr)",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(12, 1fr)",
           borderLeft: "1px solid var(--hairline)",
           borderRight: "1px solid var(--hairline)",
         }}
       >
         {small.map((project, i) => (
-          <BentoCell key={project.id} project={project} index={i} onOpenModal={setActiveModal} />
+          <BentoCell key={project.id} project={project} index={i} onOpenModal={setActiveModal} isMobile={isMobile} />
         ))}
       </div>
 
