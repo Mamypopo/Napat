@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -132,7 +133,8 @@ function StatsCard({ slide }: { slide: (typeof slides)[number] }) {
         border: "1px solid rgba(255,255,255,0.1)",
         borderRadius: "2px",
         overflow: "hidden",
-        minWidth: "320px",
+        width: "100%",
+        maxWidth: "320px",
       }}
     >
       {/* Card header */}
@@ -200,6 +202,8 @@ export default function CaseStudySlider() {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
+  const isMobile = useIsMobile();
+  const touchStartX = useRef(0);
   const total = slides.length;
 
   const goTo = useCallback((index: number, dir: number) => {
@@ -233,11 +237,18 @@ export default function CaseStudySlider() {
   }, [prev, next]);
 
   const slide = slides[current];
+  const px = isMobile ? "16px" : "48px";
 
   return (
     <section
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+      onTouchEnd={(e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX.current;
+        if (dx < -50) next();
+        else if (dx > 50) prev();
+      }}
       style={{
         position: "relative",
         height: "100vh",
@@ -253,8 +264,8 @@ export default function CaseStudySlider() {
 
       {/* ── Slide counter top-right ──────────────────────────── */}
       <div style={{
-        position: "absolute", top: "32px", right: "48px",
-        display: "flex", gap: "12px", zIndex: 10,
+        position: "absolute", top: "20px", right: px,
+        display: "flex", gap: isMobile ? "6px" : "12px", zIndex: 10,
       }}>
         {slides.map((s, i) => (
           <button
@@ -287,7 +298,7 @@ export default function CaseStudySlider() {
           exit={{ opacity: 0, x: 16 }}
           transition={{ duration: 0.4, ease }}
           style={{
-            position: "absolute", top: "32px", left: "48px", zIndex: 10,
+            position: "absolute", top: "20px", left: px, zIndex: 10,
             fontFamily: "var(--font-mono), monospace",
             fontSize: "10px", letterSpacing: "0.14em",
             textTransform: "uppercase",
@@ -299,16 +310,14 @@ export default function CaseStudySlider() {
       </AnimatePresence>
 
       {/* ── Main content layout ──────────────────────────────── */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 5,
-        display: "grid",
-        gridTemplateColumns: "1fr auto 1fr",
-        alignItems: "center",
-        padding: "0 48px",
-        gap: "48px",
-      }}>
-        {/* Left — headline */}
-        <div>
+      {isMobile ? (
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 5,
+          display: "flex", flexDirection: "column",
+          justifyContent: "center", alignItems: "flex-start",
+          padding: `80px ${px} 100px`,
+          gap: "24px",
+        }}>
           <AnimatePresence mode="wait">
             <motion.h2
               key={slide.id + "-title"}
@@ -316,34 +325,51 @@ export default function CaseStudySlider() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.5, ease }}
-              style={{
-                fontSize: "clamp(40px, 6vw, 80px)",
-                fontWeight: 700,
-                letterSpacing: "-0.04em",
-                lineHeight: 0.95,
-                color: "#fff",
-              }}
+              style={{ fontSize: "clamp(36px, 10vw, 56px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff" }}
             >
               {slide.title}
             </motion.h2>
           </AnimatePresence>
-        </div>
-
-        {/* Center — stats card */}
-        <div style={{ flexShrink: 0 }}>
           <AnimatePresence mode="wait">
             <StatsCard key={slide.id} slide={slide} />
           </AnimatePresence>
         </div>
-
-        {/* Right — empty, balanced */}
-        <div />
-      </div>
+      ) : (
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 5,
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          padding: `0 ${px}`,
+          gap: "48px",
+        }}>
+          <div>
+            <AnimatePresence mode="wait">
+              <motion.h2
+                key={slide.id + "-title"}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.5, ease }}
+                style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff" }}
+              >
+                {slide.title}
+              </motion.h2>
+            </AnimatePresence>
+          </div>
+          <div style={{ flexShrink: 0 }}>
+            <AnimatePresence mode="wait">
+              <StatsCard key={slide.id} slide={slide} />
+            </AnimatePresence>
+          </div>
+          <div />
+        </div>
+      )}
 
       {/* ── Quote bottom-left ────────────────────────────────── */}
       <div style={{
-        position: "absolute", bottom: "48px", left: "48px",
-        zIndex: 10, maxWidth: "480px",
+        position: "absolute", bottom: isMobile ? "32px" : "48px", left: px,
+        zIndex: 10, maxWidth: isMobile ? "calc(100% - 32px)" : "480px",
       }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -373,9 +399,9 @@ export default function CaseStudySlider() {
         </AnimatePresence>
       </div>
 
-      {/* ── View project bottom-right ────────────────────────── */}
-      <div style={{
-        position: "absolute", bottom: "48px", right: "48px", zIndex: 10,
+      {/* ── View project bottom-right — hidden on mobile (quote takes full width) */}
+      {!isMobile && <div style={{
+        position: "absolute", bottom: "48px", right: px, zIndex: 10,
       }}>
         <AnimatePresence mode="wait">
           <motion.a
@@ -409,10 +435,10 @@ export default function CaseStudySlider() {
             VIEW PROJECT →
           </motion.a>
         </AnimatePresence>
-      </div>
+      </div>}
 
-      {/* ── Prev / Next arrow buttons ────────────────────────── */}
-      {[{ fn: prev, label: "←", side: "left" }, { fn: next, label: "→", side: "right" }].map(({ fn, label, side }) => (
+      {/* ── Prev / Next arrow buttons (desktop only — mobile uses swipe) ── */}
+      {!isMobile && [{ fn: prev, label: "←", side: "left" }, { fn: next, label: "→", side: "right" }].map(({ fn, label, side }) => (
         <button
           key={side}
           onClick={fn}
