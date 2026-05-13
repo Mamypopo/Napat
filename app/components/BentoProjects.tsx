@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "../lib/projects";
+import { imgWithFallback } from "../lib/sanity";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -49,7 +50,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         {/* Image / Gallery */}
         <div style={{ position: "relative", height: "220px", overflow: "hidden" }}>
           <Image
-            src={project.images?.[0] ?? project.img}
+            src={imgWithFallback(project.images?.[0] ?? project.img, project.name)}
             alt={project.name}
             fill
             style={{ objectFit: "cover", filter: "brightness(0.8) contrast(1.1)" }}
@@ -204,7 +205,7 @@ function BentoCell({
         }}
       >
         <Image
-          src={project.img}
+          src={imgWithFallback(project.img, project.name)}
           alt={project.name}
           fill
           style={{

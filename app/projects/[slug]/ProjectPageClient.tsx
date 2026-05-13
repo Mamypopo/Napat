@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import type { Project } from "../../lib/projects";
+import { imgWithFallback } from "../../lib/sanity";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
@@ -35,7 +36,7 @@ export default function ProjectPageClient({
       {/* Hero image */}
       <div style={{ position: "relative", height: isMobile ? "45vw" : "55vh", minHeight: isMobile ? "220px" : "320px", overflow: "hidden" }}>
         <Image
-          src={project.img}
+          src={imgWithFallback(project.img, project.name)}
           alt={project.name}
           fill
           style={{ objectFit: "cover", filter: "brightness(0.55) contrast(1.1)" }}

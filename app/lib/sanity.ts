@@ -14,6 +14,12 @@ export const client = createClient({
 const builder = imageUrlBuilder(client);
 export const urlFor = (source: SanityImageSource) => builder.image(source);
 
+export function imgWithFallback(src: string | null | undefined, name = "Project"): string {
+  if (src) return src;
+  const label = encodeURIComponent(name.slice(0, 20));
+  return `https://placehold.co/900x600/111111/553F83?text=${label}`;
+}
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export type SiteSettings = {
@@ -57,7 +63,7 @@ export async function getProjects(): Promise<Project[]> {
       span,
       tags,
       desc,
-      "img": img.asset->url,
+      "img": coalesce(img.asset->url, ""),
       "images": images[].asset->url,
       url,
       role,
@@ -87,7 +93,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       span,
       tags,
       desc,
-      "img": img.asset->url,
+      "img": coalesce(img.asset->url, ""),
       "images": images[].asset->url,
       url,
       role,
