@@ -1,0 +1,30 @@
+import { defineType, defineField } from "sanity";
+
+export const project = defineType({
+  name: "project",
+  title: "Project",
+  type: "document",
+  fields: [
+    defineField({ name: "name",     title: "ชื่อโปรเจกต์", type: "string",  validation: (r) => r.required() }),
+    defineField({ name: "slug",     title: "Slug",          type: "slug",    options: { source: "name" }, validation: (r) => r.required() }),
+    defineField({ name: "type",     title: "ประเภท",        type: "string",  options: { list: [{ value: "case-study", title: "Case Study" }, { value: "project", title: "Project" }] }, validation: (r) => r.required() }),
+    defineField({ name: "category", title: "Category",      type: "string",  validation: (r) => r.required() }),
+    defineField({ name: "year",     title: "ปี",            type: "string",  validation: (r) => r.required() }),
+    defineField({ name: "span",     title: "Grid Span (1-12)", type: "number", validation: (r) => r.required().min(1).max(12) }),
+    defineField({ name: "tags",     title: "Tech Stack",    type: "array",   of: [{ type: "string" }] }),
+    defineField({ name: "desc",     title: "คำอธิบาย",     type: "text",    rows: 3 }),
+    defineField({ name: "img",      title: "ภาพหน้าปก",    type: "image",   options: { hotspot: true } }),
+    defineField({ name: "url",      title: "Live URL",      type: "url" }),
+    defineField({ name: "role",     title: "Role ที่รับผิดชอบ", type: "string" }),
+    defineField({ name: "modules",  title: "Modules",       type: "array",   of: [{ type: "string" }] }),
+    defineField({ name: "problem",  title: "Problem",       type: "text",    rows: 3 }),
+    defineField({ name: "solution", title: "Solution",      type: "text",    rows: 3 }),
+    defineField({ name: "order",    title: "ลำดับการแสดง", type: "number" }),
+  ],
+  orderings: [
+    { title: "Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] },
+  ],
+  preview: {
+    select: { title: "name", subtitle: "category", media: "img" },
+  },
+});
