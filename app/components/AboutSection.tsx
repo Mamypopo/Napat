@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import type { SiteSettings } from "../lib/sanity";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -44,8 +45,12 @@ const skills = [
   { name: "TypeScript / Go", level: "Expert" },
 ];
 
-export default function AboutSection() {
+export default function AboutSection({ settings }: { settings?: SiteSettings | null }) {
   const isMobile = useIsMobile();
+
+  const STATS_DATA = settings?.stats?.length
+    ? settings.stats.map((s) => ({ label: s.label, to: Number(s.value.replace(/\D/g, "")) || null, suffix: s.value.replace(/[0-9]/g, "") }))
+    : STATS;
 
   return (
     <section
@@ -131,12 +136,10 @@ export default function AboutSection() {
             Precision<br />meets<br /><span style={{ color: "#553F83" }}>Craft.</span>
           </h2>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "16px" }}>
-            ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ &ldquo;รู้สึกดี&rdquo; — ไม่ใช่แค่ใช้งานได้
-            แต่ต้องมีความละเอียดอ่อนในทุกรายละเอียด ตั้งแต่ typography spacing จนถึง database query plan
+            {settings?.bio ?? "ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ “รู้สึกดี” — ไม่ใช่แค่ใช้งานได้ แต่ต้องมีความละเอียดอ่อนในทุกรายละเอียด ตั้งแต่ typography spacing จนถึง database query plan"}
           </p>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "40px" }}>
-            เชี่ยวชาญด้าน React ecosystem, Node.js, และ cloud infrastructure
-            พร้อมส่งมอบงานที่ทั้งสวยงามและ performant ในทุกโปรเจกต์
+            {settings?.bio2 ?? "เชี่ยวชาญด้าน React ecosystem, Node.js, และ cloud infrastructure พร้อมส่งมอบงานที่ทั้งสวยงามและ performant ในทุกโปรเจกต์"}
           </p>
 
           {/* Skills */}
@@ -207,7 +210,7 @@ export default function AboutSection() {
           borderBottom: "1px solid var(--hairline)",
         }}
       >
-        {STATS.map((s, i) => (
+        {STATS_DATA.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 16 }}

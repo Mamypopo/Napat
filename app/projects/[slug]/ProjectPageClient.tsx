@@ -216,7 +216,6 @@ export default function ProjectPageClient({
                 borderRight: next ? "1px solid var(--hairline)" : "none",
                 textDecoration: "none",
                 transition: "background 0.2s",
-                group: "prev",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}

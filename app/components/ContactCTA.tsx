@@ -7,16 +7,10 @@ import { useIsMobile } from "../hooks/useMediaQuery";
 import { SiGithub, SiLine } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { HiOutlineMail, HiOutlineDownload } from "react-icons/hi";
+import type { SiteSettings } from "../lib/sanity";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 const ease = [0.22, 1, 0.36, 1] as const;
-
-const LINKS = [
-  { label: "Email",    value: "napat@example.com",          href: "mailto:napat@example.com",        icon: <HiOutlineMail size={16} /> },
-  { label: "GitHub",   value: "github.com/napat",           href: "https://github.com/napat",         icon: <SiGithub size={14} />     },
-  { label: "LinkedIn", value: "linkedin.com/in/napat",      href: "https://linkedin.com/in/napat",    icon: <FaLinkedin size={14} />   },
-  { label: "LINE",     value: "@napat",                     href: "https://line.me/ti/p/~@napat",     icon: <SiLine size={14} />       },
-];
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -34,14 +28,25 @@ const inputBase: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
-export default function ContactCTA() {
+export default function ContactCTA({ settings }: { settings?: SiteSettings | null }) {
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<FormStatus>("idle");
 
+  const email = settings?.email ?? "napat@example.com";
+  const resumeUrl = settings?.resumeUrl ?? "/resume.pdf";
+  const isAvailable = settings?.available ?? true;
+
+  const LINKS = [
+    { label: "Email",    value: email,                                           href: `mailto:${email}`,                                    icon: <HiOutlineMail size={16} /> },
+    ...(settings?.github   ? [{ label: "GitHub",   value: settings.github.replace("https://", ""),   href: settings.github,   icon: <SiGithub size={14} />   }] : []),
+    ...(settings?.linkedin ? [{ label: "LinkedIn", value: settings.linkedin.replace("https://", ""), href: settings.linkedin, icon: <FaLinkedin size={14} /> }] : []),
+    ...(settings?.line     ? [{ label: "LINE",     value: `@${settings.line}`,                       href: `https://line.me/ti/p/~${settings.line}`, icon: <SiLine size={14} /> }] : []),
+  ];
+
   function copyEmail() {
-    navigator.clipboard.writeText("napat@example.com");
+    navigator.clipboard.writeText(email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -89,11 +94,12 @@ export default function ContactCTA() {
         >
           <span style={{
             width: 8, height: 8, borderRadius: "50%",
-            background: "#4ade80", boxShadow: "0 0 8px #4ade80",
+            background: isAvailable ? "#4ade80" : "#f87171",
+            boxShadow: isAvailable ? "0 0 8px #4ade80" : "0 0 8px #f87171",
             display: "inline-block",
           }} />
           <TextShimmer style={{ ...MONO, fontSize: "11px", letterSpacing: "0.1em" }}>
-            AVAILABLE FOR WORK
+            {isAvailable ? "AVAILABLE FOR WORK" : "NOT AVAILABLE"}
           </TextShimmer>
         </motion.div>
 
@@ -153,7 +159,7 @@ export default function ContactCTA() {
 
           <motion.a
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            href="/resume.pdf" download
+            href={resumeUrl} download
             style={{
               display: "flex", alignItems: "center", gap: 8,
               padding: "14px 24px",

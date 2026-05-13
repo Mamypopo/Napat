@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { projects } from "../lib/projects";
 import type { Project } from "../lib/projects";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
@@ -288,14 +287,14 @@ function BentoCell({
 
 /* ── Main ──────────────────────────────────────────────────── */
 
-export default function BentoProjects() {
+export default function BentoProjects({ projects }: { projects: Project[] }) {
   const headRef = useRef(null);
   const headInView = useInView(headRef, { once: true, margin: "-60px" });
   const [activeModal, setActiveModal] = useState<Project | null>(null);
   const isMobile = useIsMobile();
 
-  const large = projects.filter((p) => p.type === "case-study");
-  const small = projects.filter((p) => p.type === "project");
+  const large = projects.filter((p: Project) => p.type === "case-study");
+  const small = projects.filter((p: Project) => p.type === "project");
 
   return (
     <section id="work" style={{ background: "var(--bg)" }}>

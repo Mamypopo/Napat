@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
-import { projects } from "../../lib/projects";
+import { getProjects, getProjectBySlug } from "../../lib/sanity";
+import { projects as staticProjects } from "../../lib/projects";
 import BackButton from "./BackButton";
 import ProjectPageClient from "./ProjectPageClient";
 
-export function generateStaticParams() {
-  return projects
+export async function generateStaticParams() {
+  const sanityProjects = await getProjects();
+  const source = sanityProjects.length > 0 ? sanityProjects : staticProjects;
+  return source
     .filter((p) => p.type === "case-study")
     .map((p) => ({ slug: p.slug }));
 }
@@ -15,11 +18,18 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const caseStudies = projects.filter((p) => p.type === "case-study");
-  const idx = caseStudies.findIndex((p) => p.slug === slug);
-  if (idx === -1) notFound();
 
-  const project = caseStudies[idx];
+  const sanityProjects = await getProjects();
+  const source = sanityProjects.length > 0 ? sanityProjects : staticProjects;
+  const caseStudies = source.filter((p) => p.type === "case-study");
+
+  let project = await getProjectBySlug(slug);
+  if (!project) {
+    project = caseStudies.find((p) => p.slug === slug) ?? null;
+  }
+  if (!project) notFound();
+
+  const idx = caseStudies.findIndex((p) => p.slug === slug);
   const prev = idx > 0 ? caseStudies[idx - 1] : null;
   const next = idx < caseStudies.length - 1 ? caseStudies[idx + 1] : null;
 

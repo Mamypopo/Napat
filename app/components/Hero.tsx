@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring } from "fram
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { TextScramble } from "./TextScramble";
+import type { SiteSettings } from "../lib/sanity";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -65,7 +66,7 @@ function MagneticButton({
   );
 }
 
-export default function Hero() {
+export default function Hero({ settings }: { settings?: SiteSettings | null }) {
   const isMobile = useIsMobile();
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 800], ["0%", "-20%"]);
@@ -182,8 +183,7 @@ export default function Hero() {
               maxWidth: "400px",
             }}
           >
-            ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ
-            และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure
+            {settings?.bio ?? "ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure"}
           </p>
 
           <div style={{ display: "flex", gap: "12px" }}>

@@ -2,17 +2,18 @@
 
 import { FaInstagram, FaDiscord, FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import type { SiteSettings } from "../lib/sanity";
 
-const socials = [
-  { icon: FaLinkedin,  label: "LinkedIn",  href: "#" },
-  { icon: FaGithub,    label: "GitHub",    href: "#" },
-  { icon: FaInstagram, label: "Instagram", href: "#" },
-  { icon: FaDiscord,   label: "Discord",   href: "#" },
-  { icon: FaFacebook,  label: "Facebook",  href: "#" },
-];
-
-export default function Footer() {
+export default function Footer({ settings }: { settings?: SiteSettings | null }) {
   const isMobile = useIsMobile();
+
+  const socials = [
+    { icon: FaLinkedin,  label: "LinkedIn",  href: settings?.linkedin  ?? "#" },
+    { icon: FaGithub,    label: "GitHub",    href: settings?.github    ?? "#" },
+    { icon: FaInstagram, label: "Instagram", href: settings?.instagram ?? "#" },
+    { icon: FaDiscord,   label: "Discord",   href: settings?.discord   ?? "#" },
+    { icon: FaFacebook,  label: "Facebook",  href: settings?.facebook  ?? "#" },
+  ];
 
   if (isMobile) {
     return (
