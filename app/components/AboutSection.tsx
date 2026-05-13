@@ -1,10 +1,40 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const STATS: Array<{ label: string; to: number | null; suffix: string }> = [
+  { label: "โปรเจกต์ที่ส่งมอบ", to: 24, suffix: "+"  },
+  { label: "ประสบการณ์",          to: 5,  suffix: "yr" },
+  { label: "ลูกค้าที่พึงพอใจ",    to: 12, suffix: ""   },
+  { label: "กาแฟที่ดื่มไป",       to: null, suffix: "" },
+];
+
+function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  useEffect(() => {
+    if (!inView) return;
+    let startTime: number | null = null;
+    const duration = 1400;
+    const tick = (ts: number) => {
+      if (startTime === null) startTime = ts;
+      const progress = Math.min((ts - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * to));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [inView, to]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+}
 
 const skills = [
   { name: "Frontend Engineering", level: "Expert" },
@@ -101,7 +131,7 @@ export default function AboutSection() {
             Precision<br />meets<br /><span style={{ color: "#553F83" }}>Craft.</span>
           </h2>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "16px" }}>
-            ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ "รู้สึกดี" — ไม่ใช่แค่ใช้งานได้
+            ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ &ldquo;รู้สึกดี&rdquo; — ไม่ใช่แค่ใช้งานได้
             แต่ต้องมีความละเอียดอ่อนในทุกรายละเอียด ตั้งแต่ typography spacing จนถึง database query plan
           </p>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "40px" }}>
@@ -177,14 +207,9 @@ export default function AboutSection() {
           borderBottom: "1px solid var(--hairline)",
         }}
       >
-        {[
-          { num: "24+", label: "โปรเจกต์ที่ส่งมอบ" },
-          { num: "5yr", label: "ประสบการณ์" },
-          { num: "12", label: "ลูกค้าที่พึงพอใจ" },
-          { num: "∞", label: "กาแฟที่ดื่มไป" },
-        ].map((s, i) => (
+        {STATS.map((s, i) => (
           <motion.div
-            key={s.num}
+            key={s.label}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -210,7 +235,7 @@ export default function AboutSection() {
                 marginBottom: "8px",
               }}
             >
-              {s.num}
+              {s.to !== null ? <CountUp to={s.to} suffix={s.suffix} /> : "∞"}
             </div>
             <div style={{ fontSize: "14px", color: "var(--text-muted)" }}>{s.label}</div>
           </motion.div>
