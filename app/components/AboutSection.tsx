@@ -49,7 +49,11 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
   const isMobile = useIsMobile();
 
   const STATS_DATA = settings?.stats?.length
-    ? settings.stats.map((s) => ({ label: s.label, to: Number(s.value.replace(/\D/g, "")) || null, suffix: s.value.replace(/[0-9]/g, "") }))
+    ? settings.stats.map((s) => ({
+        label: s.label ?? "",
+        to: s.value ? (Number(s.value.replace(/\D/g, "")) || null) : null,
+        suffix: s.value ? s.value.replace(/[0-9]/g, "") : "",
+      }))
     : STATS;
 
   return (
