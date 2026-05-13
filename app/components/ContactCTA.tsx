@@ -7,6 +7,7 @@ import { SiGithub, SiLine } from "react-icons/si";
 import { HiOutlineMail, HiOutlineDownload } from "react-icons/hi";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
+const ease = [0.22, 1, 0.36, 1] as const;
 
 const LINKS = [
   {
@@ -59,7 +60,13 @@ export default function ContactCTA() {
       <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
 
         {/* Status badge */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "32px" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease }}
+          style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "32px" }}
+        >
           <span style={{
             width: 8, height: 8, borderRadius: "50%",
             background: "#4ade80",
@@ -69,10 +76,15 @@ export default function ContactCTA() {
           <span style={{ ...MONO, fontSize: "11px", color: "var(--text-muted)", letterSpacing: "0.1em" }}>
             AVAILABLE FOR WORK
           </span>
-        </div>
+        </motion.div>
 
         {/* Headline */}
-        <h2 style={{
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease, delay: 0.08 }}
+          style={{
           fontSize: "clamp(36px, 6vw, 80px)",
           fontWeight: 700, letterSpacing: "-0.04em",
           lineHeight: 1.0, color: "var(--text-high)",
@@ -80,19 +92,30 @@ export default function ContactCTA() {
         }}>
           มาทำงาน<br />
           <span style={{ color: "#F04E00" }}>ด้วยกันไหม.</span>
-        </h2>
+        </motion.h2>
 
-        <p style={{
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.55, ease, delay: 0.15 }}
+          style={{
           fontSize: "17px", fontWeight: 300,
           color: "var(--text-muted)", lineHeight: 1.75,
           maxWidth: "480px", marginBottom: "52px",
         }}>
           พร้อมรับโปรเจกต์ freelance หรือ full-time
           ทั้ง frontend, backend, และ fullstack
-        </p>
+        </motion.p>
 
         {/* CTA Buttons */}
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: "60px" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease, delay: 0.22 }}
+          style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: "60px" }}
+        >
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={copyEmail}
@@ -126,13 +149,19 @@ export default function ContactCTA() {
             <HiOutlineDownload size={16} />
             RESUME (PDF)
           </motion.a>
-        </div>
+        </motion.div>
 
         {/* Divider */}
         <div style={{ borderTop: "1px solid var(--hairline)", marginBottom: "32px" }} />
 
         {/* Links */}
-        <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease, delay: 0.3 }}
+          style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}
+        >
           {LINKS.map((link) => (
             <a
               key={link.label}
@@ -151,7 +180,7 @@ export default function ContactCTA() {
               <span style={{ ...MONO, fontSize: "11px", letterSpacing: "0.06em" }}>{link.value}</span>
             </a>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

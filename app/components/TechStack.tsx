@@ -12,6 +12,7 @@ import {
 import { FaAws } from "react-icons/fa";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
+const ease = [0.22, 1, 0.36, 1] as const;
 
 type Skill = {
   name: string;
@@ -69,11 +70,14 @@ const GROUPS: Group[] = [
   },
 ];
 
-function SkillCard({ skill }: { skill: Skill }) {
+function SkillCard({ skill, delay = 0 }: { skill: Skill; delay?: number }) {
   return (
     <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
       whileHover={{ y: -2 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.4, ease, delay }}
       style={{
         display: "flex", alignItems: "center", gap: 8,
         padding: skill.primary ? "8px 12px" : "6px 10px",
@@ -127,7 +131,13 @@ export default function TechStack() {
       padding: `80px ${px}`,
     }}>
       {/* Header */}
-      <div style={{ marginBottom: "52px" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease }}
+        style={{ marginBottom: "52px" }}
+      >
         <p style={{
           ...MONO, fontSize: "10px", letterSpacing: "0.14em",
           textTransform: "uppercase", color: "var(--text-subtle)",
@@ -142,7 +152,7 @@ export default function TechStack() {
           เครื่องมือที่ใช้งาน<br />
           <span style={{ color: "var(--text-subtle)" }}>จริงใน production.</span>
         </h2>
-      </div>
+      </motion.div>
 
       {/* Groups */}
       <div style={{
@@ -150,8 +160,14 @@ export default function TechStack() {
         gridTemplateColumns: cols,
         gap: "40px 24px",
       }}>
-        {GROUPS.map((group) => (
-          <div key={group.label}>
+        {GROUPS.map((group, gi) => (
+          <motion.div
+            key={group.label}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.5, ease, delay: gi * 0.08 }}
+          >
             <p style={{
               ...MONO, fontSize: "9px", letterSpacing: "0.14em",
               textTransform: "uppercase", color: "#F04E00",
@@ -160,21 +176,24 @@ export default function TechStack() {
               {group.label}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              {group.skills.map((skill) => (
-                <SkillCard key={skill.name} skill={skill} />
+              {group.skills.map((skill, si) => (
+                <SkillCard key={skill.name} skill={skill} delay={gi * 0.08 + si * 0.05} />
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
       {/* Footer note */}
-      <p style={{
-        ...MONO, fontSize: "10px", color: "var(--text-subtle)",
-        marginTop: "52px", letterSpacing: "0.06em",
-      }}>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease, delay: 0.3 }}
+        style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", marginTop: "52px", letterSpacing: "0.06em" }}
+      >
         * primary skills — used daily in production projects
-      </p>
+      </motion.p>
     </section>
   );
 }
