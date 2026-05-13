@@ -14,9 +14,23 @@ export const project = defineType({
     defineField({ name: "tags",     title: "Tech Stack",    type: "array",   of: [{ type: "string" }] }),
     defineField({ name: "desc",     title: "คำอธิบาย",     type: "text",    rows: 3 }),
     defineField({ name: "img",      title: "ภาพหน้าปก",    type: "image",   options: { hotspot: true } }),
+    defineField({
+      name: "images", title: "รูปเพิ่มเติม (Gallery)", type: "array",
+      of: [{ type: "image", options: { hotspot: true } }],
+    }),
     defineField({ name: "url",      title: "Live URL",      type: "url" }),
     defineField({ name: "role",     title: "Role ที่รับผิดชอบ", type: "string" }),
-    defineField({ name: "modules",  title: "Modules",       type: "array",   of: [{ type: "string" }] }),
+    defineField({
+      name: "modules", title: "Modules", type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "name", title: "ชื่อ Module", type: "string" },
+          { name: "desc", title: "คำอธิบาย",   type: "text", rows: 2 },
+        ],
+        preview: { select: { title: "name", subtitle: "desc" } },
+      }],
+    }),
     defineField({ name: "problem",  title: "Problem",       type: "text",    rows: 3 }),
     defineField({ name: "solution", title: "Solution",      type: "text",    rows: 3 }),
     defineField({ name: "order",    title: "ลำดับการแสดง", type: "number" }),

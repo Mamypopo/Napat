@@ -117,6 +117,36 @@ export default function ProjectPageClient({
             </motion.div>
           )}
 
+          {/* Gallery */}
+          {project.images && project.images.length > 0 && (
+            <motion.div {...fadeUp(0.18)} style={{ marginBottom: "48px" }}>
+              <p className="eyeline" style={{ marginBottom: "20px" }}>Gallery</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {project.images.map((src, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      aspectRatio: "16/9",
+                      borderRadius: "4px",
+                      overflow: "hidden",
+                      border: "1px solid var(--hairline)",
+                    }}
+                  >
+                    <Image
+                      src={src}
+                      alt={`${project.name} screenshot ${i + 1}`}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      unoptimized
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
           {/* Modules */}
           {project.modules && (
             <motion.div {...fadeUp(0.2)}>
@@ -128,13 +158,22 @@ export default function ProjectPageClient({
                     style={{
                       padding: "16px 0",
                       borderBottom: "1px solid var(--hairline)",
-                      display: "flex", alignItems: "center", gap: "16px",
+                      display: "flex", alignItems: "flex-start", gap: "16px",
                     }}
                   >
-                    <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", minWidth: "24px" }}>
+                    <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", minWidth: "24px", paddingTop: "2px" }}>
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{mod}</span>
+                    <div>
+                      <span style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)", display: "block" }}>
+                        {mod.name}
+                      </span>
+                      {mod.desc && (
+                        <span style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.6, marginTop: "4px", display: "block" }}>
+                          {mod.desc}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

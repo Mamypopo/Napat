@@ -46,15 +46,27 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
           overflow: "hidden",
         }}
       >
-        {/* Image */}
+        {/* Image / Gallery */}
         <div style={{ position: "relative", height: "220px", overflow: "hidden" }}>
           <Image
-            src={project.img}
+            src={project.images?.[0] ?? project.img}
             alt={project.name}
             fill
             style={{ objectFit: "cover", filter: "brightness(0.8) contrast(1.1)" }}
             unoptimized
           />
+          {project.images && project.images.length > 1 && (
+            <span style={{
+              position: "absolute", bottom: 10, right: 12,
+              fontFamily: "var(--font-mono), monospace",
+              fontSize: "10px", letterSpacing: "0.08em",
+              background: "rgba(0,0,0,0.6)", color: "rgba(255,255,255,0.7)",
+              padding: "3px 8px", borderRadius: "2px",
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}>
+              +{project.images.length} photos
+            </span>
+          )}
           <button
             onClick={onClose}
             style={{
@@ -105,6 +117,15 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               </span>
             ))}
           </div>
+          {project.images && project.images.length > 1 && (
+            <div style={{ display: "flex", gap: "6px", marginTop: "16px", overflowX: "auto" }}>
+              {project.images.map((src, i) => (
+                <div key={i} style={{ position: "relative", flexShrink: 0, width: "80px", height: "54px", borderRadius: "2px", overflow: "hidden", border: "1px solid var(--hairline)" }}>
+                  <Image src={src} alt={`${project.name} ${i + 1}`} fill style={{ objectFit: "cover" }} unoptimized />
+                </div>
+              ))}
+            </div>
+          )}
           {project.url && (
             <a
               href={project.url}
@@ -119,7 +140,6 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 fontSize: "13px",
                 fontWeight: 600,
                 borderRadius: "2px",
-                
                 textDecoration: "none",
               }}
             >

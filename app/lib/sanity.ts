@@ -58,9 +58,10 @@ export async function getProjects(): Promise<Project[]> {
       tags,
       desc,
       "img": img.asset->url,
+      "images": images[].asset->url,
       url,
       role,
-      modules,
+      "modules": modules[]{ name, desc },
       problem,
       solution
     }`,
@@ -83,9 +84,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       tags,
       desc,
       "img": img.asset->url,
+      "images": images[].asset->url,
       url,
       role,
-      modules,
+      "modules": modules[]{ name, desc },
       problem,
       solution
     }`,
