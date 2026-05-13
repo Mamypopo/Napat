@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import { TextScramble } from "./TextScramble";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -144,7 +145,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease, delay: 0.1 }}
         >
-          Full-Stack Developer · Bangkok · 2026
+          <TextScramble text="Full-Stack Developer · Bangkok · 2026" delay={0.5} />
         </motion.p>
 
         {/* Display heading — text reveal per line */}

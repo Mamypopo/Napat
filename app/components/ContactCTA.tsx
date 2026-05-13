@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { TextShimmer } from "./TextShimmer";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { SiGithub, SiLine } from "react-icons/si";
 import { HiOutlineMail, HiOutlineDownload } from "react-icons/hi";
@@ -73,9 +74,9 @@ export default function ContactCTA() {
             boxShadow: "0 0 8px #4ade80",
             display: "inline-block",
           }} />
-          <span style={{ ...MONO, fontSize: "11px", color: "var(--text-muted)", letterSpacing: "0.1em" }}>
+          <TextShimmer style={{ ...MONO, fontSize: "11px", letterSpacing: "0.1em" }}>
             AVAILABLE FOR WORK
-          </span>
+          </TextShimmer>
         </motion.div>
 
         {/* Headline */}

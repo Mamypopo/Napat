@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import { TextShimmer } from "./TextShimmer";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 
@@ -60,9 +61,9 @@ export default function Navbar() {
   };
 
   const logo = (
-    <span style={{ ...MONO, fontSize: "12px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "#553F83" }}>
+    <TextShimmer style={{ ...MONO, fontSize: "12px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase" }} duration={4}>
       NP.dev
-    </span>
+    </TextShimmer>
   );
 
   const themeBtn = (
