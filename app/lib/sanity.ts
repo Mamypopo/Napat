@@ -22,14 +22,17 @@ export function imgWithFallback(src: string | null | undefined, name = "Project"
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
+export type SiteSettingsSkill = { name: string; level: string };
+
 export type SiteSettings = {
   name: string;
+  nickname?: string;
   jobTitle: string;
   location: string;
   bio: string;
   bio2?: string;
   available: boolean;
-  avatar?: SanityImageSource;
+  avatar?: string;
   resumeUrl?: string;
   email?: string;
   github?: string;
@@ -38,6 +41,7 @@ export type SiteSettings = {
   instagram?: string;
   discord?: string;
   facebook?: string;
+  skills?: SiteSettingsSkill[];
   stats?: { value: string; label: string }[];
 };
 
@@ -45,10 +49,30 @@ export type SiteSettings = {
 
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   return client.fetch(
-    `*[_type == "siteSettings"][0]`,
+    `*[_type == "siteSettings"][0] {
+      ...,
+      "avatar": avatar.asset->url,
+      "skills": skills[]{ name, level }
+    }`,
     {},
     { next: { revalidate: 60 } }
   );
+}
+
+export async function getFeaturedProjects(): Promise<Project[]> {
+  const raw = await client.fetch(
+    `*[_type == "project" && featured == true] | order(order asc) {
+      "id": slug.current,
+      "slug": slug.current,
+      name, type, category, year, span, tags, desc,
+      "img": coalesce(img.asset->url, ""),
+      url, featured, sliderQuote, accentColor,
+      "sliderStats": sliderStats[]{ value, label }
+    }`,
+    {},
+    { next: { revalidate: 60 } }
+  );
+  return raw ?? [];
 }
 
 export async function getProjects(): Promise<Project[]> {

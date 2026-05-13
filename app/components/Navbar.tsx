@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { TextShimmer } from "./TextShimmer";
+import type { SiteSettings } from "../lib/sanity";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 
@@ -13,7 +14,15 @@ const NAV_LINKS = [
   { href: "#contact", label: "ติดต่อ"   },
 ];
 
-export default function Navbar() {
+function getInitials(name?: string | null) {
+  if (!name) return "NP.dev";
+  const parts = name.trim().split(" ");
+  return parts.length >= 2
+    ? `${parts[0][0]}${parts[parts.length - 1][0]}.dev`.toUpperCase()
+    : `${parts[0].slice(0, 2)}.dev`.toUpperCase();
+}
+
+export default function Navbar({ settings }: { settings?: SiteSettings | null }) {
   const [scrolled, setScrolled]         = useState(false);
   const [isDark, setIsDark]             = useState(true);
   const [menuOpen, setMenuOpen]         = useState(false);
@@ -78,7 +87,7 @@ export default function Navbar() {
 
   const logo = (
     <TextShimmer style={{ ...MONO, fontSize: "12px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase" }} duration={4}>
-      NP.dev
+      {getInitials(settings?.name)}
     </TextShimmer>
   );
 

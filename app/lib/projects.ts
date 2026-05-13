@@ -20,6 +20,10 @@ export type Project = {
   duration?: string;
   scale?: string;
   teamSize?: string;
+  featured?: boolean;
+  sliderQuote?: string;
+  accentColor?: string;
+  sliderStats?: { value: string; label: string }[];
 };
 
 export const projects: Project[] = [

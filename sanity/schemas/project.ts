@@ -37,6 +37,20 @@ export const project = defineType({
     defineField({ name: "duration",  title: "ระยะเวลา",        type: "string" }),
     defineField({ name: "scale",     title: "Scale / ขนาด",    type: "string" }),
     defineField({ name: "teamSize",  title: "Team Size",        type: "string" }),
+    defineField({ name: "featured",      title: "แสดงใน Slider",    type: "boolean", initialValue: false }),
+    defineField({ name: "sliderQuote",   title: "Slider Quote",      type: "text",    rows: 2 }),
+    defineField({ name: "accentColor",   title: "Accent Color (hex)", type: "string"  }),
+    defineField({
+      name: "sliderStats", title: "Slider Stats (3 ช่อง)", type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "value", title: "ค่า", type: "string" },
+          { name: "label", title: "Label", type: "string" },
+        ],
+        preview: { select: { title: "value", subtitle: "label" } },
+      }],
+    }),
     defineField({ name: "order",     title: "ลำดับการแสดง",    type: "number" }),
   ],
   orderings: [

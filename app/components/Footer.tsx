@@ -38,7 +38,7 @@ export default function Footer({ settings }: { settings?: SiteSettings | null })
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.6)", flexShrink: 0 }} />
           <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "9px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-            © Napat 2026
+            © {settings?.name ?? "Napat"} {new Date().getFullYear()}
           </span>
         </div>
       </footer>
@@ -104,7 +104,7 @@ export default function Footer({ settings }: { settings?: SiteSettings | null })
             textTransform: "uppercase", color: "var(--text-muted)",
             whiteSpace: "nowrap",
           }}>
-            © Napat 2026
+            © {settings?.name ?? "Napat"} {new Date().getFullYear()}
           </span>
         </div>
 

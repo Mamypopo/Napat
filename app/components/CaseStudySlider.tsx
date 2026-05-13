@@ -4,11 +4,26 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import { imgWithFallback } from "../lib/sanity";
+import type { Project } from "../lib/projects";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/* ── Slide data ───────────────────────────────────────────── */
-const slides = [
+/* ── Slide type ───────────────────────────────────────────── */
+type Slide = {
+  id: string | number;
+  category: string;
+  title: string;
+  bg: string;
+  stats: { value: string; label: string }[];
+  quote: string;
+  sub: string;
+  accent: string;
+  href?: string;
+};
+
+/* ── Static fallback slides ───────────────────────────────── */
+const staticSlides: Slide[] = [
   {
     id: 1,
     category: "WEB PROJECT",
@@ -79,7 +94,25 @@ const slides = [
     sub: "Personal · Ongoing",
     accent: "#a16207",
   },
-] as const;
+];
+
+function projectToSlide(p: Project): Slide {
+  return {
+    id: p.id,
+    category: p.category.toUpperCase(),
+    title: p.name,
+    bg: imgWithFallback(p.img, p.name),
+    stats: p.sliderStats ?? [
+      { value: p.year,          label: "YEAR" },
+      { value: p.tags[0] ?? "-", label: "TECH" },
+      { value: p.role ?? "Dev", label: "ROLE"  },
+    ],
+    quote: p.sliderQuote ?? p.desc,
+    sub: p.category,
+    accent: p.accentColor ?? "#553F83",
+    href: p.type === "case-study" ? `/projects/${p.slug}` : (p.url ?? "#"),
+  };
+}
 
 /* ── isLight helper ───────────────────────────────────────── */
 function isLight(hex: string) {
@@ -90,7 +123,7 @@ function isLight(hex: string) {
 }
 
 /* ── Slide background ─────────────────────────────────────── */
-function SlideBg({ slide, direction }: { slide: (typeof slides)[number]; direction: number }) {
+function SlideBg({ slide, direction }: { slide: Slide; direction: number }) {
   return (
     <motion.div
       key={slide.id}
@@ -117,7 +150,7 @@ function SlideBg({ slide, direction }: { slide: (typeof slides)[number]; directi
 }
 
 /* ── Stats card ───────────────────────────────────────────── */
-function StatsCard({ slide }: { slide: (typeof slides)[number] }) {
+function StatsCard({ slide }: { slide: Slide }) {
   const light = isLight(slide.accent);
   return (
     <motion.div
@@ -198,7 +231,11 @@ function StatsCard({ slide }: { slide: (typeof slides)[number] }) {
 }
 
 /* ── Main component ───────────────────────────────────────── */
-export default function CaseStudySlider() {
+export default function CaseStudySlider({ featuredProjects = [] }: { featuredProjects?: Project[] }) {
+  const slides: Slide[] = featuredProjects.length > 0
+    ? featuredProjects.map(projectToSlide)
+    : staticSlides;
+
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -405,8 +442,8 @@ export default function CaseStudySlider() {
       }}>
         <AnimatePresence mode="wait">
           <motion.a
-            key={slide.id + "-cta"}
-            href="#"
+            key={String(slide.id) + "-cta"}
+            href={slide.href ?? "#"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

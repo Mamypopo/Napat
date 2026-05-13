@@ -14,13 +14,14 @@ import AboutSection from "./components/AboutSection";
 import ContactCTA from "./components/ContactCTA";
 import FadeIn from "./components/FadeIn";
 import Footer from "./components/Footer";
-import { getSiteSettings, getProjects } from "./lib/sanity";
+import { getSiteSettings, getProjects, getFeaturedProjects } from "./lib/sanity";
 import { projects as staticProjects } from "./lib/projects";
 
 export default async function Home() {
-  const [settings, sanityProjects] = await Promise.all([
+  const [settings, sanityProjects, featuredProjects] = await Promise.all([
     getSiteSettings(),
     getProjects(),
+    getFeaturedProjects(),
   ]);
   const projects = sanityProjects.length > 0 ? sanityProjects : staticProjects;
 
@@ -29,7 +30,7 @@ export default async function Home() {
       <ScrollProgress />
       <BackToTop />
       <ScrollRestore />
-      <Navbar />
+      <Navbar settings={settings} />
       <Hero settings={settings} />
       <MarqueeStrip />
       <FadeIn><TechStack /></FadeIn>
@@ -37,7 +38,7 @@ export default async function Home() {
       <FadeIn><BentoProjects projects={projects} /></FadeIn>
       <FadeIn><ProjectDemo /></FadeIn>
       <FadeIn><PinnedScroll /></FadeIn>
-      <FadeIn><CaseStudySlider /></FadeIn>
+      <FadeIn><CaseStudySlider featuredProjects={featuredProjects} /></FadeIn>
       <FadeIn><AboutSection settings={settings} /></FadeIn>
       <FadeIn><ContactCTA settings={settings} /></FadeIn>
       <Footer settings={settings} />

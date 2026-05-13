@@ -6,6 +6,7 @@ export const siteSettings = defineType({
   type: "document",
   fields: [
     defineField({ name: "name",       title: "ชื่อ",           type: "string" }),
+    defineField({ name: "nickname",   title: "ชื่อเล่น",       type: "string" }),
     defineField({ name: "jobTitle",   title: "Job Title",      type: "string" }),
     defineField({ name: "location",   title: "Location",       type: "string" }),
     defineField({ name: "bio",        title: "Bio (ย่อหน้า 1)", type: "text", rows: 3 }),
@@ -22,6 +23,19 @@ export const siteSettings = defineType({
     defineField({ name: "instagram",  title: "Instagram URL",  type: "url" }),
     defineField({ name: "discord",    title: "Discord URL",    type: "url" }),
     defineField({ name: "facebook",   title: "Facebook URL",   type: "url" }),
+
+    // Skills (About section)
+    defineField({
+      name: "skills", title: "Skills", type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "name",  title: "ชื่อ Skill",  type: "string" },
+          { name: "level", title: "ระดับ",        type: "string", options: { list: ["Expert", "Advanced", "Proficient"] } },
+        ],
+        preview: { select: { title: "name", subtitle: "level" } },
+      }],
+    }),
 
     // Stats
     defineField({

@@ -76,21 +76,18 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
           transition={{ duration: 0.65, ease }}
           style={{
             position: "relative",
-            minHeight: isMobile ? "260px" : "560px",
+            minHeight: isMobile ? "320px" : "560px",
             borderRight: isMobile ? "none" : "1px solid var(--hairline)",
             borderBottom: isMobile ? "1px solid var(--hairline)" : "none",
             overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
           }}
         >
           <Image
-            src="/avatar.png"
-            alt="Avatar of Napat"
-            width={200}
-            height={200}
-            style={{ borderRadius: "50%" }}
+            src={settings?.avatar ?? "/avatar.png"}
+            alt={`Avatar of ${settings?.name ?? "Napat"}`}
+            fill
+            style={{ objectFit: "cover", objectPosition: "center top" }}
+            unoptimized={!!settings?.avatar}
           />
           {/* Badge */}
           <div
@@ -110,7 +107,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
               borderRadius: "2px",
             }}
           >
-            Portrait · BKK 2026
+            {settings?.name ?? "Napat"} · BKK {new Date().getFullYear()}
           </div>
         </motion.div>
 
@@ -122,7 +119,15 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
           transition={{ duration: 0.65, ease, delay: 0.1 }}
           style={{ padding: isMobile ? "36px 24px" : "72px 64px", display: "flex", flexDirection: "column", justifyContent: "center" }}
         >
-          <p className="eyeline" style={{ marginBottom: "24px" }}>About Me</p>
+          <p className="eyeline" style={{ marginBottom: "12px" }}>About Me</p>
+          {(settings?.nickname || settings?.name) && (
+            <p style={{ fontSize: "15px", color: "var(--text-muted)", marginBottom: "16px" }}>
+              สวัสดี ผมชื่อ{" "}
+              <span style={{ color: "var(--text-high)", fontWeight: 600 }}>
+                {settings.nickname ?? settings.name}
+              </span>{" "}
+            </p>
+          )}
           <h2
             style={{
               fontSize: "clamp(40px, 5vw, 64px)",
@@ -144,7 +149,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
 
           {/* Skills */}
           <div>
-            {skills.map((s, i) => (
+            {(settings?.skills?.length ? settings.skills : skills).map((s, i) => (
               <motion.div
                 key={s.name}
                 initial={{ opacity: 0, x: 12 }}
