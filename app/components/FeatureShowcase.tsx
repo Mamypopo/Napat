@@ -28,6 +28,7 @@ const scenes: Record<TabId, {
   milestones: { label: string; x: number; y: number; dim?: boolean }[];
   nodes: { id: string; x: number; y: number; label: string; accent?: boolean; detail?: string }[];
   lines: { x1: number; y1: number; x2: number; y2: number }[];
+  metrics: { value: string; label: string; accent?: boolean }[];
 }> = {
   education: {
     period: "2019 — 2023",
@@ -71,6 +72,12 @@ const scenes: Record<TabId, {
       { x1: 68, y1: 22, x2: 88, y2: 44 },
       { x1: 68, y1: 44, x2: 88, y2: 44 },
       { x1: 68, y1: 66, x2: 88, y2: 44 },
+    ],
+    metrics: [
+      { value: "4 yr",  label: "Bachelor's Degree",  accent: true },
+      { value: "#1",    label: "Hackathon Winner"                  },
+      { value: "2 yr",  label: "Teaching Assistant"                },
+      { value: "6+",    label: "Languages Learned"                 },
     ],
   },
 
@@ -116,6 +123,12 @@ const scenes: Record<TabId, {
       { x1: 64, y1: 44, x2: 88, y2: 44 },
       { x1: 64, y1: 66, x2: 88, y2: 44 },
     ],
+    metrics: [
+      { value: "-40%",  label: "Page Load Time",   accent: true },
+      { value: "10k",   label: "Req / Min"                      },
+      { value: "10×",   label: "Faster Deploys"                 },
+      { value: "99.9%", label: "Uptime"                         },
+    ],
   },
 
   freelance: {
@@ -159,6 +172,12 @@ const scenes: Record<TabId, {
       { x1: 68, y1: 22, x2: 88, y2: 44 },
       { x1: 68, y1: 44, x2: 88, y2: 44 },
       { x1: 68, y1: 66, x2: 88, y2: 44 },
+    ],
+    metrics: [
+      { value: "1.2k", label: "GitHub Stars",       accent: true },
+      { value: "3",    label: "SME Clients"                      },
+      { value: "B",    label: "Series B Consulting"              },
+      { value: "100%", label: "Remote"                           },
     ],
   },
 };
@@ -364,114 +383,65 @@ function DetailPanel({ tab }: { tab: TabId }) {
   );
 }
 
-/* ── Graph panel (right) ──────────────────────────────────── */
-function GraphPanel({ tab }: { tab: TabId }) {
-  const scene = scenes[tab];
-  const [activeNode, setActiveNode] = useState<string | null>(null);
-
-  const activeNodeData = scene.nodes.find((n) => n.id === activeNode) ?? null;
-
+/* ── Metrics panel (right) ────────────────────────────────── */
+function MetricsPanel({ tab }: { tab: TabId }) {
+  const { metrics } = scenes[tab];
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", background: "var(--canvas)" }}>
-      <DotGrid />
-
-      <svg
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={tab + "-metrics"}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        style={{
+          width: "100%", height: "100%",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "1fr 1fr",
+          background: "var(--canvas)",
+        }}
       >
-        {scene.lines.map((l, i) => (
-          <motion.line
-            key={`${tab}-line-${i}`}
-            x1={`${l.x1}%`} y1={`${l.y1}%`}
-            x2={`${l.x2}%`} y2={`${l.y2}%`}
-            stroke="#553F83"
-            strokeWidth="0.8"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.7 }}
-            transition={{ duration: 1.8, delay: i * 0.2, ease }}
-          />
-        ))}
-      </svg>
-
-      {/* Nodes */}
-      {scene.nodes.map((n, i) => (
-        <motion.button
-          key={`${tab}-node-${n.id}`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 + i * 0.06, ease }}
-          onClick={() => setActiveNode(activeNode === n.id ? null : n.id)}
-          style={{
-            position: "absolute",
-            left: `${n.x}%`, top: `${n.y}%`,
-            transform: "translate(-50%, -50%)",
-            display: "flex", alignItems: "center", gap: "6px",
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "9px", letterSpacing: "0.1em",
-            color: activeNode === n.id
-              ? "var(--text-high)"
-              : n.accent ? "#553F83" : "var(--text-muted)",
-            whiteSpace: "nowrap",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            padding: "4px 6px",
-            borderRadius: "2px",
-            transition: "color 0.2s",
-            zIndex: 2,
-          }}
-        >
-          <span style={{
-            width: "6px", height: "6px", borderRadius: "50%", flexShrink: 0,
-            background: activeNode === n.id
-              ? "var(--text-high)"
-              : n.accent ? "#553F83" : "var(--text-subtle)",
-            boxShadow: n.accent ? "0 0 8px rgba(85,63,131,0.7)" : "none",
-            transition: "background 0.2s",
-          }} />
-          {n.label}
-        </motion.button>
-      ))}
-
-      {/* Detail tooltip */}
-      <AnimatePresence>
-        {activeNodeData && (
+        {metrics.map((m, i) => (
           <motion.div
-            key={activeNodeData.id}
-            initial={{ opacity: 0, y: 6, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.95 }}
-            transition={{ duration: 0.2, ease }}
+            key={`${tab}-metric-${i}`}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.05 + i * 0.08, ease }}
             style={{
-              position: "absolute",
-              bottom: "20px", left: "20px", right: "20px",
-              background: "var(--surface)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(85,63,131,0.5)",
-              borderRadius: "2px",
-              padding: "12px 16px",
-              zIndex: 10,
+              display: "flex", flexDirection: "column", justifyContent: "center",
+              padding: "32px 28px",
+              borderRight: i % 2 === 0 ? "1px solid var(--hairline)" : "none",
+              borderBottom: i < 2 ? "1px solid var(--hairline)" : "none",
+              position: "relative", overflow: "hidden",
             }}
           >
-            <p style={{
+            {m.accent && (
+              <div style={{
+                position: "absolute", top: 0, left: 0, right: 0,
+                height: "2px", background: "#553F83",
+              }} />
+            )}
+            <div style={{
               fontFamily: "var(--font-mono), monospace",
-              fontSize: "9px", letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "#553F83", marginBottom: "6px",
+              fontSize: "clamp(28px, 2.8vw, 40px)",
+              fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1,
+              color: m.accent ? "#553F83" : "var(--text-high)",
+              marginBottom: "10px",
             }}>
-              {activeNodeData.label}
-            </p>
-            <p style={{
-              fontSize: "12px", fontWeight: 300,
-              color: "var(--text-mid)", lineHeight: 1.65,
+              {m.value}
+            </div>
+            <div style={{
+              fontFamily: "var(--font-mono), monospace",
+              fontSize: "10px", letterSpacing: "0.1em",
+              textTransform: "uppercase", color: "var(--text-muted)",
             }}>
-              {activeNodeData.detail}
-            </p>
+              {m.label}
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        ))}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -591,21 +561,10 @@ export default function FeatureShowcase() {
           </AnimatePresence>
         </div>
 
-        {/* Graph panel — hidden on mobile */}
+        {/* Metrics panel — hidden on mobile */}
         {!isMobile && (
           <div style={{ position: "relative" }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab + "-graph"}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                style={{ height: "100%", position: "relative" }}
-              >
-                <GraphPanel tab={activeTab} />
-              </motion.div>
-            </AnimatePresence>
+            <MetricsPanel tab={activeTab} />
           </div>
         )}
       </motion.div>

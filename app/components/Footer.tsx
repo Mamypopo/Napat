@@ -1,13 +1,14 @@
 "use client";
 
-import { FaInstagram, FaDiscord, FaFacebook, FaGithub } from "react-icons/fa";
+import { FaInstagram, FaDiscord, FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const socials = [
+  { icon: FaLinkedin,  label: "LinkedIn",  href: "#" },
+  { icon: FaGithub,    label: "GitHub",    href: "#" },
   { icon: FaInstagram, label: "Instagram", href: "#" },
   { icon: FaDiscord,   label: "Discord",   href: "#" },
   { icon: FaFacebook,  label: "Facebook",  href: "#" },
-  { icon: FaGithub,    label: "GitHub",    href: "#" },
 ];
 
 export default function Footer() {

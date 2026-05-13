@@ -14,9 +14,10 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [isDark, setIsDark]     = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled]         = useState(false);
+  const [isDark, setIsDark]             = useState(true);
+  const [menuOpen, setMenuOpen]         = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -24,6 +25,21 @@ export default function Navbar() {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const ids = ["work", "about", "contact"];
+    const observers = ids.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { threshold: 0.25, rootMargin: "-56px 0px -40% 0px" }
+      );
+      obs.observe(el);
+      return obs;
+    });
+    return () => observers.forEach((o) => o?.disconnect());
   }, []);
 
   useEffect(() => { if (!isMobile) setMenuOpen(false); }, [isMobile]);
@@ -173,17 +189,31 @@ export default function Navbar() {
     <header style={headerStyle}>
       {logo}
       <nav style={{ display: "flex", gap: "32px" }}>
-        {NAV_LINKS.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            style={{ fontSize: "15px", fontWeight: 400, color: linkColor, textDecoration: "none", transition: "color 0.2s ease" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = linkHover)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
-          >
-            {label}
-          </Link>
-        ))}
+        {NAV_LINKS.map(({ href, label }) => {
+          const isActive = activeSection === href.replace("#", "");
+          const color = isActive ? (onHero ? "#fff" : "var(--text-high)") : linkColor;
+          return (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                fontSize: "15px", fontWeight: isActive ? 600 : 400,
+                color, textDecoration: "none", transition: "color 0.2s ease",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = linkHover)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = color)}
+            >
+              {label}
+              {isActive && (
+                <span style={{
+                  position: "absolute", bottom: "-4px", left: 0, right: 0,
+                  height: "1px", background: "#553F83",
+                }} />
+              )}
+            </Link>
+          );
+        })}
       </nav>
       {themeBtn}
     </header>

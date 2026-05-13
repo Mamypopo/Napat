@@ -1,4 +1,6 @@
 import Navbar from "./components/Navbar";
+import ScrollProgress from "./components/ScrollProgress";
+import BackToTop from "./components/BackToTop";
 import Hero from "./components/Hero";
 import ScrollRestore from "./components/ScrollRestore";
 import MarqueeStrip from "./components/MarqueeStrip";
@@ -16,6 +18,8 @@ import Footer from "./components/Footer";
 export default function Home() {
   return (
     <>
+      <ScrollProgress />
+      <BackToTop />
       <ScrollRestore />
       <Navbar />
       <Hero />
