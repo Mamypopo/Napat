@@ -186,7 +186,7 @@ function TimelineStrip({ tab }: { tab: TabId }) {
   const events = milestones.filter((m) => m.dim);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", background: "#0a0a0a", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", background: "var(--canvas)", overflow: "hidden" }}>
       <DotGrid />
 
       {/* Vertical spine */}
@@ -241,7 +241,7 @@ function TimelineStrip({ tab }: { tab: TabId }) {
             fontFamily: "var(--font-mono), monospace",
             fontSize: "11px", letterSpacing: "0.1em",
             fontWeight: 600,
-            color: "rgba(255,255,255,0.7)",
+            color: "var(--text-mid)",
             whiteSpace: "nowrap",
           }}>
             {m.label}
@@ -279,7 +279,7 @@ function TimelineStrip({ tab }: { tab: TabId }) {
 function DetailPanel({ tab }: { tab: TabId }) {
   const d = scenes[tab];
   return (
-    <div style={{ height: "100%", overflow: "hidden", position: "relative", background: "#0d0d0d" }}>
+    <div style={{ height: "100%", overflow: "hidden", position: "relative", background: "var(--surface)" }}>
       <motion.div
         key={tab + "-detail"}
         initial={{ opacity: 0, x: -16 }}
@@ -293,7 +293,7 @@ function DetailPanel({ tab }: { tab: TabId }) {
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.25)",
+          color: "var(--text-subtle)",
           marginBottom: "10px",
         }}>
           {d.period}
@@ -303,7 +303,7 @@ function DetailPanel({ tab }: { tab: TabId }) {
         <h3 style={{
           fontSize: "clamp(20px, 2.2vw, 28px)",
           fontWeight: 700, letterSpacing: "-0.03em",
-          lineHeight: 1.1, color: "#fff",
+          lineHeight: 1.1, color: "var(--text-high)",
           marginBottom: "6px",
         }}>
           {d.role}
@@ -322,7 +322,7 @@ function DetailPanel({ tab }: { tab: TabId }) {
         {/* Description */}
         <p style={{
           fontSize: "14px", fontWeight: 300,
-          color: "rgba(255,255,255,0.5)", lineHeight: 1.75,
+          color: "var(--text-muted)", lineHeight: 1.75,
           marginBottom: "24px",
         }}>
           {d.description}
@@ -373,7 +373,7 @@ function GraphPanel({ tab }: { tab: TabId }) {
   const activeNodeData = scene.nodes.find((n) => n.id === activeNode) ?? null;
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", background: "#0a0a0a" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", background: "var(--canvas)" }}>
       <DotGrid />
 
       <svg
@@ -474,7 +474,7 @@ function GraphPanel({ tab }: { tab: TabId }) {
             </p>
             <p style={{
               fontSize: "12px", fontWeight: 300,
-              color: "rgba(255,255,255,0.6)", lineHeight: 1.65,
+              color: "var(--text-mid)", lineHeight: 1.65,
             }}>
               {activeNodeData.detail}
             </p>
@@ -512,9 +512,9 @@ export default function FeatureShowcase() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       style={{
-        background: "#0a0a0a",
-        borderTop: "1px solid rgba(255,255,255,0.08)",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        background: "var(--canvas)",
+        borderTop: "1px solid var(--hairline)",
+        borderBottom: "1px solid var(--hairline)",
       }}
     >
       {/* ── Header ────────────────────────────────────────── */}
@@ -524,7 +524,7 @@ export default function FeatureShowcase() {
         transition={{ duration: 0.5, ease }}
         style={{
           padding: isMobile ? "40px 24px 20px" : "64px 64px 24px",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          borderBottom: "1px solid var(--hairline)",
           display: "flex",
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "flex-start" : "flex-end",
@@ -537,7 +537,7 @@ export default function FeatureShowcase() {
             fontFamily: "var(--font-mono), monospace",
             fontSize: "10px", letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.3)",
+            color: "var(--text-subtle)",
             marginBottom: "10px",
           }}>
             Background
@@ -545,7 +545,7 @@ export default function FeatureShowcase() {
           <h2 style={{
             fontSize: "clamp(28px, 4vw, 48px)",
             fontWeight: 700, letterSpacing: "-0.04em",
-            lineHeight: 1.0, color: "#fff",
+            lineHeight: 1.0, color: "var(--text-high)",
           }}>
             เส้นทางที่<span style={{ color: "#553F83" }}>เดินมา</span>
           </h2>
@@ -572,13 +572,13 @@ export default function FeatureShowcase() {
           display: "grid",
           gridTemplateColumns: isMobile ? "1fr" : "360px 1fr 1fr",
           height: isMobile ? "auto" : "440px",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          borderBottom: "1px solid var(--hairline)",
           overflow: "hidden",
         }}
       >
         {/* Timeline strip — hidden on mobile */}
         {!isMobile && (
-          <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
+          <div style={{ borderRight: "1px solid var(--hairline)", overflow: "hidden" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab + "-strip"}
@@ -595,7 +595,7 @@ export default function FeatureShowcase() {
         )}
 
         {/* Detail panel */}
-        <div style={{ borderRight: isMobile ? "none" : "1px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
+        <div style={{ borderRight: isMobile ? "none" : "1px solid var(--hairline)", overflow: "hidden" }}>
           <AnimatePresence mode="wait">
             <DetailPanel key={activeTab} tab={activeTab} />
           </AnimatePresence>
@@ -621,7 +621,7 @@ export default function FeatureShowcase() {
       </motion.div>
 
       {/* ── Tab bar ───────────────────────────────────────── */}
-      <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <div style={{ display: "flex", borderBottom: "1px solid var(--hairline)" }}>
         {tabs.map((tab, i) => (
           <button
             key={tab.id}
@@ -632,12 +632,12 @@ export default function FeatureShowcase() {
               padding: isMobile ? "16px 12px" : "20px 32px",
               background: "transparent",
               border: "none",
-              borderRight: i < tabs.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
+              borderRight: i < tabs.length - 1 ? "1px solid var(--hairline)" : "none",
               cursor: "pointer",
               fontFamily: "var(--font-mono), monospace",
               fontSize: "11px", fontWeight: 500,
               letterSpacing: "0.1em", textTransform: "uppercase",
-              color: activeTab === tab.id ? "#ffffff" : "rgba(255,255,255,0.35)",
+              color: activeTab === tab.id ? "var(--text-high)" : "var(--text-subtle)",
               transition: "color 0.2s ease",
             }}
           >

@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
+  const isMobile = useIsMobile();
   return (
     <section
       style={{
@@ -62,7 +64,7 @@ export default function Hero() {
         style={{
           position: "relative",
           zIndex: 2,
-          padding: "0 64px 80px",
+          padding: isMobile ? "0 24px 56px" : "0 64px 80px",
           maxWidth: "1280px",
           width: "100%",
         }}

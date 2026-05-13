@@ -2,19 +2,31 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useIsMobile } from "../hooks/useMediaQuery";
+
+const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
+
+const NAV_LINKS = [
+  { href: "#work",    label: "ผลงาน"   },
+  { href: "#about",   label: "เกี่ยวกับ" },
+  { href: "#contact", label: "ติดต่อ"   },
+];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [scrolled, setScrolled]   = useState(false);
+  const [isDark, setIsDark]       = useState(true);
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Sync with html class set by inline script
     setIsDark(!document.documentElement.classList.contains("light"));
-
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close menu on resize to desktop
+  useEffect(() => { if (!isMobile) setMenuOpen(false); }, [isMobile]);
 
   function toggleTheme() {
     const html = document.documentElement;
@@ -25,57 +37,140 @@ export default function Navbar() {
     setIsDark(next === "dark");
   }
 
-  return (
-    <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        height: "56px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 48px",
-        background: scrolled ? "var(--scrim)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid var(--hairline)" : "1px solid transparent",
-        transition: "background 0.3s ease, border-color 0.3s ease",
-      }}
-    >
-      {/* Logo */}
-      <span
-        style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: "12px",
-          fontWeight: 500,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: "#553F83",
-        }}
-      >
-        NP.dev
-      </span>
+  const headerBase: React.CSSProperties = {
+    position: "fixed",
+    top: 0, left: 0, right: 0,
+    zIndex: 100,
+    height: "56px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: isMobile ? "0 20px" : "0 48px",
+    background: scrolled || menuOpen ? "var(--scrim)" : "transparent",
+    backdropFilter: scrolled || menuOpen ? "blur(20px)" : "none",
+    WebkitBackdropFilter: scrolled || menuOpen ? "blur(20px)" : "none",
+    borderBottom: scrolled || menuOpen ? "1px solid var(--hairline)" : "1px solid transparent",
+    transition: "background 0.3s ease, border-color 0.3s ease",
+  };
 
-      {/* Nav links */}
-      <nav style={{ display: "flex", gap: "32px", listStyle: "none" }}>
-        {[
-          { href: "#work", label: "ผลงาน" },
-          { href: "#about", label: "เกี่ยวกับ" },
-          { href: "#contact", label: "ติดต่อ" },
-        ].map(({ href, label }) => (
+  const logo = (
+    <span style={{ ...MONO, fontSize: "12px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "#553F83" }}>
+      NP.dev
+    </span>
+  );
+
+  const themeBtn = (
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      style={{
+        width: "36px", height: "36px",
+        border: "1px solid var(--hairline)",
+        background: "transparent", borderRadius: "2px",
+        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        color: "var(--text-muted)", transition: "border-color 0.2s, color 0.2s", flexShrink: 0,
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#553F83"; e.currentTarget.style.color = "#553F83"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--hairline)"; e.currentTarget.style.color = "var(--text-muted)"; }}
+    >
+      {isDark ? (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      ) : (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      )}
+    </button>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        <header style={headerBase}>
+          {logo}
+          {/* Hamburger */}
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Toggle menu"
+            style={{
+              width: "36px", height: "36px",
+              background: "transparent", border: "1px solid var(--hairline)",
+              borderRadius: "2px", cursor: "pointer",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              gap: "5px", color: "var(--text-muted)",
+            }}
+          >
+            {menuOpen ? (
+              // X icon
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            ) : (
+              // Hamburger lines
+              <>
+                <span style={{ width: "16px", height: "1.5px", background: "var(--text-muted)", display: "block" }} />
+                <span style={{ width: "16px", height: "1.5px", background: "var(--text-muted)", display: "block" }} />
+                <span style={{ width: "10px", height: "1.5px", background: "var(--text-muted)", display: "block", alignSelf: "flex-start", marginLeft: "3px" }} />
+              </>
+            )}
+          </button>
+        </header>
+
+        {/* Mobile dropdown */}
+        {menuOpen && (
+          <div style={{
+            position: "fixed", top: "56px", left: 0, right: 0,
+            zIndex: 99,
+            background: "var(--scrim)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            borderBottom: "1px solid var(--hairline)",
+            padding: "8px 0 16px",
+          }}>
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: "block",
+                  padding: "14px 20px",
+                  fontSize: "16px", fontWeight: 400,
+                  color: "var(--text-high)",
+                  textDecoration: "none",
+                  borderBottom: "1px solid var(--hairline)",
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+            <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                {isDark ? "Dark mode" : "Light mode"}
+              </span>
+              {themeBtn}
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <header style={headerBase}>
+      {logo}
+      <nav style={{ display: "flex", gap: "32px" }}>
+        {NAV_LINKS.map(({ href, label }) => (
           <Link
             key={href}
             href={href}
-            style={{
-              fontSize: "15px",
-              fontWeight: 400,
-              color: "var(--text-muted)",
-              textDecoration: "none",
-              transition: "color 0.2s ease",
-            }}
+            style={{ fontSize: "15px", fontWeight: 400, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-high)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
           >
@@ -83,53 +178,7 @@ export default function Navbar() {
           </Link>
         ))}
       </nav>
-
-      {/* Theme toggle */}
-      <button
-        onClick={toggleTheme}
-        aria-label="Toggle theme"
-        style={{
-          width: "36px",
-          height: "36px",
-          border: "1px solid var(--hairline)",
-          background: "transparent",
-          borderRadius: "2px",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "var(--text-muted)",
-          transition: "border-color 0.2s, color 0.2s",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "#553F83";
-          e.currentTarget.style.color = "#553F83";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "var(--hairline)";
-          e.currentTarget.style.color = "var(--text-muted)";
-        }}
-      >
-        {isDark ? (
-          // Sun
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/>
-            <line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-        ) : (
-          // Moon
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        )}
-      </button>
+      {themeBtn}
     </header>
   );
 }

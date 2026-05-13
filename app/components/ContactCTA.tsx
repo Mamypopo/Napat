@@ -41,8 +41,8 @@ export default function ContactCTA() {
 
   return (
     <section style={{
-      background: "#0a0a0a",
-      borderTop: "1px solid rgba(255,255,255,0.08)",
+      background: "var(--canvas)",
+      borderTop: "1px solid var(--hairline)",
       padding: isMobile ? "64px 24px" : "100px 64px",
       position: "relative",
       overflow: "hidden",
@@ -66,7 +66,7 @@ export default function ContactCTA() {
             boxShadow: "0 0 8px #4ade80",
             display: "inline-block",
           }} />
-          <span style={{ ...MONO, fontSize: "11px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em" }}>
+          <span style={{ ...MONO, fontSize: "11px", color: "var(--text-muted)", letterSpacing: "0.1em" }}>
             AVAILABLE FOR WORK
           </span>
         </div>
@@ -75,7 +75,7 @@ export default function ContactCTA() {
         <h2 style={{
           fontSize: "clamp(36px, 6vw, 80px)",
           fontWeight: 700, letterSpacing: "-0.04em",
-          lineHeight: 1.0, color: "#fff",
+          lineHeight: 1.0, color: "var(--text-high)",
           marginBottom: "24px",
         }}>
           มาทำงาน<br />
@@ -84,7 +84,7 @@ export default function ContactCTA() {
 
         <p style={{
           fontSize: "17px", fontWeight: 300,
-          color: "rgba(255,255,255,0.45)", lineHeight: 1.75,
+          color: "var(--text-muted)", lineHeight: 1.75,
           maxWidth: "480px", marginBottom: "52px",
         }}>
           พร้อมรับโปรเจกต์ freelance หรือ full-time
@@ -115,10 +115,10 @@ export default function ContactCTA() {
             style={{
               display: "flex", alignItems: "center", gap: 8,
               padding: "14px 24px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: "var(--surface)",
+              border: "1px solid var(--hairline)",
               borderRadius: "4px",
-              color: "rgba(255,255,255,0.75)", textDecoration: "none",
+              color: "var(--text-mid)", textDecoration: "none",
               ...MONO, fontSize: "12px", letterSpacing: "0.08em",
               fontWeight: 500,
             }}
@@ -129,7 +129,7 @@ export default function ContactCTA() {
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginBottom: "32px" }} />
+        <div style={{ borderTop: "1px solid var(--hairline)", marginBottom: "32px" }} />
 
         {/* Links */}
         <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
@@ -140,12 +140,12 @@ export default function ContactCTA() {
               target="_blank" rel="noopener noreferrer"
               style={{
                 display: "flex", alignItems: "center", gap: 8,
-                color: "rgba(255,255,255,0.35)",
+                color: "var(--text-subtle)",
                 textDecoration: "none",
                 transition: "color 0.15s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "var(--text-high)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "var(--text-subtle)"; }}
             >
               <span style={{ display: "flex", alignItems: "center" }}>{link.icon}</span>
               <span style={{ ...MONO, fontSize: "11px", letterSpacing: "0.06em" }}>{link.value}</span>

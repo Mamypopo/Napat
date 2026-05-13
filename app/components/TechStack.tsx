@@ -77,8 +77,8 @@ function SkillCard({ skill }: { skill: Skill }) {
       style={{
         display: "flex", alignItems: "center", gap: 8,
         padding: skill.primary ? "8px 12px" : "6px 10px",
-        background: skill.primary ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-        border: `1px solid ${skill.primary ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)"}`,
+        background: skill.primary ? "var(--surface)" : "var(--badge)",
+        border: `1px solid ${skill.primary ? "var(--hairline)" : "var(--hairline)"}`,
         borderRadius: "4px",
         cursor: "default",
         transition: "border-color 0.2s, background 0.2s",
@@ -88,13 +88,13 @@ function SkillCard({ skill }: { skill: Skill }) {
         e.currentTarget.style.background = "rgba(240,78,0,0.08)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = skill.primary ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)";
-        e.currentTarget.style.background = skill.primary ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)";
+        e.currentTarget.style.borderColor = "var(--hairline)";
+        e.currentTarget.style.background = skill.primary ? "var(--surface)" : "var(--badge)";
       }}
     >
       <span style={{
         fontSize: skill.primary ? "15px" : "13px",
-        color: skill.primary ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
+        color: skill.primary ? "var(--text-high)" : "var(--text-muted)",
         display: "flex", alignItems: "center",
       }}>
         {skill.icon}
@@ -104,7 +104,7 @@ function SkillCard({ skill }: { skill: Skill }) {
         fontSize: skill.primary ? "11px" : "10px",
         fontWeight: skill.primary ? 500 : 400,
         letterSpacing: "0.06em",
-        color: skill.primary ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.35)",
+        color: skill.primary ? "var(--text-mid)" : "var(--text-subtle)",
         whiteSpace: "nowrap",
       }}>
         {skill.name}
@@ -122,25 +122,25 @@ export default function TechStack() {
 
   return (
     <section style={{
-      background: "#0a0a0a",
-      borderTop: "1px solid rgba(255,255,255,0.08)",
+      background: "var(--canvas)",
+      borderTop: "1px solid var(--hairline)",
       padding: `80px ${px}`,
     }}>
       {/* Header */}
       <div style={{ marginBottom: "52px" }}>
         <p style={{
           ...MONO, fontSize: "10px", letterSpacing: "0.14em",
-          textTransform: "uppercase", color: "rgba(255,255,255,0.25)",
+          textTransform: "uppercase", color: "var(--text-subtle)",
           marginBottom: "16px",
         }}>
           Tech Stack
         </p>
         <h2 style={{
           fontSize: "clamp(24px, 3vw, 40px)", fontWeight: 700,
-          letterSpacing: "-0.03em", color: "#fff", lineHeight: 1.1,
+          letterSpacing: "-0.03em", color: "var(--text-high)", lineHeight: 1.1,
         }}>
           เครื่องมือที่ใช้งาน<br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>จริงใน production.</span>
+          <span style={{ color: "var(--text-subtle)" }}>จริงใน production.</span>
         </h2>
       </div>
 
@@ -170,7 +170,7 @@ export default function TechStack() {
 
       {/* Footer note */}
       <p style={{
-        ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.2)",
+        ...MONO, fontSize: "10px", color: "var(--text-subtle)",
         marginTop: "52px", letterSpacing: "0.06em",
       }}>
         * primary skills — used daily in production projects
