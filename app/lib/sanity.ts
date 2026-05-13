@@ -63,7 +63,11 @@ export async function getProjects(): Promise<Project[]> {
       role,
       "modules": modules[]{ name, desc },
       problem,
-      solution
+      solution,
+      outcome,
+      duration,
+      scale,
+      teamSize
     }`,
     {},
     { next: { revalidate: 60 } }
@@ -89,7 +93,11 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       role,
       "modules": modules[]{ name, desc },
       problem,
-      solution
+      solution,
+      outcome,
+      duration,
+      scale,
+      teamSize
     }`,
     { slug },
     { next: { revalidate: 60 } }

@@ -117,6 +117,16 @@ export default function ProjectPageClient({
             </motion.div>
           )}
 
+          {/* Outcome */}
+          {project.outcome && (
+            <motion.div {...fadeUp(0.17)} style={{ marginBottom: "48px" }}>
+              <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
+                Impact / Outcome
+              </p>
+              <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{project.outcome}</p>
+            </motion.div>
+          )}
+
           {/* Gallery */}
           {project.images && project.images.length > 0 && (
             <motion.div {...fadeUp(0.18)} style={{ marginBottom: "48px" }}>
@@ -152,7 +162,7 @@ export default function ProjectPageClient({
             <motion.div {...fadeUp(0.2)}>
               <p className="eyeline" style={{ marginBottom: "20px" }}>Modules</p>
               <div style={{ display: "flex", flexDirection: "column", borderTop: "1px solid var(--hairline)" }}>
-                {project.modules.map((mod, i) => (
+                {project.modules.filter((mod) => mod != null).map((mod, i) => (
                   <div
                     key={i}
                     style={{
@@ -190,10 +200,28 @@ export default function ProjectPageClient({
                 <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{project.role}</p>
               </div>
             )}
+            {project.teamSize && (
+              <div>
+                <p className="eyeline" style={{ marginBottom: "8px" }}>Team Size</p>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{project.teamSize}</p>
+              </div>
+            )}
             <div>
               <p className="eyeline" style={{ marginBottom: "8px" }}>Year</p>
               <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{project.year}</p>
             </div>
+            {project.duration && (
+              <div>
+                <p className="eyeline" style={{ marginBottom: "8px" }}>Duration</p>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{project.duration}</p>
+              </div>
+            )}
+            {project.scale && (
+              <div>
+                <p className="eyeline" style={{ marginBottom: "8px" }}>Scale</p>
+                <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{project.scale}</p>
+              </div>
+            )}
             <div>
               <p className="eyeline" style={{ marginBottom: "12px" }}>Tech Stack</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>

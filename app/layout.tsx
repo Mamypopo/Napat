@@ -48,7 +48,7 @@ export default function RootLayout({
       <body
         className={`${ibmPlexSansThai.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <Script id="theme-init" strategy="beforeInteractive">{`
+        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: `
           try {
             var t = localStorage.getItem('theme');
             if (t === 'light') document.documentElement.classList.add('light');
@@ -56,7 +56,7 @@ export default function RootLayout({
           } catch(e) {
             document.documentElement.classList.add('dark');
           }
-        `}</Script>
+        ` }} />
         {children}
       </body>
     </html>

@@ -16,6 +16,10 @@ export type Project = {
   role?: string;
   problem?: string;
   solution?: string;
+  outcome?: string;
+  duration?: string;
+  scale?: string;
+  teamSize?: string;
 };
 
 export const projects: Project[] = [
