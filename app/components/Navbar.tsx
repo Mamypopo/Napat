@@ -13,9 +13,9 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled]   = useState(false);
-  const [isDark, setIsDark]       = useState(true);
-  const [menuOpen, setMenuOpen]   = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isDark, setIsDark]     = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -25,7 +25,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on resize to desktop
   useEffect(() => { if (!isMobile) setMenuOpen(false); }, [isMobile]);
 
   function toggleTheme() {
@@ -37,7 +36,14 @@ export default function Navbar() {
     setIsDark(next === "dark");
   }
 
-  const headerBase: React.CSSProperties = {
+  // When transparent (top of page), Hero behind is always dark — force white
+  const onHero = !scrolled && !menuOpen;
+  const iconColor    = onHero ? "rgba(255,255,255,0.7)"  : "var(--text-muted)";
+  const iconBorder   = onHero ? "rgba(255,255,255,0.2)"  : "var(--hairline)";
+  const linkColor    = onHero ? "rgba(255,255,255,0.75)" : "var(--text-muted)";
+  const linkHover    = onHero ? "#fff"                    : "var(--text-high)";
+
+  const headerStyle: React.CSSProperties = {
     position: "fixed",
     top: 0, left: 0, right: 0,
     zIndex: 100,
@@ -65,13 +71,13 @@ export default function Navbar() {
       aria-label="Toggle theme"
       style={{
         width: "36px", height: "36px",
-        border: "1px solid var(--hairline)",
+        border: `1px solid ${iconBorder}`,
         background: "transparent", borderRadius: "2px",
         cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-        color: "var(--text-muted)", transition: "border-color 0.2s, color 0.2s", flexShrink: 0,
+        color: iconColor, transition: "border-color 0.2s, color 0.2s", flexShrink: 0,
       }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#553F83"; e.currentTarget.style.color = "#553F83"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--hairline)"; e.currentTarget.style.color = "var(--text-muted)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = iconBorder; e.currentTarget.style.color = iconColor; }}
     >
       {isDark ? (
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -89,40 +95,39 @@ export default function Navbar() {
     </button>
   );
 
+  /* ── Mobile ─────────────────────────────────────────────────── */
   if (isMobile) {
     return (
       <>
-        <header style={headerBase}>
+        <header style={headerStyle}>
           {logo}
-          {/* Hamburger */}
           <button
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
             style={{
               width: "36px", height: "36px",
-              background: "transparent", border: "1px solid var(--hairline)",
+              background: "transparent",
+              border: `1px solid ${iconBorder}`,
               borderRadius: "2px", cursor: "pointer",
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: "5px", color: "var(--text-muted)",
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center",
+              gap: "5px",
             }}
           >
             {menuOpen ? (
-              // X icon
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2.5" strokeLinecap="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             ) : (
-              // Hamburger lines
               <>
-                <span style={{ width: "16px", height: "1.5px", background: "var(--text-muted)", display: "block" }} />
-                <span style={{ width: "16px", height: "1.5px", background: "var(--text-muted)", display: "block" }} />
-                <span style={{ width: "10px", height: "1.5px", background: "var(--text-muted)", display: "block", alignSelf: "flex-start", marginLeft: "3px" }} />
+                <span style={{ width: "16px", height: "1.5px", background: iconColor, display: "block", borderRadius: "1px" }} />
+                <span style={{ width: "16px", height: "1.5px", background: iconColor, display: "block", borderRadius: "1px" }} />
+                <span style={{ width: "16px", height: "1.5px", background: iconColor, display: "block", borderRadius: "1px" }} />
               </>
             )}
           </button>
         </header>
 
-        {/* Mobile dropdown */}
         {menuOpen && (
           <div style={{
             position: "fixed", top: "56px", left: 0, right: 0,
@@ -162,17 +167,18 @@ export default function Navbar() {
     );
   }
 
+  /* ── Desktop ────────────────────────────────────────────────── */
   return (
-    <header style={headerBase}>
+    <header style={headerStyle}>
       {logo}
       <nav style={{ display: "flex", gap: "32px" }}>
         {NAV_LINKS.map(({ href, label }) => (
           <Link
             key={href}
             href={href}
-            style={{ fontSize: "15px", fontWeight: 400, color: "var(--text-muted)", textDecoration: "none", transition: "color 0.2s ease" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-high)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+            style={{ fontSize: "15px", fontWeight: 400, color: linkColor, textDecoration: "none", transition: "color 0.2s ease" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = linkHover)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
           >
             {label}
           </Link>
