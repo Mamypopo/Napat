@@ -167,14 +167,14 @@ const scenes: Record<TabId, {
 function DotGrid() {
   return (
     <svg
-      style={{ position: "absolute", inset: "16px", width: "calc(100% - 32px)", height: "calc(100% - 32px)", opacity: 0.15, pointerEvents: "none" }}
+      style={{ position: "absolute", inset: "16px", width: "calc(100% - 32px)", height: "calc(100% - 32px)", opacity: 0.25, pointerEvents: "none" }}
     >
       <defs>
         <pattern id="dots-timeline" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="#ffffff" />
+          <circle cx="1" cy="1" r="1" fill="currentColor" />
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#dots-timeline)" />
+      <rect width="100%" height="100%" fill="url(#dots-timeline)" style={{ color: "var(--text-subtle)" }} />
     </svg>
   );
 }
@@ -193,19 +193,18 @@ function TimelineStrip({ tab }: { tab: TabId }) {
       <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
         <motion.line
           x1="64" y1="5%" x2="64" y2="95%"
-          stroke="rgba(255,255,255,0.12)"
+          stroke="var(--hairline)"
           strokeWidth="1"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 1.2, ease }}
         />
-        {/* Horizontal tick lines from spine to year labels */}
         {years.map((m, i) => (
           <motion.line
             key={`tick-${i}`}
             x1="64" y1={`${m.y}%`}
             x2="76" y2={`${m.y}%`}
-            stroke="rgba(255,255,255,0.25)"
+            stroke="var(--text-subtle)"
             strokeWidth="1"
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
@@ -263,7 +262,7 @@ function TimelineStrip({ tab }: { tab: TabId }) {
             fontFamily: "var(--font-mono), monospace",
             fontSize: "10px", letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.28)",
+            color: "var(--text-subtle)",
             whiteSpace: "nowrap",
             pointerEvents: "none",
           }}
@@ -337,7 +336,7 @@ function DetailPanel({ tab }: { tab: TabId }) {
                 fontSize: "10px", color: "#553F83",
                 marginTop: "3px", flexShrink: 0,
               }}>→</span>
-              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+              <span style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.6 }}>
                 {h}
               </span>
             </div>
@@ -348,14 +347,14 @@ function DetailPanel({ tab }: { tab: TabId }) {
         <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
           <span style={{
             width: "6px", height: "6px", borderRadius: "50%",
-            background: d.badgeAccent ? "#22c55e" : "rgba(255,255,255,0.3)",
+            background: d.badgeAccent ? "#22c55e" : "var(--text-subtle)",
             boxShadow: d.badgeAccent ? "0 0 6px rgba(34,197,94,0.6)" : "none",
           }} />
           <span style={{
             fontFamily: "var(--font-mono), monospace",
             fontSize: "9px", letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: d.badgeAccent ? "#22c55e" : "rgba(255,255,255,0.25)",
+            color: d.badgeAccent ? "#22c55e" : "var(--text-subtle)",
           }}>
             {d.badge}
           </span>
@@ -382,25 +381,16 @@ function GraphPanel({ tab }: { tab: TabId }) {
         preserveAspectRatio="none"
       >
         {scene.lines.map((l, i) => (
-          <g key={`${tab}-line-${i}`}>
-            {/* static dim track */}
-            <line
-              x1={`${l.x1}%`} y1={`${l.y1}%`}
-              x2={`${l.x2}%`} y2={`${l.y2}%`}
-              stroke="rgba(255,255,255,0.07)"
-              strokeWidth="0.5"
-            />
-            {/* animated draw-in, loops with delay */}
-            <motion.line
-              x1={`${l.x1}%`} y1={`${l.y1}%`}
-              x2={`${l.x2}%`} y2={`${l.y2}%`}
-              stroke="#553F83"
-              strokeWidth="0.8"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.8, delay: i * 0.2, ease }}
-            />
-          </g>
+          <motion.line
+            key={`${tab}-line-${i}`}
+            x1={`${l.x1}%`} y1={`${l.y1}%`}
+            x2={`${l.x2}%`} y2={`${l.y2}%`}
+            stroke="#553F83"
+            strokeWidth="0.8"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.7 }}
+            transition={{ duration: 1.8, delay: i * 0.2, ease }}
+          />
         ))}
       </svg>
 
@@ -420,8 +410,8 @@ function GraphPanel({ tab }: { tab: TabId }) {
             fontFamily: "var(--font-mono), monospace",
             fontSize: "9px", letterSpacing: "0.1em",
             color: activeNode === n.id
-              ? "#fff"
-              : n.accent ? "#553F83" : "rgba(255,255,255,0.45)",
+              ? "var(--text-high)"
+              : n.accent ? "#553F83" : "var(--text-muted)",
             whiteSpace: "nowrap",
             background: "transparent",
             border: "none",
@@ -435,8 +425,8 @@ function GraphPanel({ tab }: { tab: TabId }) {
           <span style={{
             width: "6px", height: "6px", borderRadius: "50%", flexShrink: 0,
             background: activeNode === n.id
-              ? "#fff"
-              : n.accent ? "#553F83" : "rgba(255,255,255,0.2)",
+              ? "var(--text-high)"
+              : n.accent ? "#553F83" : "var(--text-subtle)",
             boxShadow: n.accent ? "0 0 8px rgba(85,63,131,0.7)" : "none",
             transition: "background 0.2s",
           }} />
@@ -456,9 +446,9 @@ function GraphPanel({ tab }: { tab: TabId }) {
             style={{
               position: "absolute",
               bottom: "20px", left: "20px", right: "20px",
-              background: "rgba(15,15,15,0.95)",
+              background: "var(--surface)",
               backdropFilter: "blur(12px)",
-              border: "1px solid rgba(85,63,131,0.4)",
+              border: "1px solid rgba(85,63,131,0.5)",
               borderRadius: "2px",
               padding: "12px 16px",
               zIndex: 10,
