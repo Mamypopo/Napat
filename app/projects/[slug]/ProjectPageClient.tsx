@@ -1,11 +1,164 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import type { Project } from "../../lib/projects";
 import { imgWithFallback } from "../../lib/sanity";
+
+function Lightbox({ images, index, onClose }: { images: string[]; index: number; onClose: () => void }) {
+  const [current, setCurrent] = useState(index);
+  const [touchStartX, setTouchStartX] = useState(0);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setCurrent((c) => (c + 1) % images.length);
+      if (e.key === "ArrowLeft") setCurrent((c) => (c - 1 + images.length) % images.length);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [images.length, onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 999,
+        background: "rgba(0,0,0,0.95)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}
+    >
+      {/* Close */}
+      <button onClick={onClose} style={{
+        position: "absolute", top: 20, right: 20,
+        background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)",
+        color: "#fff", borderRadius: "2px", padding: "6px 14px",
+        fontFamily: "var(--font-mono), monospace", fontSize: "11px",
+        letterSpacing: "0.08em", cursor: "pointer", zIndex: 10,
+      }}>ESC</button>
+
+      {/* Counter */}
+      <div style={{
+        position: "absolute", top: 20, left: "50%", transform: "translateX(-50%)",
+        fontFamily: "var(--font-mono), monospace", fontSize: "11px",
+        color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em",
+      }}>
+        {current + 1} / {images.length}
+      </div>
+
+      {/* Image */}
+      <motion.div
+        key={current}
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => { setTouchStartX(e.touches[0].clientX); }}
+        onTouchEnd={(e) => {
+          const dx = e.changedTouches[0].clientX - touchStartX;
+          if (dx < -50) setCurrent((c) => (c + 1) % images.length);
+          else if (dx > 50) setCurrent((c) => (c - 1 + images.length) % images.length);
+        }}
+        style={{
+          position: "relative", width: "90vw", maxWidth: "1200px",
+          height: "80vh", borderRadius: "4px", overflow: "hidden",
+        }}
+      >
+        <Image src={images[current]} alt={`Screenshot ${current + 1}`} fill style={{ objectFit: "contain" }} unoptimized />
+      </motion.div>
+
+      {/* Prev / Next */}
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c - 1 + images.length) % images.length); }}
+            style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", width: 44, height: 44, borderRadius: "2px", fontSize: "18px", cursor: "pointer" }}
+          >←</button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c + 1) % images.length); }}
+            style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", width: 44, height: 44, borderRadius: "2px", fontSize: "18px", cursor: "pointer" }}
+          >→</button>
+        </>
+      )}
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div style={{
+          position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)",
+          display: "flex", gap: "8px", padding: "8px",
+          background: "rgba(0,0,0,0.5)", borderRadius: "4px",
+        }}>
+          {images.map((src, i) => (
+            <div
+              key={i}
+              onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+              style={{
+                position: "relative", width: 56, height: 38, borderRadius: "2px",
+                overflow: "hidden", cursor: "pointer", flexShrink: 0,
+                border: `1px solid ${i === current ? "#553F83" : "rgba(255,255,255,0.15)"}`,
+                opacity: i === current ? 1 : 0.5, transition: "all 0.15s",
+              }}
+            >
+              <Image src={src} alt={`thumb ${i + 1}`} fill style={{ objectFit: "cover" }} unoptimized />
+            </div>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function GalleryThumb({ src, name, index, onClick }: { src: string; name: string; index: number; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        aspectRatio: "16/9",
+        borderRadius: "4px",
+        overflow: "hidden",
+        border: "1px solid var(--hairline)",
+        cursor: "zoom-in",
+      }}
+    >
+      <Image
+        src={src}
+        alt={`${name} screenshot ${index + 1}`}
+        fill
+        style={{ objectFit: "cover", transform: hovered ? "scale(1.04)" : "scale(1)", transition: "transform 0.3s ease" }}
+        unoptimized
+      />
+      <div style={{
+        position: "absolute", inset: 0,
+        background: hovered ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0)",
+        transition: "background 0.2s",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        {hovered && (
+          <span style={{
+            fontFamily: "var(--font-mono), monospace", fontSize: "10px",
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            color: "#fff", background: "rgba(0,0,0,0.6)",
+            padding: "6px 14px", borderRadius: "2px",
+            border: "1px solid rgba(255,255,255,0.2)",
+          }}>
+            View
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
@@ -30,6 +183,7 @@ export default function ProjectPageClient({
   const isMobile = useIsMobile();
   const px = isMobile ? "24px" : "64px";
   const py = isMobile ? "40px" : "64px";
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
     <>
@@ -132,27 +286,13 @@ export default function ProjectPageClient({
           {project.images && project.images.length > 0 && (
             <motion.div {...fadeUp(0.18)} style={{ marginBottom: "48px" }}>
               <p className="eyeline" style={{ marginBottom: "20px" }}>Gallery</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                gap: "10px",
+              }}>
                 {project.images.map((src, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      aspectRatio: "16/9",
-                      borderRadius: "4px",
-                      overflow: "hidden",
-                      border: "1px solid var(--hairline)",
-                    }}
-                  >
-                    <Image
-                      src={src}
-                      alt={`${project.name} screenshot ${i + 1}`}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      unoptimized
-                    />
-                  </div>
+                  <GalleryThumb key={i} src={src} name={project.name} index={i} onClick={() => setLightboxIndex(i)} />
                 ))}
               </div>
             </motion.div>
@@ -262,6 +402,17 @@ export default function ProjectPageClient({
           </div>
         </motion.div>
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxIndex !== null && project.images && (
+          <Lightbox
+            images={project.images}
+            index={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Next / Prev navigation */}
       {(prev || next) && (

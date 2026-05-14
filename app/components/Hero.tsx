@@ -146,7 +146,10 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease, delay: 0.1 }}
         >
-          <TextScramble text="Full-Stack Developer · Bangkok · 2026" delay={0.5} />
+          <TextScramble
+            text={[settings?.jobTitle, settings?.location, new Date().getFullYear().toString()].filter(Boolean).join(" · ") || "Full-Stack Developer · Bangkok · 2026"}
+            delay={0.5}
+          />
         </motion.p>
 
         {/* Display heading — text reveal per line */}
