@@ -35,6 +35,7 @@ export type SiteSettings = {
   avatar?: string;
   heroImage?: string;
   resumeUrl?: string;
+  resumeFile?: string;
   email?: string;
   github?: string;
   linkedin?: string;
@@ -54,6 +55,7 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       ...,
       "avatar": avatar.asset->url,
       "heroImage": heroImage.asset->url,
+      "resumeFile": resumeFile.asset->url,
       "skills": skills[]{ name, level }
     }`,
     {},

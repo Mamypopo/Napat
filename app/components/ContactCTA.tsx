@@ -35,7 +35,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
   const [status, setStatus] = useState<FormStatus>("idle");
 
   const email = settings?.email ?? "napat@example.com";
-  const resumeUrl = settings?.resumeUrl ?? "/resume.pdf";
+  const resumeUrl = settings?.resumeFile ?? settings?.resumeUrl ?? "/resume.pdf";
   const isAvailable = settings?.available ?? true;
 
   const LINKS = [

@@ -15,6 +15,7 @@ export const siteSettings = defineType({
     defineField({ name: "avatar",     title: "รูปโปรไฟล์",    type: "image", options: { hotspot: true } }),
     defineField({ name: "heroImage",  title: "Hero Background Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "resumeUrl",  title: "Resume URL (PDF)", type: "url" }),
+    defineField({ name: "resumeFile", title: "Resume File (อัปโหลดไฟล์ PDF)", type: "file", options: { accept: ".pdf" } }),
 
     // Contact
     defineField({ name: "email",      title: "Email",          type: "string" }),
