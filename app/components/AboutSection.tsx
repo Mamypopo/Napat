@@ -90,7 +90,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
             src={settings?.avatar ?? "/avatar.png"}
             alt={`Avatar of ${settings?.name ?? "Napat"}`}
             fill
-            style={{ objectFit: "cover", objectPosition: "center top" }}
+            style={{ objectFit: "cover", objectPosition: "center 50%" }}
             unoptimized={!!settings?.avatar}
           />
           {/* Badge */}
