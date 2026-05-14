@@ -55,11 +55,20 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
     setStatus("submitting");
-    // TODO: wire to CMS/API
-    await new Promise((r) => setTimeout(r, 900));
-    setStatus("success");
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setStatus("idle"), 4000);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("failed");
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   }
 
   return (
@@ -221,15 +230,31 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
               animate={{ opacity: 1, y: 0 }}
               style={{
                 padding: "32px",
-                border: "1px solid var(--hairline)",
+                border: "1px solid rgba(74,222,128,0.2)",
                 borderRadius: "4px",
                 background: "var(--surface)",
                 display: "flex", flexDirection: "column", gap: "8px",
               }}
             >
-              <span style={{ fontSize: "24px" }}>✓</span>
+              <span style={{ fontSize: "20px", color: "#4ade80" }}>✓</span>
               <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>ส่งแล้ว!</p>
               <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>จะติดต่อกลับโดยเร็วที่สุดครับ</p>
+            </motion.div>
+          ) : status === "error" ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                padding: "32px",
+                border: "1px solid rgba(248,113,113,0.2)",
+                borderRadius: "4px",
+                background: "var(--surface)",
+                display: "flex", flexDirection: "column", gap: "8px",
+              }}
+            >
+              <span style={{ fontSize: "20px", color: "#f87171" }}>✕</span>
+              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>ส่งไม่สำเร็จ</p>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>กรุณาลองอีกครั้ง หรือติดต่อผ่านอีเมลโดยตรงครับ</p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "28px" }}>

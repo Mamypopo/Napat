@@ -211,7 +211,7 @@ export default function ProjectPageClient({
               padding: "3px 10px", display: "inline-block",
             }}
           >
-            Case Study
+            {project.type === "case-study" ? "Case Study" : "Project"}
           </motion.span>
           <motion.h1
             {...fadeUp(0.2)}

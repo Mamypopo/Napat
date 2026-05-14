@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 import ScrollProgress from "./components/ScrollProgress";
 import BackToTop from "./components/BackToTop";
@@ -16,6 +17,23 @@ import FadeIn from "./components/FadeIn";
 import Footer from "./components/Footer";
 import { getSiteSettings, getProjects, getFeaturedProjects } from "./lib/sanity";
 import { projects as staticProjects } from "./lib/projects";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  if (!settings) return {};
+  const title = `${settings.name} — ${settings.jobTitle}`;
+  const description = settings.bio;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      ...(settings.avatar ? { images: [{ url: settings.avatar, width: 1200, height: 630 }] } : {}),
+    },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
 
 export default async function Home() {
   const [settings, sanityProjects, featuredProjects] = await Promise.all([
