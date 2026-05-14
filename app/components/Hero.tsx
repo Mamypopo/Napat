@@ -94,10 +94,11 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
         }}
       >
         <Image
-          src="https://images.unsplash.com/photo-1629904853716-f0bc54eea481?w=1800&q=85&auto=format&fit=crop"
+          src={settings?.heroImage ?? "https://images.unsplash.com/photo-1776231972021-49d6b6152156?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
           alt="Hero background"
           fill
           priority
+          unoptimized={!!settings?.heroImage}
           style={{
             objectFit: "cover",
             filter: "brightness(0.22) contrast(1.1)",
@@ -114,7 +115,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
       </motion.div>
 
       {/* Radial purple glow top-left */}
-      <div
+      {/* <div
         style={{
           position: "absolute",
           top: "-200px",
@@ -126,7 +127,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
           pointerEvents: "none",
           zIndex: 1,
         }}
-      />
+      /> */}
 
       {/* Content */}
       <div

@@ -33,6 +33,7 @@ export type SiteSettings = {
   bio2?: string;
   available: boolean;
   avatar?: string;
+  heroImage?: string;
   resumeUrl?: string;
   email?: string;
   github?: string;
@@ -52,6 +53,7 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     `*[_type == "siteSettings"][0] {
       ...,
       "avatar": avatar.asset->url,
+      "heroImage": heroImage.asset->url,
       "skills": skills[]{ name, level }
     }`,
     {},
