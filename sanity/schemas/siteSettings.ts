@@ -18,6 +18,20 @@ export const siteSettings = defineType({
     defineField({ name: "resumeFile", title: "Resume File (อัปโหลดไฟล์ PDF)", type: "file", options: { accept: ".pdf" } }),
 
     // Contact
+    defineField({ name: "phone",      title: "เบอร์โทร (optional)", type: "string" }),
+    defineField({ name: "workMode",   title: "Work Mode",      type: "string", options: { list: ["Remote", "Onsite", "Hybrid", "Remote & Onsite"] } }),
+    defineField({
+      name: "languages", title: "ภาษา",
+      type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "lang",  title: "ภาษา",  type: "string" },
+          { name: "level", title: "ระดับ", type: "string", options: { list: ["Native", "Fluent", "Conversational", "Basic"] } },
+        ],
+        preview: { select: { title: "lang", subtitle: "level" } },
+      }],
+    }),
     defineField({ name: "email",      title: "Email",          type: "string" }),
     defineField({ name: "github",     title: "GitHub URL",     type: "url" }),
     defineField({ name: "linkedin",   title: "LinkedIn URL",   type: "url" }),

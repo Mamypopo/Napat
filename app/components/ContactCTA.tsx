@@ -6,7 +6,7 @@ import { TextShimmer } from "./TextShimmer";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { SiGithub, SiLine } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
-import { HiOutlineMail, HiOutlineDownload } from "react-icons/hi";
+import { HiOutlineMail, HiOutlineDownload, HiOutlinePhone } from "react-icons/hi";
 import type { SiteSettings } from "../lib/sanity";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
@@ -39,10 +39,11 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
   const isAvailable = settings?.available ?? true;
 
   const LINKS = [
-    { label: "Email",    value: email,                                           href: `mailto:${email}`,                                    icon: <HiOutlineMail size={16} /> },
-    ...(settings?.github   ? [{ label: "GitHub",   value: settings.github.replace("https://", ""),   href: settings.github,   icon: <SiGithub size={14} />   }] : []),
-    ...(settings?.linkedin ? [{ label: "LinkedIn", value: settings.linkedin.replace("https://", ""), href: settings.linkedin, icon: <FaLinkedin size={14} /> }] : []),
-    ...(settings?.line     ? [{ label: "LINE",     value: `@${settings.line}`,                       href: `https://line.me/ti/p/~${settings.line}`, icon: <SiLine size={14} /> }] : []),
+    { label: "Email",  value: email,  href: `mailto:${email}`, icon: <HiOutlineMail size={16} /> },
+    ...(settings?.phone    ? [{ label: "Phone",    value: settings.phone,                                  href: `tel:${settings.phone}`,                          icon: <HiOutlinePhone size={14} /> }] : []),
+    ...(settings?.github   ? [{ label: "GitHub",   value: settings.github.replace("https://", ""),         href: settings.github,                                  icon: <SiGithub size={14} />       }] : []),
+    ...(settings?.linkedin ? [{ label: "LinkedIn", value: settings.linkedin.replace("https://", ""),       href: settings.linkedin,                                icon: <FaLinkedin size={14} />     }] : []),
+    ...(settings?.line     ? [{ label: "LINE",     value: `@${settings.line}`,                             href: `https://line.me/ti/p/~${settings.line}`,         icon: <SiLine size={14} />         }] : []),
   ];
 
   function copyEmail() {
@@ -93,23 +94,54 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
 
       <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
 
-        {/* Status badge */}
+        {/* Status + meta row */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, ease }}
-          style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "32px" }}
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "12px", marginBottom: "32px" }}
         >
-          <span style={{
-            width: 8, height: 8, borderRadius: "50%",
-            background: isAvailable ? "#4ade80" : "#f87171",
-            boxShadow: isAvailable ? "0 0 8px #4ade80" : "0 0 8px #f87171",
-            display: "inline-block",
-          }} />
-          <TextShimmer style={{ ...MONO, fontSize: "11px", letterSpacing: "0.1em" }}>
-            {isAvailable ? "AVAILABLE FOR WORK" : "NOT AVAILABLE"}
-          </TextShimmer>
+          {/* Available dot */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: "50%",
+              background: isAvailable ? "#4ade80" : "#f87171",
+              boxShadow: isAvailable ? "0 0 8px #4ade80" : "0 0 8px #f87171",
+              display: "inline-block",
+            }} />
+            <TextShimmer style={{ ...MONO, fontSize: "11px", letterSpacing: "0.1em" }}>
+              {isAvailable ? "AVAILABLE FOR WORK" : "NOT AVAILABLE"}
+            </TextShimmer>
+          </div>
+
+          {/* Work mode tag */}
+          {settings?.workMode && (
+            <span style={{
+              ...MONO, fontSize: "10px", letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              padding: "3px 10px",
+              border: "1px solid var(--hairline)",
+              borderRadius: "2px",
+              color: "var(--text-subtle)",
+            }}>
+              {settings.workMode}
+            </span>
+          )}
+
+          {/* Language tags */}
+          {settings?.languages?.map((l) => (
+            <span key={l.lang} style={{
+              ...MONO, fontSize: "10px", letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              padding: "3px 10px",
+              border: "1px solid var(--hairline)",
+              borderRadius: "2px",
+              color: "var(--text-subtle)",
+            }}>
+              {l.lang} · {l.level}
+            </span>
+          ))}
         </motion.div>
 
         {/* Headline */}

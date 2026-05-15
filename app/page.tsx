@@ -15,7 +15,7 @@ import AboutSection from "./components/AboutSection";
 import ContactCTA from "./components/ContactCTA";
 import FadeIn from "./components/FadeIn";
 import Footer from "./components/Footer";
-import { getSiteSettings, getProjects, getFeaturedProjects } from "./lib/sanity";
+import { getSiteSettings, getProjects, getFeaturedProjects, getBackground } from "./lib/sanity";
 import { projects as staticProjects } from "./lib/projects";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,10 +36,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [settings, sanityProjects, featuredProjects] = await Promise.all([
+  const [settings, sanityProjects, featuredProjects, background] = await Promise.all([
     getSiteSettings(),
     getProjects(),
     getFeaturedProjects(),
+    getBackground(),
   ]);
   const projects = sanityProjects.length > 0 ? sanityProjects : staticProjects;
 
@@ -52,7 +53,7 @@ export default async function Home() {
       <Hero settings={settings} />
       <MarqueeStrip />
       <FadeIn><TechStack /></FadeIn>
-      <FadeIn><FeatureShowcase /></FadeIn>
+      <FadeIn><FeatureShowcase background={background} /></FadeIn>
       <FadeIn><BentoProjects projects={projects} /></FadeIn>
       <FadeIn><ProjectDemo /></FadeIn>
       <FadeIn><PinnedScroll /></FadeIn>

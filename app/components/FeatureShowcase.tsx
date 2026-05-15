@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import type { BackgroundData, BackgroundTab } from "../lib/sanity";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -10,7 +11,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const tabs = [
   { id: "education",  label: "Education"  },
   { id: "experience", label: "Experience" },
-  { id: "freelance",  label: "Freelance"  },
+  { id: "freelance",  label: "Freelance & Projects"  },
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -199,8 +200,8 @@ function DotGrid() {
 }
 
 /* ── Timeline strip (leftmost column) ────────────────────── */
-function TimelineStrip({ tab }: { tab: TabId }) {
-  const { milestones } = scenes[tab];
+function TimelineStrip({ scene }: { scene: Scene }) {
+  const { milestones } = scene;
   const years  = milestones.filter((m) => !m.dim);
   const events = milestones.filter((m) => m.dim);
 
@@ -294,12 +295,12 @@ function TimelineStrip({ tab }: { tab: TabId }) {
 }
 
 /* ── Detail panel (center) ────────────────────────────────── */
-function DetailPanel({ tab }: { tab: TabId }) {
-  const d = scenes[tab];
+function DetailPanel({ scene, tabKey }: { scene: Scene; tabKey: string }) {
+  const d = scene;
   return (
     <div style={{ height: "100%", overflow: "hidden", position: "relative", background: "var(--surface)" }}>
       <motion.div
-        key={tab + "-detail"}
+        key={tabKey + "-detail"}
         initial={{ opacity: 0, x: -16 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 16 }}
@@ -384,12 +385,12 @@ function DetailPanel({ tab }: { tab: TabId }) {
 }
 
 /* ── Metrics panel (right) ────────────────────────────────── */
-function MetricsPanel({ tab }: { tab: TabId }) {
-  const { metrics } = scenes[tab];
+function MetricsPanel({ scene, tabKey }: { scene: Scene; tabKey: string }) {
+  const { metrics } = scene;
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={tab + "-metrics"}
+        key={tabKey + "-metrics"}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -404,7 +405,7 @@ function MetricsPanel({ tab }: { tab: TabId }) {
       >
         {metrics.map((m, i) => (
           <motion.div
-            key={`${tab}-metric-${i}`}
+            key={`${tabKey}-metric-${i}`}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 + i * 0.08, ease }}
@@ -445,13 +446,40 @@ function MetricsPanel({ tab }: { tab: TabId }) {
   );
 }
 
+/* ── Merge Sanity data over hardcoded scene ───────────────── */
+type Scene = typeof scenes.education;
+
+function mergeScene(base: Scene, s?: BackgroundTab | null): Scene {
+  if (!s) return base;
+  return {
+    ...base,
+    ...(s.period      && { period:      s.period }),
+    ...(s.role        && { role:        s.role }),
+    ...(s.org         && { org:         s.org }),
+    ...(s.location    && { location:    s.location }),
+    ...(s.description && { description: s.description }),
+    ...(s.highlights?.length && { highlights: s.highlights }),
+    ...(s.badge       && { badge:       s.badge }),
+    ...(s.badgeAccent !== undefined && { badgeAccent: s.badgeAccent }),
+    ...(s.metrics?.length && {
+      metrics: s.metrics.map((m) => ({ value: m.value, label: m.label, accent: m.accent ?? false })),
+    }),
+  };
+}
+
 /* ── Main component ───────────────────────────────────────── */
-export default function FeatureShowcase() {
+export default function FeatureShowcase({ background }: { background?: BackgroundData | null }) {
   const [activeTab, setActiveTab] = useState<TabId>("education");
   const [paused, setPaused] = useState(false);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const isMobile = useIsMobile();
+
+  const activeScenes: typeof scenes = {
+    education:  mergeScene(scenes.education,  background?.education),
+    experience: mergeScene(scenes.experience, background?.experience),
+    freelance:  mergeScene(scenes.freelance,  background?.freelance),
+  };
 
   const advance = useCallback(() => {
     setActiveTab((cur) => {
@@ -518,7 +546,7 @@ export default function FeatureShowcase() {
             color: "rgba(255,255,255,0.2)",
             flexShrink: 0,
           }}>
-            Education · Experience · Freelance
+            Education · Experience · Freelance & Projects
           </p>
         )}
       </motion.div>
@@ -548,7 +576,7 @@ export default function FeatureShowcase() {
                 transition={{ duration: 0.25 }}
                 style={{ height: "100%" }}
               >
-                <TimelineStrip tab={activeTab} />
+                <TimelineStrip scene={activeScenes[activeTab]} />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -557,14 +585,14 @@ export default function FeatureShowcase() {
         {/* Detail panel */}
         <div style={{ borderRight: isMobile ? "none" : "1px solid var(--hairline)", overflow: "hidden" }}>
           <AnimatePresence mode="wait">
-            <DetailPanel key={activeTab} tab={activeTab} />
+            <DetailPanel key={activeTab} scene={activeScenes[activeTab]} tabKey={activeTab} />
           </AnimatePresence>
         </div>
 
         {/* Metrics panel — hidden on mobile */}
         {!isMobile && (
           <div style={{ position: "relative" }}>
-            <MetricsPanel tab={activeTab} />
+            <MetricsPanel scene={activeScenes[activeTab]} tabKey={activeTab} />
           </div>
         )}
       </motion.div>

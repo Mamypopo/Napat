@@ -23,6 +23,25 @@ export function imgWithFallback(src: string | null | undefined, name = "Project"
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export type SiteSettingsSkill = { name: string; level: string };
+export type SiteSettingsLanguage = { lang: string; level: string };
+
+export type BackgroundTab = {
+  period?: string;
+  role?: string;
+  org?: string;
+  location?: string;
+  description?: string;
+  highlights?: string[];
+  badge?: string;
+  badgeAccent?: boolean;
+  metrics?: { value: string; label: string; accent?: boolean }[];
+};
+
+export type BackgroundData = {
+  education?: BackgroundTab;
+  experience?: BackgroundTab;
+  freelance?: BackgroundTab;
+};
 
 export type SiteSettings = {
   name: string;
@@ -36,6 +55,9 @@ export type SiteSettings = {
   heroImage?: string;
   resumeUrl?: string;
   resumeFile?: string;
+  phone?: string;
+  workMode?: string;
+  languages?: SiteSettingsLanguage[];
   email?: string;
   github?: string;
   linkedin?: string;
@@ -57,6 +79,18 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       "heroImage": heroImage.asset->url,
       "resumeFile": resumeFile.asset->url,
       "skills": skills[]{ name, level }
+    }`,
+    {},
+    { next: { revalidate: 60 } }
+  );
+}
+
+export async function getBackground(): Promise<BackgroundData | null> {
+  return client.fetch(
+    `*[_type == "background"][0] {
+      education { period, role, org, location, description, highlights, badge, badgeAccent, metrics },
+      experience { period, role, org, location, description, highlights, badge, badgeAccent, metrics },
+      freelance  { period, role, org, location, description, highlights, badge, badgeAccent, metrics }
     }`,
     {},
     { next: { revalidate: 60 } }
