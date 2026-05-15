@@ -10,146 +10,217 @@ import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/* ── Small project modal ───────────────────────────────────── */
+/* ── Project modal — Classic Split ─────────────────────────── */
 
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const allImages = project.images && project.images.length > 0 ? project.images : [project.img].filter(Boolean) as string[];
+  const [activeImg, setActiveImg] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+  const isMobile = useIsMobile();
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.8)",
-        backdropFilter: "blur(8px)",
-        zIndex: 100,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
+    <>
       <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 16, scale: 0.97 }}
-        transition={{ duration: 0.3, ease }}
-        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        onClick={onClose}
         style={{
-          background: "var(--surface)",
-          border: "1px solid var(--hairline)",
-          borderRadius: "4px",
-          width: "100%",
-          maxWidth: "560px",
-          overflow: "hidden",
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.82)",
+          backdropFilter: "blur(10px)",
+          zIndex: 100,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "24px",
         }}
       >
-        {/* Image / Gallery */}
-        <div style={{ position: "relative", height: "220px", overflow: "hidden" }}>
-          <Image
-            src={imgWithFallback(project.images?.[0] ?? project.img, project.name)}
-            alt={project.name}
-            fill
-            style={{ objectFit: "cover", filter: "brightness(0.8) contrast(1.1)" }}
-            unoptimized
-          />
-          {project.images && project.images.length > 1 && (
-            <span style={{
-              position: "absolute", bottom: 10, right: 12,
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px", letterSpacing: "0.08em",
-              background: "rgba(0,0,0,0.6)", color: "rgba(255,255,255,0.7)",
-              padding: "3px 8px", borderRadius: "2px",
-              border: "1px solid rgba(255,255,255,0.15)",
-            }}>
-              +{project.images.length} photos
-            </span>
-          )}
-          <button
-            onClick={onClose}
-            style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              background: "rgba(0,0,0,0.6)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "2px",
-              color: "rgba(255,255,255,0.7)",
-              cursor: "pointer",
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "11px",
-              padding: "4px 10px",
-              letterSpacing: "0.06em",
-            }}
-          >
-            ESC
-          </button>
-        </div>
-
-        {/* Content */}
-        <div style={{ padding: "28px 32px 32px" }}>
-          <p className="eyeline" style={{ marginBottom: "8px" }}>{project.category}</p>
-          <h3 style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-high)", marginBottom: "12px" }}>
-            {project.name}
-          </h3>
-          <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: 1.7, marginBottom: "20px" }}>
-            {project.desc}
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontFamily: "var(--font-mono), monospace",
-                  fontSize: "10px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  padding: "4px 10px",
-                  border: "1px solid var(--hairline)",
-                  borderRadius: "2px",
-                  background: "var(--badge)",
-                  color: "var(--text-muted)",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          {project.images && project.images.length > 1 && (
-            <div style={{ display: "flex", gap: "6px", marginTop: "16px", overflowX: "auto" }}>
-              {project.images.map((src, i) => (
-                <div key={i} style={{ position: "relative", flexShrink: 0, width: "80px", height: "54px", borderRadius: "2px", overflow: "hidden", border: "1px solid var(--hairline)" }}>
-                  <Image src={src} alt={`${project.name} ${i + 1}`} fill style={{ objectFit: "cover" }} unoptimized />
-                </div>
-              ))}
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 16, scale: 0.97 }}
+          transition={{ duration: 0.3, ease }}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            background: "var(--surface)",
+            border: "1px solid var(--hairline)",
+            borderRadius: "4px",
+            width: "100%",
+            maxWidth: isMobile ? "100%" : "900px",
+            maxHeight: "90vh",
+            overflow: "hidden",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          }}
+        >
+          {/* ── Left: Image + thumbnails ── */}
+          <div style={{ display: "flex", flexDirection: "column", borderRight: isMobile ? "none" : "1px solid var(--hairline)", borderBottom: isMobile ? "1px solid var(--hairline)" : "none" }}>
+            {/* Main image */}
+            <div
+              style={{ position: "relative", flex: 1, minHeight: isMobile ? "220px" : "300px", cursor: "zoom-in", overflow: "hidden" }}
+              onClick={() => setLightbox(true)}
+            >
+              <Image
+                src={imgWithFallback(allImages[activeImg], project.name)}
+                alt={project.name}
+                fill
+                style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
+                unoptimized
+              />
+              <div style={{
+                position: "absolute", inset: 0,
+                background: "linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 40%)",
+                pointerEvents: "none",
+              }} />
+              {allImages.length > 1 && (
+                <span style={{
+                  position: "absolute", bottom: 10, right: 10,
+                  fontFamily: "var(--font-mono), monospace", fontSize: "9px", letterSpacing: "0.08em",
+                  background: "rgba(0,0,0,0.55)", color: "rgba(255,255,255,0.7)",
+                  padding: "3px 8px", borderRadius: "2px", border: "1px solid rgba(255,255,255,0.12)",
+                }}>
+                  {activeImg + 1} / {allImages.length}
+                </span>
+              )}
             </div>
-          )}
-          {project.url && (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
+
+            {/* Thumbnails */}
+            {allImages.length > 1 && (
+              <div style={{
+                display: "flex", gap: "1px",
+                borderTop: "1px solid var(--hairline)",
+                background: "var(--hairline)",
+                flexShrink: 0,
+              }}>
+                {allImages.map((src, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    style={{
+                      position: "relative", flex: 1, height: "60px",
+                      cursor: "pointer", overflow: "hidden",
+                      background: "var(--surface)",
+                      outline: i === activeImg ? "2px solid #553F83" : "none",
+                      outlineOffset: "-2px",
+                      transition: "opacity 0.15s",
+                      opacity: i === activeImg ? 1 : 0.55,
+                    }}
+                  >
+                    <Image src={src} alt={`thumb ${i + 1}`} fill style={{ objectFit: "cover" }} unoptimized />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ── Right: Details ── */}
+          <div style={{ padding: "32px 32px 32px", overflowY: "auto", display: "flex", flexDirection: "column" }}>
+            {/* Close */}
+            <button
+              onClick={onClose}
               style={{
-                display: "inline-flex",
-                marginTop: "20px",
-                padding: "8px 20px",
-                background: "#553F83",
-                color: "#fff",
-                fontSize: "13px",
-                fontWeight: 600,
-                borderRadius: "2px",
-                textDecoration: "none",
+                alignSelf: "flex-end", marginBottom: "20px",
+                background: "transparent", border: "1px solid var(--hairline)",
+                borderRadius: "2px", color: "var(--text-subtle)",
+                cursor: "pointer", fontFamily: "var(--font-mono), monospace",
+                fontSize: "10px", padding: "4px 10px", letterSpacing: "0.06em",
               }}
             >
-              Visit →
-            </a>
-          )}
-        </div>
+              ESC
+            </button>
+
+            <p className="eyeline" style={{ marginBottom: "6px" }}>
+              {[project.category, project.year].filter(Boolean).join(" · ")}
+            </p>
+            <h3 style={{
+              fontSize: "24px", fontWeight: 700, letterSpacing: "-0.03em",
+              color: "var(--text-high)", marginBottom: "16px", lineHeight: 1.2,
+            }}>
+              {project.name}
+            </h3>
+            <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "24px" }}>
+              {project.desc}
+            </p>
+
+            {/* Tags */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "auto" }}>
+              {project.tags.map((tag) => (
+                <span key={tag} style={{
+                  fontFamily: "var(--font-mono), monospace", fontSize: "9px",
+                  letterSpacing: "0.08em", textTransform: "uppercase",
+                  padding: "4px 10px", border: "1px solid var(--hairline)",
+                  borderRadius: "2px", background: "var(--badge)", color: "var(--text-muted)",
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "28px" }}>
+              {project.url && (
+                <a
+                  href={project.url}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "6px",
+                    padding: "10px 20px", background: "#553F83", color: "#fff",
+                    fontSize: "12px", fontWeight: 600, borderRadius: "2px",
+                    textDecoration: "none", fontFamily: "var(--font-mono), monospace",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Visit →
+                </a>
+              )}
+              {project.slug && (
+                <Link
+                  href={`/projects/${project.slug}`}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "6px",
+                    padding: "10px 20px",
+                    background: "transparent", border: "1px solid var(--hairline)",
+                    color: "var(--text-mid)", fontSize: "12px", fontWeight: 500,
+                    borderRadius: "2px", textDecoration: "none",
+                    fontFamily: "var(--font-mono), monospace", letterSpacing: "0.06em",
+                  }}
+                >
+                  View Details
+                </Link>
+              )}
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(false)}
+            style={{
+              position: "fixed", inset: 0, zIndex: 200,
+              background: "rgba(0,0,0,0.95)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "zoom-out",
+            }}
+          >
+            <div style={{ position: "relative", width: "90vw", height: "85vh" }}>
+              <Image
+                src={imgWithFallback(allImages[activeImg], project.name)}
+                alt={project.name}
+                fill
+                style={{ objectFit: "contain" }}
+                unoptimized
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
