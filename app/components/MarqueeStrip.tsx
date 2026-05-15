@@ -3,9 +3,10 @@
 import { useState } from "react";
 
 const items = [
-  "Next.js", "TypeScript", "React", "Node.js", "PostgreSQL",
-  "Framer Motion", "Tailwind CSS", "Go", "Docker", "Vercel",
-  "AWS", "Figma", "Prisma", "tRPC", "GraphQL",
+  "Vue.js", "React", "Next.js", "Node.js", "Python",
+  "TypeScript", "MySQL", "PostgreSQL", "Tailwind CSS",
+  "Docker", "AWS", "REST API", "WebSocket",
+  "Prisma", "Framer Motion", "Vercel", "Figma", "Git",
 ];
 
 export default function MarqueeStrip() {
