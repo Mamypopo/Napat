@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 
-// const items = [
-//   "Vue.js", "React", "Next.js", "Node.js", "Python",
-//   "TypeScript", "MySQL", "PostgreSQL", "Tailwind CSS",
-//   "Docker", "AWS", "REST API", "WebSocket",
-//   "Prisma", "Framer Motion", "Vercel", "Figma", "Git",
-// ];
-
 const items = [
-    "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง", "เหม่ง",
-  ];
+  "Vue.js", "React", "Next.js", "Node.js", "Python",
+  "TypeScript", "MySQL", "PostgreSQL", "Tailwind CSS",
+  "Docker", "AWS", "REST API", "WebSocket",
+  "Prisma", "Framer Motion", "Vercel", "Figma", "Git",
+];
 
 export default function MarqueeStrip() {
   const doubled = [...items, ...items];
