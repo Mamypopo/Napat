@@ -48,6 +48,7 @@ export type SiteSettings = {
   nickname?: string;
   jobTitle: string;
   location: string;
+  heroTagline?: string;
   bio: string;
   bio2?: string;
   available: boolean;
@@ -78,7 +79,8 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       "avatar": avatar.asset->url,
       "heroImage": heroImage.asset->url,
       "resumeFile": resumeFile.asset->url,
-      "skills": skills[]{ name, level }
+      "skills": skills[]{ name, level },
+      heroTagline
     }`,
     {},
     { next: { revalidate: 60 } }

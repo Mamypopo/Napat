@@ -187,7 +187,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
               maxWidth: "400px",
             }}
           >
-            {settings?.bio ?? "ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure"}
+            {settings?.heroTagline ?? settings?.bio ?? "ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure"}
           </p>
 
           <div style={{ display: "flex", gap: "12px" }}>
