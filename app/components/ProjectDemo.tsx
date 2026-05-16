@@ -11,16 +11,16 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const panels = [
   {
     id: "frontend",
-    label: "FRONTEND PROJECT",
-    context: "REACT, NEXT.JS",
+    label: "LAB MODULE · HIS",
+    context: "VUE.JS, NODE.JS",
     accent: "#F04E00",
     questions: [
-      "HOW WAS THE DESIGN SYSTEM BUILT?",
-      "WHAT ANIMATION LIBRARY DID YOU USE?",
-      "HOW DID YOU HANDLE DARK MODE?",
+      "HOW DID YOU BUILD THE LAB MODULE?",
+      "HOW ARE REFERENCE RANGES CALCULATED?",
+      "HOW DID YOU HANDLE CRITICAL VALUES?",
     ],
-    status: "SHIPPED",
-    detail: "E-Commerce Platform",
+    status: "LIVE AT SEMED",
+    detail: "Hospital Information System",
   },
   {
     id: "fullstack",
