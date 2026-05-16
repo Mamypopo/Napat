@@ -70,32 +70,21 @@ type CalendarData = { totalContributions: number; weeks: CalendarWeek[] };
 export default function GitHeatmap() {
   const [hovered, setHovered] = useState<{ index: number; rect: DOMRect } | null>(null);
   const [calendar, setCalendar] = useState<CalendarData | null>(null);
-  const [year, setYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetch("/api/github-contributions")
       .then((r) => r.json())
-      .then((data: CalendarData) => {
-        if (data.weeks) setCalendar(data);
-      })
-      .catch(() => {}); // falls back to mock silently
+      .then((data: CalendarData) => { if (data.weeks) setCalendar(data); })
+      .catch(() => {});
   }, []);
 
+  const year = calendar?.weeks[0]?.contributionDays[0]?.date
+    ? new Date(calendar.weeks[0].contributionDays[0].date).getFullYear()
+    : new Date().getFullYear();
+
   const commitData = useMemo(() => {
-    if (calendar) {
-      const days: number[] = [];
-      for (const week of calendar.weeks) {
-        for (const day of week.contributionDays) {
-          days.push(day.contributionCount);
-        }
-      }
-      // detect year from first day
-      if (calendar.weeks[0]?.contributionDays[0]?.date) {
-        setYear(new Date(calendar.weeks[0].contributionDays[0].date).getFullYear());
-      }
-      return days;
-    }
-    return COMMIT_DATA;
+    if (!calendar) return COMMIT_DATA;
+    return calendar.weeks.flatMap((w) => w.contributionDays.map((d) => d.contributionCount));
   }, [calendar]);
 
   const weeks = useMemo(() => {
