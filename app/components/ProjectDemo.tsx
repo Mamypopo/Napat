@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LabDemoPanel from "./LabDemoPanel";
 import { useIsMobile } from "../hooks/useMediaQuery";
@@ -24,16 +24,12 @@ const panels = [
   },
   {
     id: "fullstack",
-    label: "FULLSTACK PROJECT",
-    context: "NODE.JS, POSTGRES",
+    label: "ASK ME ANYTHING",
+    context: "NAPAT · PORTFOLIO",
     accent: "#FFE600",
-    questions: [
-      "HOW DID YOU DESIGN THE API?",
-      "WHAT'S YOUR DATABASE SCHEMA LIKE?",
-      "HOW DID YOU HANDLE AUTH?",
-    ],
-    status: "LIVE",
-    detail: "SaaS Analytics Dashboard",
+    questions: [],
+    status: "ONLINE",
+    detail: "",
   },
   {
     id: "mobile",
@@ -51,6 +47,287 @@ const panels = [
 ] as const;
 
 type PanelId = (typeof panels)[number]["id"];
+
+/* ── Q&A data ─────────────────────────────────────────────── */
+const BLOCKED_WORDS = ["หี", "หน้าหี", "สัตว์", "ไอ้สัตว์", "เย็ด", "มึง", "กู", "หำ", "ควย", "สัส", "fuck", "shit", "bitch", "asshole"];
+
+const QA = [
+  // งาน
+  { q: "ทำงานที่ไหนอยู่?",          keywords: ["ทำงาน", "semed", "บริษัท", "ที่ไหน", "ที่ทำงาน", "งานอะไร"],    answer: "ตอนนี้ทำที่ Semed Living Care Hospital ครับ ตำแหน่ง Full-Stack Developer ทำมาตั้งแต่ปี 2024" },
+  { q: "ใช้ stack อะไรบ้าง?",       keywords: ["stack", "เทค", "ภาษา", "tech", "ใช้อะไร", "framework"],         answer: "ถนัด Vue.js, React, Next.js ครับ ฝั่ง backend ใช้ Node.js กับ Python ส่วน database ก็ MySQL PostgreSQL" },
+  { q: "มีโปรเจคอะไรบ้าง?",         keywords: ["โปรเจค", "ผลงาน", "project", "ทำอะไร", "งานที่ผ่านมา"],         answer: "ที่ Semed ทำมาประมาณ 10 กว่าระบบครับ ทำคนเดียวหมดเลย ส่วนตัวก็มี QR-Gen ที่ใช้งานจริงอยู่ แล้วก็ MooPrompt FlowTrak" },
+  { q: "จบการศึกษาจากไหน?",         keywords: ["จบ", "เรียน", "มหาวิทยาลัย", "การศึกษา", "degree", "วุฒิ"],      answer: "จบ CS จากมหาวิทยาลัยรังสิตครับ ปี 2025" },
+  { q: "พร้อมรับงานไหม?",           keywords: ["ว่าง", "รับงาน", "available", "พร้อม", "hire", "จ้าง", "สมัคร"],  answer: "พร้อมครับ ทั้ง freelance full-time remote หรือ onsite ติดต่อมาได้เลยที่ contact ด้านล่าง" },
+  { q: "ทำงานนอกเวลาได้ไหม?",       keywords: ["นอกเวลา", "ล่วงเวลา", "ot", "วันหยุด", "overtime"],              answer: "ได้บางครั้งครับ ถ้าจำเป็นจริงๆ แต่ก็ขึ้นอยู่กับสถานการณ์ด้วย" },
+  { q: "เงินเดือนที่ต้องการ?",      keywords: ["เงินเดือน", "salary", "ค่าตอบแทน", "รายได้"],                    answer: "ขึ้นอยู่กับ scope งานและบริษัทครับ คุยกันได้เลย" },
+
+  // ตัวตน
+  { q: "ชื่ออะไร?",                 keywords: ["ชื่อ", "name", "เรียกว่า", "นามสกุล"],                            answer: "ชื่อณภัทร แย้มบู่ครับ เรียก เจเจ หรือ JJAY ก็ได้" },
+  { q: "อายุเท่าไหร่?",             keywords: ["อายุ", "age", "กี่ปี", "เกิด"],                                    answer: "22 ปีครับ" },
+  { q: "อยู่ที่ไหน?",               keywords: ["อยู่", "ที่อยู่", "จังหวัด", "location", "กรุงเทพ"],               answer: "อยู่กรุงเทพครับ ไป onsite ได้หรือจะ remote ก็โอเค" },
+
+  // งานอดิเรก
+  { q: "งานอดิเรกคืออะไร?",         keywords: ["งานอดิเรก", "hobby", "ว่างทำอะไร", "อดิเรก", "เวลาว่าง"],         answer: "ส่วนใหญ่เล่นเกมครับ นอกนั้นก็ดูหนัง หรือออกไปกินข้าวกับเพื่อน" },
+  { q: "เล่นเกมไหม?",               keywords: ["เกม", "game", "pubg", "gaming", "เล่นเกม"],                        answer: "เล่นครับ ตอนนี้เล่น PUBG เป็นหลัก ชอบแนว FPS ยิงกันจ๋าๆ" },
+  { q: "ดูหนังไหม?",                keywords: ["หนัง", "ซีรีส์", "ดูอะไร", "netflix", "movie"],                   answer: "ดูครับ ชอบแนว action ยิงกันจ๋าๆ พวก John Wick Extraction อะไรแบบนี้" },
+  { q: "ชอบกินอะไร?",               keywords: ["กิน", "อาหาร", "food", "ชอบกิน", "ร้านอาหาร"],                    answer: "ชอบหมูกระทะกับชาบูครับ กินได้บ่อยมาก" },
+  { q: "ชอบดื่มอะไร?",              keywords: ["ดื่ม", "เบียร์", "เครื่องดื่ม", "beer", "drink"],                 answer: "ชอบเบียร์ครับ กินกับเพื่อนบ้างตามโอกาสมั้ง" },
+
+  // เป้าหมาย
+  { q: "เป้าหมายในชีวิตคืออะไร?",   keywords: ["เป้าหมาย", "goal", "อนาคต", "ฝัน", "อยากเป็น"],                  answer: "อยากมีงานมั่นคง มีธุรกิจของตัวเอง มีครอบครัว ใช้ชีวิตได้แบบที่อยากเป็น ฟังดูธรรมดาแต่ก็แค่อยากทำให้ได้จริงๆ ครับ" },
+  { q: "เป้าหมายด้านการงาน?",       keywords: ["เป้าหมายงาน", "career", "อาชีพ", "ระยะยาว", "developer"],          answer: "อยากโตเป็น Senior Developer และมี side project ที่ทำรายได้จริงๆ ได้ครับ" },
+];
+
+const FALLBACK = "ยังไม่ค่อยเข้าใจคำถามครับ\nลองถามใหม่ หรือติดต่อผมโดยตรง\nที่ contact section ด้านล่างได้เลย";
+
+const COMMANDS: Record<string, string> = {
+  "/help":    "คำสั่งที่ใช้ได้:\n/help · /about · /stack · /work · /contact · /clear",
+  "/about":   "ชื่อณภัทร แย้มบู่ (เจเจ) ครับ\nFull-Stack Developer ที่ Semed\nจบ CS มหาวิทยาลัยรังสิต ปี 2025",
+  "/stack":   "Frontend: Vue.js, React, Next.js\nBackend: Node.js, Python\nDB: MySQL, PostgreSQL\nOther: Docker, AWS, Prisma",
+  "/work":    "ที่ Semed: 10+ ระบบ solo\nPersonal: QR-Gen (live), MooPrompt,\nFlowTrak, Senior Project",
+  "/contact": "ติดต่อได้ที่ contact section ด้านล่างครับ\nหรือ email โดยตรงได้เลย",
+  "/beer":    "นัดวันมาเลยครับ",
+  "/clear":   "",
+};
+
+function isBlocked(text: string): boolean {
+  const low = text.toLowerCase();
+  return BLOCKED_WORDS.some((w) => low.includes(w));
+}
+
+function findAnswer(q: string) {
+  const low = q.toLowerCase().replace(/[?!.,]/g, "");
+  const words = low.split(/\s+/);
+  // score each QA by how many keywords match
+  let best = { score: 0, answer: FALLBACK };
+  for (const qa of QA) {
+    const score = qa.keywords.reduce((s, k) => {
+      if (low.includes(k)) return s + 2;       // full phrase match = higher score
+      if (words.some((w) => w.includes(k) || k.includes(w))) return s + 1;
+      return s;
+    }, 0);
+    if (score > best.score) best = { score, answer: qa.answer };
+  }
+  return best.answer;
+}
+
+type Message = { role: "user" | "bot"; text: string };
+
+/* ── Chat panel (yellow — same visual as ActiveContent) ───── */
+function ChatPanel() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const on = ON_ACCENT["#FFE600"];
+
+  useEffect(() => {
+    if (scrollRef.current)
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages]);
+
+  function handleSend(text: string) {
+    if (!text.trim() || isTyping) return;
+    if (text.trim() === "/clear") { setMessages([]); setInput(""); return; }
+    if (text.trim() === "/") {
+      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: COMMANDS["/help"] }]);
+      setInput("");
+      return;
+    }
+    setInput("");
+    if (isBlocked(text)) {
+      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: "ไม่ตอบคำถามแบบนี้ครับ" }]);
+      return;
+    }
+    const answer = COMMANDS[text.trim().toLowerCase()] ?? findAnswer(text);
+    setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: "" }]);
+    setIsTyping(true);
+    let i = 0;
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      i++;
+      const typed = answer.slice(0, i);
+      setMessages((prev) => {
+        const next = [...prev];
+        next[next.length - 1] = { role: "bot", text: typed };
+        return next;
+      });
+      if (i >= answer.length) {
+        clearInterval(timerRef.current!);
+        setIsTyping(false);
+      }
+    }, 22);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
+      {/* Header — same as ActiveContent */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${on.line}` }}>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: on.fgMuted }}>AGENT CONTEXT</span>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.08em", color: on.fgMuted }}>
+          CURRENT CONTEXT:{" "}
+          <span style={{ background: on.fg, color: "#FFE600", padding: "2px 8px", borderRadius: "2px" }}>NAPAT · PORTFOLIO</span>
+        </span>
+      </div>
+
+      {/* Dark inner panel */}
+      <div style={{ flex: 1, padding: "16px 20px", display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <div style={{
+          flex: 1, background: "#0a0a0a", border: `1px solid ${on.line}`,
+          position: "relative", borderRadius: "2px",
+          display: "flex", flexDirection: "column", justifyContent: "flex-end",
+          padding: "20px", gap: "8px", overflow: "hidden", minHeight: 0,
+        }}>
+          <Brackets />
+
+          {messages.length === 0 ? (
+            <>
+              <motion.p
+                initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                style={{ fontFamily: "var(--font-mono), monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", marginBottom: "8px" }}
+              >
+                ASK ME ANYTHING
+              </motion.p>
+              {QA.map((qa, i) => (
+                <motion.button
+                  key={qa.q}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.12 + i * 0.08, ease }}
+                  onClick={() => handleSend(qa.q)}
+                  style={{
+                    fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.06em",
+                    padding: "7px 12px", background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px",
+                    color: "rgba(255,255,255,0.65)", cursor: "pointer",
+                    textAlign: "left", textTransform: "uppercase", transition: "background 0.15s", width: "100%",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                >
+                  {qa.q}
+                </motion.button>
+              ))}
+            </>
+          ) : (
+            <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+              {messages.map((msg, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", gap: "2px", alignItems: msg.role === "user" ? "flex-end" : "flex-start" }}>
+                  <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "8px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.2)" }}>
+                    {msg.role === "user" ? "YOU" : "NAPAT"}
+                  </span>
+                  <div style={{
+                    maxWidth: "85%", padding: "8px 12px", borderRadius: "2px",
+                    background: msg.role === "user" ? "rgba(255,255,255,0.08)" : "rgba(255,214,0,0.12)",
+                    border: `1px solid ${msg.role === "user" ? "rgba(255,255,255,0.08)" : "rgba(255,214,0,0.2)"}`,
+                    fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.04em",
+                    color: msg.role === "user" ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.85)",
+                    lineHeight: 1.7, whiteSpace: "pre-line",
+                  }}>
+                    {msg.text}
+                    {msg.role === "bot" && isTyping && i === messages.length - 1 && (
+                      <motion.span
+                        animate={{ opacity: [1, 0] }} transition={{ duration: 0.5, repeat: Infinity }}
+                        style={{ display: "inline-block", width: "2px", height: "12px", background: "#FFE600", marginLeft: "2px", verticalAlign: "middle" }}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Input bar */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "8px", position: "relative" }}>
+          {/* Command suggestions — floats above input */}
+          {input.startsWith("/") && (() => {
+            const filtered = Object.keys(COMMANDS).filter((cmd) => cmd.startsWith(input.toLowerCase()));
+            if (filtered.length === 0) return null;
+            return (
+              <div style={{
+                position: "absolute", bottom: "calc(100% + 6px)", left: 0, right: 0,
+                background: "#1a1a1a", border: `1px solid rgba(255,255,255,0.15)`,
+                borderRadius: "4px", overflow: "hidden", zIndex: 20,
+                boxShadow: "0 -4px 24px rgba(0,0,0,0.5)",
+              }}>
+                {filtered.map((cmd) => (
+                  <button
+                    key={cmd}
+                    onMouseDown={(e) => { e.preventDefault(); setInput(cmd); }}
+                    style={{
+                      display: "block", width: "100%", padding: "8px 14px", textAlign: "left",
+                      background: "transparent", border: "none", borderBottom: `1px solid rgba(255,255,255,0.06)`,
+                      fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.08em",
+                      color: "rgba(255,255,255,0.7)", cursor: "pointer", transition: "background 0.1s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <span style={{ color: "#FFE600" }}>{cmd}</span>
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (input.startsWith("/")) {
+                  const filtered = Object.keys(COMMANDS).filter((cmd) => cmd.startsWith(input.toLowerCase()));
+                  if (filtered.length === 1) { handleSend(filtered[0]); return; }
+                }
+                handleSend(input);
+              }
+            }}
+            placeholder="ASK THE AI AGENT A QUESTION..."
+            disabled={isTyping}
+            style={{
+              flex: 1, fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.06em",
+              padding: "10px 14px", background: "#0a0a0a",
+              border: `1px solid ${on.line}`, borderRadius: "2px",
+              color: "#fff", outline: "none", textTransform: "uppercase",
+            }}
+          />
+          <button
+            onClick={() => handleSend(input)}
+            disabled={isTyping || !input.trim()}
+            style={{
+              width: "36px", height: "36px", background: on.badge, border: "none", borderRadius: "50%",
+              cursor: isTyping || !input.trim() ? "not-allowed" : "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: on.fg, flexShrink: 0,
+              opacity: isTyping || !input.trim() ? 0.4 : 1, transition: "opacity 0.2s",
+            }}
+          >
+            {isTyping ? "…" : "↑"}
+          </button>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 20px", borderTop: `1px solid ${on.line}` }}>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: on.fgMuted }}>
+          STATUS:{" "}
+          <span style={{ background: on.fg, color: "#FFE600", padding: "2px 8px", borderRadius: "2px" }}>
+            {isTyping ? "TYPING..." : "ONLINE"}
+          </span>
+        </span>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: on.fgMuted, cursor: "pointer" }}>
+          LEARN MORE →
+        </span>
+      </div>
+    </motion.div>
+  );
+}
 
 /* ── Corner brackets ──────────────────────────────────────── */
 function Brackets() {
@@ -419,6 +696,8 @@ export default function ProjectDemo() {
                 <AnimatePresence mode="wait">
                   {panel.id === "frontend" ? (
                     <LabDemoPanel key="lab" />
+                  ) : panel.id === "fullstack" ? (
+                    <ChatPanel key="chat" />
                   ) : (
                     <ActiveContent key={panel.id} panel={panel} />
                   )}
