@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LabDemoPanel from "./LabDemoPanel";
+import GitHeatmap from "./GitHeatmap";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -33,16 +34,12 @@ const panels = [
   },
   {
     id: "mobile",
-    label: "MOBILE PROJECT",
-    context: "REACT NATIVE, EXPO",
+    label: "COMMIT ACTIVITY",
+    context: "GITHUB · 2024",
     accent: "#0085FF",
-    questions: [
-      "HOW DID YOU HANDLE OFFLINE MODE?",
-      "WHAT'S THE NAVIGATION STRUCTURE?",
-      "HOW DID YOU PUBLISH TO APP STORE?",
-    ],
-    status: "IN REVIEW",
-    detail: "Wellness App",
+    questions: [],
+    status: "ACTIVE",
+    detail: "",
   },
 ] as const;
 
@@ -698,6 +695,8 @@ export default function ProjectDemo() {
                     <LabDemoPanel key="lab" />
                   ) : panel.id === "fullstack" ? (
                     <ChatPanel key="chat" />
+                  ) : panel.id === "mobile" ? (
+                    <GitHeatmap key="heatmap" />
                   ) : (
                     <ActiveContent key={panel.id} panel={panel} />
                   )}
