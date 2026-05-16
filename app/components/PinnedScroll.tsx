@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import {
   motion,
   useScroll,
-  useTransform,
   useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
@@ -17,12 +16,20 @@ const items = [
   {
     num: "01",
     label: "DESIGN SYSTEM",
-    title: "ออกแบบอย่างมี\nระบบ ไม่ใช่แค่\nสวยงาม",
-    desc: "ทุก UI เริ่มจาก design token — สี, spacing, typography ที่สอดคล้องกันตลอด codebase ทำให้ปรับเปลี่ยนได้เร็วและ consistent",
-    bullets: ["Design tokens & CSS variables", "IBM Plex Sans Thai + JetBrains Mono", "Dark / Light theme system", "Hairline grid, 0 shadows"],
-    cta: "ดู Design System",
+    title: "เริ่มจาก\nโครงสร้าง\nก่อนเสมอ",
+    desc: "เริ่มจาก token และโครงสร้างโค้ดก่อนเสมอ — folder structure ชัด, component แยก concern ดี ทำให้ตัวเองกลับมาอ่าน 3 เดือนข้างหน้าแล้วยังรู้เรื่อง",
+    bullets: ["Design token ก่อน component เสมอ", "Folder structure ที่ทุกคนเดาได้ถูก", "Component รับผิดชอบแค่สิ่งเดียว", "ไม่มี magic number ใน codebase"],
+    cta: "ดูผลงาน",
     accent: "#553F83",
-    code: `/* globals.css */
+    code: `/* โครงสร้างที่ใช้จริง */
+src/
+  components/   # UI components
+  composables/  # shared logic
+  stores/       # Pinia state
+  views/        # pages
+  utils/        # helpers
+
+/* design tokens */
 :root {
   --primary:   #553F83;
   --bg:        #111111;
@@ -31,14 +38,7 @@ const items = [
   --hairline:  rgba(255,255,255,0.1);
 }
 
-/* Typography */
-.display {
-  font-size: clamp(64px, 10vw, 120px);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.92;
-}
-
+/* ตั้งชื่อให้สื่อ ไม่ต้อง comment */
 .eyeline {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -49,136 +49,126 @@ const items = [
   {
     num: "02",
     label: "FRONTEND DEV",
-    title: "Interface ที่\nรู้สึกดีใน\nทุก interaction",
-    desc: "React + Next.js App Router พร้อม Framer Motion สำหรับ animation ที่ fluid — ตั้งแต่ scroll-driven sections จนถึง micro-interactions",
-    bullets: ["Next.js 16 App Router", "Framer Motion scroll-driven", "Tailwind CSS v4", "TypeScript strict mode"],
-    cta: "ดู Frontend Work",
+    title: "UI ที่ดีคือ\nUI ที่ไม่ต้อง\nอธิบาย",
+    desc: "ทำให้ทุก interaction รู้สึก smooth และ intuitive ตั้งแต่ปุ่มกดจนถึง error message — UX ที่ดีคือ user ไม่รู้สึกว่ามีอะไรผิดปกติเลย",
+    bullets: ["Animation มีเหตุผล ไม่ใช่แค่ effect", "Error message ที่คนอ่านแล้วเข้าใจทันที", "Mobile-first ทุก component", "ทดสอบบน device จริงเสมอ"],
+    cta: "ดูผลงาน",
     accent: "#F04E00",
-    code: `// PinnedScroll.tsx
-const { scrollYProgress } = useScroll({
-  target: containerRef,
-  offset: ["start start", "end end"],
-});
+    code: `<!-- transition ที่ทำให้รู้สึก smooth -->
+<Transition name="fade">
+  <div v-if="isVisible">
+    {{ content }}
+  </div>
+</Transition>
 
-useMotionValueEvent(
-  scrollYProgress,
-  "change",
-  (v) => {
-    setActive(
-      Math.min(items.length - 1,
-        Math.floor(v * items.length)
-      )
-    );
-  }
-);
+<!-- loading state ที่ user ไม่งง -->
+<template v-if="isLoading">
+  <SkeletonCard v-for="i in 3" :key="i" />
+</template>
+<template v-else>
+  <DataTable :rows="data" />
+</template>
 
-// Smooth progress bar per item
-const itemProgress = useTransform(
-  scrollYProgress,
-  [active / N, (active + 1) / N],
-  [0, 1]
-);`,
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>`,
   },
   {
     num: "03",
     label: "BACKEND & API",
-    title: "API ที่ออกแบบ\nมาเพื่อ\nScale จริง",
-    desc: "Node.js + PostgreSQL พร้อม type-safe API ด้วย tRPC หรือ REST ที่มี proper error handling, validation, และ rate limiting",
-    bullets: ["Node.js / Go backends", "PostgreSQL + Prisma ORM", "REST & tRPC type-safe", "Redis caching layer"],
-    cta: "ดู Backend Work",
+    title: "ออกแบบ\nจาก use case\nไม่ใช่ framework",
+    desc: "ออกแบบ API จาก use case ก่อน — structure ชัด error handling ครบ ทำให้ frontend ทำงานง่ายและ debug เร็ว แม้จะทำคนเดียว",
+    bullets: ["ออกแบบ schema ก่อน code เสมอ", "Validation ทุก input ที่มาจากข้างนอก", "Error message ที่ frontend เอาไปใช้ต่อได้", "API doc ที่ทันสมัยอยู่เสมอ"],
+    cta: "ดูผลงาน",
     accent: "#0085FF",
-    code: `// router/project.ts
-export const projectRouter = router({
-  list: publicProcedure
-    .input(z.object({
-      status: z.enum([
-        "shipped", "live", "wip"
-      ]).optional(),
-      cursor: z.string().optional(),
-    }))
-    .query(async ({ ctx, input }) => {
-      return ctx.db.project.findMany({
-        where: { status: input.status },
-        take: 12,
-        cursor: input.cursor
-          ? { id: input.cursor }
-          : undefined,
-        orderBy: { createdAt: "desc" },
-        include: { tags: true },
-      });
-    }),
-});`,
+    code: `// ออกแบบ response ให้ frontend ใช้ง่าย
+export async function GET(req: Request) {
+  try {
+    const data = await db.patient.findMany({
+      select: {
+        id: true,
+        name: true,
+        // ดึงเฉพาะที่ใช้จริง
+      },
+    });
+
+    return Response.json({ data });
+
+  } catch (err) {
+    // error ที่ debug ได้จริง
+    return Response.json(
+      { error: "ดึงข้อมูลไม่สำเร็จ" },
+      { status: 500 }
+    );
+  }
+}`,
   },
   {
     num: "04",
     label: "DEPLOYMENT",
-    title: "Deploy ได้\nทุกวัน โดย\nไม่กลัว",
-    desc: "CI/CD pipeline ที่รัน lint, test, build อัตโนมัติก่อน deploy — zero-downtime deployment บน Vercel หรือ Docker + AWS",
-    bullets: ["GitHub Actions CI/CD", "Docker containerization", "Vercel / AWS deployment", "Environment secrets management"],
-    cta: "ดู DevOps Setup",
+    title: "Deploy แล้ว\nไม่ต้อง\nนั่งเฝ้า",
+    desc: "Deploy ไม่ใช่ขั้นตอนที่ต้องลุ้น — แยก Dev กับ Production ชัด จัดการ env ให้ดี แล้ว push ได้อย่างสบายใจ",
+    bullets: ["Dev / Production แยกชัดเจนเสมอ", "Secret ไม่เคย hardcode ใน code", "Deploy แล้วไม่ต้องนั่งเฝ้า", "ถ้าพังก็รู้ทันที ไม่ใช่รู้จาก user"],
+    cta: "ดูผลงาน",
     accent: "#FFE600",
-    code: `# .github/workflows/deploy.yml
-name: Deploy
-on:
-  push:
-    branches: [main]
+    code: `# .env.local (ไม่เคย commit)
+DATABASE_URL=postgresql://...
+API_SECRET=...
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# .env.example (commit ได้)
+DATABASE_URL=
+API_SECRET=
 
-      - name: Install
-        run: npm ci
+# docker-compose.yml
+services:
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm test -- --ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy
-        uses: vercel/action@v1
-        with:
-          vercel-token: \${{ secrets.TOKEN }}`,
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: \${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql`,
   },
   {
     num: "05",
-    label: "OPTIMIZATION",
-    title: "เร็ว วัดได้\nปรับปรุง\nได้จริง",
-    desc: "Performance ไม่ใช่แค่ Lighthouse score — วัดจาก Core Web Vitals จริง, bundle analysis, และ query optimization ที่ database",
-    bullets: ["Core Web Vitals monitoring", "Bundle size analysis", "Image & font optimization", "DB query profiling"],
-    cta: "ดู Performance",
+    label: "CODE QUALITY",
+    title: "โค้ดที่ดีคือ\nโค้ดที่กลับมา\nอ่านแล้วเข้าใจ",
+    desc: "โค้ดที่ดีคือโค้ดที่ทั้งอ่านง่ายและทำงานเร็ว — ถ้า function ไหน query หนักหรืออ่านยากก็แก้ทันที ไม่ปล่อยให้สะสม",
+    bullets: ["ตั้งชื่อ function และ variable ให้สื่อความหมาย", "Query หนักต้องรู้ก่อน user รู้", "Refactor เมื่อมีโอกาส ไม่รอให้พัง", "Comment ไว้เสมอ เพราะตัวเองก็ลืม"],
+    cta: "ดูผลงาน",
     accent: "#10b981",
-    code: `// next.config.ts
-const config: NextConfig = {
-  images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 31536000,
-  },
-  experimental: {
-    optimizePackageImports: [
-      "framer-motion",
-      "lucide-react",
-    ],
-  },
-};
+    code: `// ❌ อ่านไม่รู้เรื่อง
+const d = await db.query(
+  \`SELECT * FROM t WHERE x = \${v}\`
+);
 
-// Measure: app/layout.tsx
-export function reportWebVitals(
-  metric: NextWebVitalsMetric
-) {
-  if (metric.label === "web-vital") {
-    analytics.track(metric.name, {
-      value: Math.round(metric.value),
-      rating: metric.rating,
-    });
-  }
-}`,
+// ✅ อ่านแล้วเข้าใจทันที
+const patient = await db.patient.findUnique({
+  where: { id: patientId },
+  select: { name: true, labResults: true },
+});
+
+// ❌ query ดึงทุกอย่างแล้วกรองใน JS
+const all = await db.record.findMany();
+const active = all.filter(r => r.active);
+
+// ✅ กรองที่ database ตั้งแต่แรก
+const active = await db.record.findMany({
+  where: { active: true },
+});`,
   },
 ] as const;
 
