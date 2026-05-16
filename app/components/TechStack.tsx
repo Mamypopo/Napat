@@ -3,13 +3,12 @@
 import { motion } from "framer-motion";
 import { useIsMobile, useIsTablet } from "../hooks/useMediaQuery";
 import {
-  SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer,
-  SiNodedotjs, SiGo, SiGraphql, SiTrpc,
-  SiPostgresql, SiPrisma, SiRedis,
+  SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiTailwindcss, SiBootstrap, SiVuedotjs,
+  SiNodedotjs, SiSocketdotio, SiPython,
+  SiPostgresql, SiMysql, SiMongodb, SiPrisma,
   SiDocker, SiVercel,
-  SiFigma, SiGit,
+  SiGit, SiPostman, SiSanity,
 } from "react-icons/si";
-import { FaAws } from "react-icons/fa";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -29,43 +28,47 @@ const GROUPS: Group[] = [
   {
     label: "Frontend",
     skills: [
-      { name: "React",         icon: <SiReact />,       primary: true  },
-      { name: "Next.js",       icon: <SiNextdotjs />,   primary: true  },
-      { name: "TypeScript",    icon: <SiTypescript />,  primary: true  },
-      { name: "Tailwind CSS",  icon: <SiTailwindcss />                 },
-      { name: "Framer Motion", icon: <SiFramer />                      },
+      { name: "Vue.js",      icon: <SiVuedotjs />,      primary: true },
+      { name: "React",       icon: <SiReact />,         primary: true },
+      { name: "Next.js",     icon: <SiNextdotjs />,     primary: true },
+      { name: "JavaScript",  icon: <SiJavascript />,    primary: true },
+      { name: "TypeScript",  icon: <SiTypescript />,    primary: true },
+      { name: "Tailwind",    icon: <SiTailwindcss />               },
+      { name: "Bootstrap",   icon: <SiBootstrap />                 },
     ],
   },
   {
     label: "Backend",
     skills: [
-      { name: "Node.js",  icon: <SiNodedotjs />, primary: true },
-      { name: "Go",       icon: <SiGo />,        primary: true },
-      { name: "tRPC",     icon: <SiTrpc />                     },
-      { name: "GraphQL",  icon: <SiGraphql />                  },
+      { name: "Node.js",    icon: <SiNodedotjs />,   primary: true },
+      { name: "Express",    icon: <span style={{ fontWeight: 700, fontSize: "11px" }}>Ex</span>, primary: true },
+      { name: "Socket.IO",  icon: <SiSocketdotio />              },
+      { name: "Python",     icon: <SiPython />                   },
     ],
   },
   {
     label: "Database",
     skills: [
+      { name: "MySQL",      icon: <SiMysql />,      primary: true },
       { name: "PostgreSQL", icon: <SiPostgresql />, primary: true },
-      { name: "Prisma",     icon: <SiPrisma />                    },
-      { name: "Redis",      icon: <SiRedis />                     },
+      { name: "MongoDB",    icon: <SiMongodb />                  },
+      { name: "Prisma",     icon: <SiPrisma />                   },
     ],
   },
   {
-    label: "DevOps",
+    label: "Cloud & DevOps",
     skills: [
-      { name: "Docker", icon: <SiDocker />,              primary: true },
-      { name: "Vercel", icon: <SiVercel />                            },
-      { name: "AWS",    icon: <FaAws />                               },
+      { name: "Docker", icon: <SiDocker />,         primary: true },
+      { name: "Azure",  icon: <span style={{ fontWeight: 700, fontSize: "11px" }}>Az</span>, primary: true },
+      { name: "Vercel", icon: <SiVercel />                       },
     ],
   },
   {
     label: "Tools",
     skills: [
-      { name: "Figma", icon: <SiFigma /> },
-      { name: "Git",   icon: <SiGit />   },
+      { name: "Git",     icon: <SiGit />,     primary: true },
+      { name: "Postman", icon: <SiPostman />              },
+      { name: "Sanity",  icon: <SiSanity />               },
     ],
   },
 ];
@@ -80,8 +83,8 @@ function SkillCard({ skill, delay = 0 }: { skill: Skill; delay?: number }) {
       transition={{ duration: 0.4, ease, delay }}
       style={{
         display: "flex", alignItems: "center", gap: 8,
-        padding: skill.primary ? "8px 12px" : "6px 10px",
-        background: skill.primary ? "var(--surface)" : "var(--badge)",
+        padding: "8px 12px",
+        background: "var(--surface)",
         border: `1px solid ${skill.primary ? "var(--hairline)" : "var(--hairline)"}`,
         borderRadius: "4px",
         cursor: "default",
@@ -96,21 +99,10 @@ function SkillCard({ skill, delay = 0 }: { skill: Skill; delay?: number }) {
         e.currentTarget.style.background = skill.primary ? "var(--surface)" : "var(--badge)";
       }}
     >
-      <span style={{
-        fontSize: skill.primary ? "15px" : "13px",
-        color: skill.primary ? "var(--text-high)" : "var(--text-muted)",
-        display: "flex", alignItems: "center",
-      }}>
+      <span style={{ fontSize: "14px", color: "var(--text-high)", display: "flex", alignItems: "center" }}>
         {skill.icon}
       </span>
-      <span style={{
-        ...MONO,
-        fontSize: skill.primary ? "11px" : "10px",
-        fontWeight: skill.primary ? 500 : 400,
-        letterSpacing: "0.06em",
-        color: skill.primary ? "var(--text-mid)" : "var(--text-subtle)",
-        whiteSpace: "nowrap",
-      }}>
+      <span style={{ ...MONO, fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em", color: "var(--text-mid)", whiteSpace: "nowrap" }}>
         {skill.name}
       </span>
     </motion.div>
