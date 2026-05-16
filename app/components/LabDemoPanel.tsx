@@ -38,19 +38,50 @@ function Brackets() {
   );
 }
 
+function computeTabStats(panelId: string, vals: Record<string, string>, age: number, gender: Gender) {
+  const panel = LAB_PANELS.find((p) => p.id === panelId)!;
+  let count = 0;
+  let hasCritical = false;
+  for (const item of panel.items) {
+    const v = vals[item.key] ?? "";
+    if (!v) continue;
+    if (item.options) {
+      if (getSelectStatus(v, item.normalValues ?? []) !== "N") count++;
+    } else {
+      const [low, high] = item.ref!(age, gender);
+      const num = parseFloat(v);
+      if (isNaN(num)) continue;
+      const s = getStatus(num, low, high, item.critLow, item.critHigh);
+      if (s !== "N") count++;
+      if (s === "LL" || s === "HH") hasCritical = true;
+    }
+  }
+  return { count, hasCritical };
+}
+
 export default function LabDemoPanel() {
   const [step, setStep] = useState<"info" | "lab">("info");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState<Gender | "">("");
   const [activeTab, setActiveTab] = useState("cbc");
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [allValues, setAllValues] = useState<Record<string, Record<string, string>>>({});
 
   const canProceed = age !== "" && parseInt(age) > 0 && gender !== "";
   const ageNum = parseInt(age) || 0;
   const genderVal = gender as Gender;
   const currentPanel = LAB_PANELS.find((p) => p.id === activeTab)!;
   const items = currentPanel.items;
+  const values = allValues[activeTab] ?? {};
   const hasAnyValue = items.some((item) => values[item.key] !== undefined && values[item.key] !== "");
+
+  function setValue(key: string, val: string) {
+    setAllValues((prev) => ({ ...prev, [activeTab]: { ...(prev[activeTab] ?? {}), [key]: val } }));
+  }
+  function resetTab() {
+    setAllValues((prev) => ({ ...prev, [activeTab]: {} }));
+  }
+
+  const anyCritical = LAB_PANELS.some((lp) => computeTabStats(lp.id, allValues[lp.id] ?? {}, ageNum, genderVal).hasCritical);
 
   return (
     <motion.div
@@ -76,6 +107,7 @@ export default function LabDemoPanel() {
           </span>
         </span>
       </div>
+
 
       {/* Body */}
       <div style={{ flex: 1, padding: "14px 20px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -160,18 +192,31 @@ export default function LabDemoPanel() {
               }}>
                 {/* Sub-tabs */}
                 <div style={{ display: "flex", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  {LAB_PANELS.map((lp) => (
-                    <button key={lp.id} onClick={() => { setActiveTab(lp.id); setValues({}); }} style={{
-                      ...MONO, fontSize: "9px", letterSpacing: "0.08em", padding: "6px 12px",
-                      background: activeTab === lp.id ? "rgba(255,255,255,0.05)" : "transparent",
-                      border: "none",
-                      borderBottom: activeTab === lp.id ? "2px solid #F04E00" : "2px solid transparent",
-                      color: activeTab === lp.id ? "#fff" : "rgba(255,255,255,0.25)",
-                      cursor: "pointer", transition: "all 0.15s",
-                    }}>
-                      {lp.label}
-                    </button>
-                  ))}
+                  {LAB_PANELS.map((lp) => {
+                    const { count, hasCritical } = computeTabStats(lp.id, allValues[lp.id] ?? {}, ageNum, genderVal);
+                    return (
+                      <button key={lp.id} onClick={() => setActiveTab(lp.id)} style={{
+                        ...MONO, fontSize: "9px", letterSpacing: "0.08em", padding: "6px 10px",
+                        background: activeTab === lp.id ? "rgba(255,255,255,0.05)" : "transparent",
+                        border: "none",
+                        borderBottom: activeTab === lp.id ? "2px solid #F04E00" : "2px solid transparent",
+                        color: activeTab === lp.id ? "#fff" : "rgba(255,255,255,0.25)",
+                        cursor: "pointer", transition: "all 0.15s",
+                        display: "flex", alignItems: "center", gap: 4,
+                      }}>
+                        {lp.label}
+                        {count > 0 && (
+                          <span style={{
+                            fontSize: "8px", padding: "1px 5px", borderRadius: "10px",
+                            background: hasCritical ? "#ef4444" : "#fb923c",
+                            color: "#fff", fontWeight: 700, lineHeight: 1.4,
+                          }}>
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Lab table */}
@@ -232,7 +277,7 @@ export default function LabDemoPanel() {
                           {isSelect ? (
                             <Select.Root
                               value={selVal}
-                              onValueChange={(v) => setValues((prev) => ({ ...prev, [item.key]: v }))}
+                              onValueChange={(v) => setValue(item.key, v)}
                             >
                               <Select.Trigger style={{
                                 ...MONO, width: "120px", display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -288,7 +333,7 @@ export default function LabDemoPanel() {
                               <input
                                 type="number" step={item.step}
                                 value={selVal}
-                                onChange={(e) => setValues((v) => ({ ...v, [item.key]: e.target.value }))}
+                                onChange={(e) => setValue(item.key, e.target.value)}
                                 style={{
                                   ...MONO, flex: 1, minWidth: 0,
                                   background: "rgba(255,255,255,0.05)",
@@ -323,16 +368,30 @@ export default function LabDemoPanel() {
                 )}
               </div>
 
-              <button
-                onClick={() => { setStep("info"); setValues({}); }}
-                style={{
-                  ...MONO, fontSize: "9px", letterSpacing: "0.08em",
-                  background: "transparent", border: "none",
-                  color: "rgba(255,255,255,0.65)", cursor: "pointer", textAlign: "left", padding: "6px 0 2px",
-                }}
-              >
-                ← เปลี่ยนข้อมูลผู้ป่วย ({gender === "M" ? "ชาย" : "หญิง"}, {age} ปี)
-              </button>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <button
+                  onClick={() => { setStep("info"); setAllValues({}); }}
+                  style={{
+                    ...MONO, fontSize: "9px", letterSpacing: "0.08em",
+                    background: "transparent", border: "none",
+                    color: "rgba(0,0,0,0.6)", cursor: "pointer", textAlign: "left", padding: "6px 0 2px",
+                  }}
+                >
+                  ← เปลี่ยนข้อมูลผู้ป่วย ({gender === "M" ? "ชาย" : "หญิง"}, {age} ปี)
+                </button>
+                {hasAnyValue && (
+                  <button
+                    onClick={resetTab}
+                    style={{
+                      ...MONO, fontSize: "9px", letterSpacing: "0.08em",
+                      background: "transparent", border: "none",
+                      color: "rgba(0,0,0,0.5)", cursor: "pointer", padding: "6px 0 2px",
+                    }}
+                  >
+                    RESET TAB ×
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -343,7 +402,22 @@ export default function LabDemoPanel() {
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "12px 20px", borderTop: "1px solid rgba(0,0,0,0.15)",
       }}>
-        <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>REF: WHO · ADULT RANGE</span>
+        {step === "lab" && anyCritical ? (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            style={{ display: "flex", alignItems: "center", gap: 6, background: "#fff", padding: "3px 10px", borderRadius: "2px" }}
+          >
+            <motion.span
+              animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }}
+              style={{ width: 5, height: 5, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }}
+            />
+            <span style={{ ...MONO, fontSize: "9px", letterSpacing: "0.1em", color: "#ef4444" }}>
+              CRITICAL VALUE — รายงานแพทย์ทันที
+            </span>
+          </motion.div>
+        ) : (
+          <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>REF: WHO · ADULT RANGE</span>
+        )}
         <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>HIS MODULE · LAB →</span>
       </div>
     </motion.div>
