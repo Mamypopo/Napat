@@ -417,7 +417,7 @@ export default function BentoProjects({ projects }: { projects: Project[] }) {
               color: "var(--text-high)",
             }}
           >
-            ผลงานที่คัดสรร
+            Projects
           </h2>
         </motion.div>
 

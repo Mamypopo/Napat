@@ -469,9 +469,9 @@ export default function ProjectDemo() {
             fontWeight: 700, letterSpacing: "-0.04em",
             lineHeight: 1.0, color: "#fff",
           }}>
-            เลือก project<br />
-            แล้วลองคุย<br />
-            <span style={{ color: activePanel.accent }}>กันเลย.</span>
+            เลือก demo<br />
+            แล้วลองเล่น<br />
+            <span style={{ color: activePanel.accent }}>ได้เลย.</span>
           </h2>
         </div>
         {!isMobile && (
@@ -480,8 +480,8 @@ export default function ProjectDemo() {
               fontSize: "17px", fontWeight: 300,
               color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: "380px",
             }}>
-              แต่ละโปรเจกต์มีบริบทและ stack ที่ต่างกัน — คลิกเพื่อดูรายละเอียด
-              และ explore วิธีที่ผมแก้ปัญหาในแต่ละ context
+              ลองเล่นได้เลย — Lab simulator จริงจาก HIS,
+              ถามผมได้เลย, และดู commit history
             </p>
           </div>
         )}
