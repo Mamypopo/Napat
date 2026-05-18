@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import type { Project } from "../lib/projects";
 import { imgWithFallback } from "../lib/sanity";
 import { useIsMobile } from "../hooks/useMediaQuery";
@@ -13,6 +14,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 /* ── Project modal — Classic Split ─────────────────────────── */
 
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const { t } = useTranslation();
   const allImages = project.images && project.images.length > 0 ? project.images : [project.img].filter(Boolean) as string[];
   const [activeImg, setActiveImg] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -170,7 +172,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                     letterSpacing: "0.06em",
                   }}
                 >
-                  Visit →
+                  {t("projects.visit")}
                 </a>
               )}
               {project.slug && (
@@ -185,7 +187,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                     fontFamily: "var(--font-mono), monospace", letterSpacing: "0.06em",
                   }}
                 >
-                  View Details
+                  {t("projects.view_details")}
                 </Link>
               )}
             </div>
@@ -237,6 +239,7 @@ function BentoCell({
   onOpenModal: (p: Project) => void;
   isMobile: boolean;
 }) {
+  const { t } = useTranslation();
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -312,7 +315,7 @@ function BentoCell({
               padding: "2px 8px",
             }}
           >
-            {isLarge ? "Case Study" : "Project"}
+            {isLarge ? t("projects.case_study_badge") : t("projects.project_badge")}
           </span>
         </div>
         <h3
@@ -380,6 +383,7 @@ function BentoCell({
 /* ── Main ──────────────────────────────────────────────────── */
 
 export default function BentoProjects({ projects }: { projects: Project[] }) {
+  const { t } = useTranslation();
   const headRef = useRef(null);
   const headInView = useInView(headRef, { once: true, margin: "-60px" });
   const [activeModal, setActiveModal] = useState<Project | null>(null);
@@ -408,7 +412,7 @@ export default function BentoProjects({ projects }: { projects: Project[] }) {
           animate={headInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease }}
         >
-          <p className="eyeline" style={{ marginBottom: "8px" }}>Selected Work</p>
+          <p className="eyeline" style={{ marginBottom: "8px" }}>{t("projects.selected_work")}</p>
           <h2
             style={{
               fontSize: "clamp(28px, 4vw, 48px)",
@@ -417,7 +421,7 @@ export default function BentoProjects({ projects }: { projects: Project[] }) {
               color: "var(--text-high)",
             }}
           >
-            Projects
+            {t("projects.heading")}
           </h2>
         </motion.div>
 
@@ -428,7 +432,7 @@ export default function BentoProjects({ projects }: { projects: Project[] }) {
           style={{ display: "flex", alignItems: "center", gap: "16px" }}
         >
           <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: "var(--text-muted)", letterSpacing: "0.08em" }}>
-            {large.length} CASE STUDIES · {small.length} PROJECTS
+            {t("projects.count_label", { large: large.length, small: small.length })}
           </span>
         </motion.div>
       </div>
@@ -456,7 +460,7 @@ export default function BentoProjects({ projects }: { projects: Project[] }) {
           borderBottom: "1px solid var(--hairline)",
         }}
       >
-        <p className="eyeline">Side Projects</p>
+        <p className="eyeline">{t("projects.side_projects")}</p>
       </div>
 
       {/* Small projects */}

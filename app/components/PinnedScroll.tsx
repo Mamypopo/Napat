@@ -7,19 +7,15 @@ import {
   useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/* ── Items ────────────────────────────────────────────────── */
-const items = [
+/* ── Non-translatable config ──────────────────────────────── */
+const ITEMS_CONFIG = [
   {
     num: "01",
-    label: "DESIGN SYSTEM",
-    title: "เริ่มจาก\nโครงสร้าง\nก่อนเสมอ",
-    desc: "เริ่มจาก token และโครงสร้างโค้ดก่อนเสมอ — folder structure ชัด, component แยก concern ดี ทำให้ตัวเองกลับมาอ่าน 3 เดือนข้างหน้าแล้วยังรู้เรื่อง",
-    bullets: ["Design token ก่อน component เสมอ", "Folder structure ที่ทุกคนเดาได้ถูก", "Component รับผิดชอบแค่สิ่งเดียว", "ไม่มี magic number ใน codebase"],
-    cta: "ดูผลงาน",
     accent: "#553F83",
     code: `/* โครงสร้างที่ใช้จริง */
 src/
@@ -48,11 +44,6 @@ src/
   },
   {
     num: "02",
-    label: "FRONTEND DEV",
-    title: "UI ที่ดีคือ\nUI ที่ไม่ต้อง\nอธิบาย",
-    desc: "ทำให้ทุก interaction รู้สึก smooth และ intuitive ตั้งแต่ปุ่มกดจนถึง error message — UX ที่ดีคือ user ไม่รู้สึกว่ามีอะไรผิดปกติเลย",
-    bullets: ["Animation มีเหตุผล ไม่ใช่แค่ effect", "Error message ที่คนอ่านแล้วเข้าใจทันที", "Mobile-first ทุก component", "ทดสอบบน device จริงเสมอ"],
-    cta: "ดูผลงาน",
     accent: "#F04E00",
     code: `<!-- transition ที่ทำให้รู้สึก smooth -->
 <Transition name="fade">
@@ -82,11 +73,6 @@ src/
   },
   {
     num: "03",
-    label: "BACKEND & API",
-    title: "ออกแบบ\nจาก use case\nไม่ใช่ framework",
-    desc: "ออกแบบ API จาก use case ก่อน — structure ชัด error handling ครบ ทำให้ frontend ทำงานง่ายและ debug เร็ว แม้จะทำคนเดียว",
-    bullets: ["ออกแบบ schema ก่อน code เสมอ", "Validation ทุก input ที่มาจากข้างนอก", "Error message ที่ frontend เอาไปใช้ต่อได้", "API doc ที่ทันสมัยอยู่เสมอ"],
-    cta: "ดูผลงาน",
     accent: "#0085FF",
     code: `// ออกแบบ response ให้ frontend ใช้ง่าย
 export async function GET(req: Request) {
@@ -112,11 +98,6 @@ export async function GET(req: Request) {
   },
   {
     num: "04",
-    label: "DEPLOYMENT",
-    title: "Deploy แล้ว\nไม่ต้อง\nนั่งเฝ้า",
-    desc: "Deploy ไม่ใช่ขั้นตอนที่ต้องลุ้น — แยก Dev กับ Production ชัด จัดการ env ให้ดี แล้ว push ได้อย่างสบายใจ",
-    bullets: ["Dev / Production แยกชัดเจนเสมอ", "Secret ไม่เคย hardcode ใน code", "Deploy แล้วไม่ต้องนั่งเฝ้า", "ถ้าพังก็รู้ทันที ไม่ใช่รู้จาก user"],
-    cta: "ดูผลงาน",
     accent: "#FFE600",
     code: `# .env.local (ไม่เคย commit)
 DATABASE_URL=postgresql://...
@@ -144,11 +125,6 @@ services:
   },
   {
     num: "05",
-    label: "CODE QUALITY",
-    title: "โค้ดที่ดีคือ\nโค้ดที่กลับมา\nอ่านแล้วเข้าใจ",
-    desc: "โค้ดที่ดีคือโค้ดที่ทั้งอ่านง่ายและทำงานเร็ว — ถ้า function ไหน query หนักหรืออ่านยากก็แก้ทันที ไม่ปล่อยให้สะสม",
-    bullets: ["ตั้งชื่อ function และ variable ให้สื่อความหมาย", "Query หนักต้องรู้ก่อน user รู้", "Refactor เมื่อมีโอกาส ไม่รอให้พัง", "Comment ไว้เสมอ เพราะตัวเองก็ลืม"],
-    cta: "ดูผลงาน",
     accent: "#10b981",
     code: `// ❌ อ่านไม่รู้เรื่อง
 const d = await db.query(
@@ -170,7 +146,10 @@ const active = await db.record.findMany({
   where: { active: true },
 });`,
   },
-] as const;
+];
+
+type PinnedItemText = { label: string; title: string; desc: string; bullets: string[] };
+type PinnedItem = (typeof ITEMS_CONFIG)[number] & PinnedItemText;
 
 /* ── Dot grid ─────────────────────────────────────────────── */
 function DotGrid() {
@@ -195,7 +174,7 @@ function isLight(hex: string) {
 }
 
 /* ── Code panel ───────────────────────────────────────────── */
-function CodeVisual({ item }: { item: (typeof items)[number] }) {
+function CodeVisual({ item }: { item: PinnedItem }) {
   const lines = item.code.split("\n");
   return (
     <div style={{
@@ -257,9 +236,13 @@ function CodeVisual({ item }: { item: (typeof items)[number] }) {
 
 /* ── Main component ───────────────────────────────────────── */
 export default function PinnedScroll() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const isMobile = useIsMobile();
+
+  const itemTexts = t("pinned.items", { returnObjects: true }) as PinnedItemText[];
+  const items: PinnedItem[] = ITEMS_CONFIG.map((cfg, i) => ({ ...cfg, ...itemTexts[i] }));
 
   const N = items.length;
 
@@ -289,9 +272,9 @@ export default function PinnedScroll() {
       {/* ── Header ─────────────────────────────────────────────── */}
       {isMobile ? (
         <div style={{ padding: "40px 24px 32px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: "12px" }}>How I Work</p>
+          <p style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: "12px" }}>{t("pinned.eyeline")}</p>
           <h2 style={{ fontSize: "clamp(28px, 7vw, 40px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
-            วิธีที่ผมทำงาน<br /><span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
+            {t("pinned.heading1")}<br /><span style={{ color: "#553F83" }}>{t("pinned.heading2")}</span>
           </h2>
         </div>
       ) : (
@@ -304,16 +287,16 @@ export default function PinnedScroll() {
           <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "28px 32px", display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: "#553F83" }}>02</span>
             <span style={{ display: "block", width: "20px", height: "1px", background: "rgba(255,255,255,0.12)" }} />
-            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>How I Work</span>
+            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>{t("pinned.eyeline")}</span>
           </div>
           <div style={{ borderRight: "1px solid rgba(255,255,255,0.08)", padding: "48px 56px" }}>
             <h2 style={{ fontSize: "clamp(32px, 3.5vw, 52px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#fff" }}>
-              วิธีที่ผมทำงาน<br /><span style={{ color: "#553F83" }}>ตั้งแต่ต้นจนจบ</span>
+              {t("pinned.heading1")}<br /><span style={{ color: "#553F83" }}>{t("pinned.heading2")}</span>
             </h2>
           </div>
           <div style={{ padding: "48px 56px", display: "flex", alignItems: "center" }}>
             <p style={{ fontSize: "15px", fontWeight: 300, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: "380px" }}>
-              Scroll เพื่อ explore แต่ละ discipline — หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ
+              {t("pinned.subtitle")}
             </p>
           </div>
         </div>
@@ -395,7 +378,6 @@ export default function PinnedScroll() {
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.opacity = "0.65"; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.opacity = "0.35"; }}
               >
-                {/* Number */}
                 <span style={{
                   fontFamily: "var(--font-mono), monospace",
                   fontSize: "10px",
@@ -406,8 +388,6 @@ export default function PinnedScroll() {
                 }}>
                   {it.num}
                 </span>
-
-                {/* Label */}
                 <span style={{
                   fontFamily: "var(--font-mono), monospace",
                   fontSize: "10px",
@@ -418,8 +398,6 @@ export default function PinnedScroll() {
                 }}>
                   {it.label}
                 </span>
-
-                {/* Active dot */}
                 {isActive && (
                   <motion.span
                     layoutId="nav-dot"
@@ -484,7 +462,6 @@ export default function PinnedScroll() {
               exit={{ opacity: 0, y: -24 }}
               transition={{ duration: 0.4, ease }}
             >
-              {/* Eyeline */}
               <p style={{
                 fontFamily: "var(--font-mono), monospace",
                 fontSize: "10px", letterSpacing: "0.12em",
@@ -494,8 +471,6 @@ export default function PinnedScroll() {
               }}>
                 {item.label}
               </p>
-
-              {/* Title */}
               <h2 style={{
                 fontSize: "clamp(32px, 3.5vw, 52px)",
                 fontWeight: 700,
@@ -507,8 +482,6 @@ export default function PinnedScroll() {
               }}>
                 {item.title}
               </h2>
-
-              {/* Description */}
               <p style={{
                 fontSize: "16px", fontWeight: 300,
                 color: "rgba(255,255,255,0.5)",
@@ -518,8 +491,6 @@ export default function PinnedScroll() {
               }}>
                 {item.desc}
               </p>
-
-              {/* Bullets */}
               <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "40px" }}>
                 {item.bullets.map((b) => (
                   <li key={b} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -540,8 +511,6 @@ export default function PinnedScroll() {
                   </li>
                 ))}
               </ul>
-
-              {/* CTA */}
               <a
                 href="#work"
                 style={{
@@ -569,7 +538,7 @@ export default function PinnedScroll() {
                   e.currentTarget.style.color = item.accent;
                 }}
               >
-                {item.cta} →
+                {t("pinned.cta")} →
               </a>
             </motion.div>
           </AnimatePresence>

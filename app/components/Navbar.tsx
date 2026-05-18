@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { TextShimmer } from "./TextShimmer";
+import LangToggle from "./LangToggle";
 import type { SiteSettings } from "../lib/sanity";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 
 const NAV_LINKS = [
-  { href: "#work",    label: "ผลงาน"   },
-  { href: "#about",   label: "เกี่ยวกับ" },
-  { href: "#contact", label: "ติดต่อ"   },
+  { href: "#work",    key: "nav.work"    },
+  { href: "#about",   key: "nav.about"   },
+  { href: "#contact", key: "nav.contact" },
 ];
 
 function getInitials(name?: string | null) {
@@ -23,6 +25,7 @@ function getInitials(name?: string | null) {
 }
 
 export default function Navbar({ settings }: { settings?: SiteSettings | null }) {
+  const { t } = useTranslation();
   const [scrolled, setScrolled]         = useState(false);
   const [isDark, setIsDark]             = useState(true);
   const [menuOpen, setMenuOpen]         = useState(false);
@@ -164,7 +167,7 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
             borderBottom: "1px solid var(--hairline)",
             padding: "8px 0 16px",
           }}>
-            {NAV_LINKS.map(({ href, label }) => (
+            {NAV_LINKS.map(({ href, key }) => (
               <Link
                 key={href}
                 href={href}
@@ -178,14 +181,17 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
                   borderBottom: "1px solid var(--hairline)",
                 }}
               >
-                {label}
+                {t(key)}
               </Link>
             ))}
             <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                {isDark ? "Dark mode" : "Light mode"}
-              </span>
-              {themeBtn}
+              <LangToggle />
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {isDark ? t("navbar.dark") : t("navbar.light")}
+                </span>
+                {themeBtn}
+              </div>
             </div>
           </div>
         )}
@@ -198,7 +204,7 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
     <header style={headerStyle}>
       {logo}
       <nav style={{ display: "flex", gap: "32px" }}>
-        {NAV_LINKS.map(({ href, label }) => {
+        {NAV_LINKS.map(({ href, key }) => {
           const isActive = activeSection === href.replace("#", "");
           const color = isActive ? (onHero ? "#fff" : "var(--text-high)") : linkColor;
           return (
@@ -213,7 +219,7 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
               onMouseEnter={(e) => (e.currentTarget.style.color = linkHover)}
               onMouseLeave={(e) => (e.currentTarget.style.color = color)}
             >
-              {label}
+              {t(key)}
               {isActive && (
                 <span style={{
                   position: "absolute", bottom: "-4px", left: 0, right: 0,
@@ -224,7 +230,10 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
           );
         })}
       </nav>
-      {themeBtn}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <LangToggle />
+        {themeBtn}
+      </div>
     </header>
   );
 }

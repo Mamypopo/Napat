@@ -3,16 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import type { SiteSettings } from "../lib/sanity";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const STATS: Array<{ label: string; to: number | null; suffix: string }> = [
-  { label: "โปรเจกต์ที่ส่งมอบ", to: 24, suffix: "+"  },
-  { label: "ประสบการณ์",          to: 5,  suffix: "yr" },
-  { label: "ลูกค้าที่พึงพอใจ",    to: 12, suffix: ""   },
-  { label: "กาแฟที่ดื่มไป",       to: null, suffix: "" },
+const STATS_NUMBERS = [
+  { to: 24,   suffix: "+" },
+  { to: 5,    suffix: "yr" },
+  { to: 12,   suffix: "" },
+  { to: null, suffix: "" },
 ];
 
 function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
@@ -46,6 +47,7 @@ const skills = [
 ];
 
 export default function AboutSection({ settings }: { settings?: SiteSettings | null }) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
 
   const STATS_DATA = settings?.stats?.length
@@ -54,7 +56,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
         to: s.value ? (Number(s.value.replace(/\D/g, "")) || null) : null,
         suffix: s.value ? s.value.replace(/[0-9]/g, "") : "",
       }))
-    : STATS;
+    : STATS_NUMBERS.map((s, i) => ({ ...s, label: t(`about.stats_${i}`) }));
 
   return (
     <section
@@ -123,10 +125,10 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
           transition={{ duration: 0.65, ease, delay: 0.1 }}
           style={{ padding: isMobile ? "36px 24px" : "72px 64px", display: "flex", flexDirection: "column", justifyContent: "center" }}
         >
-          <p className="eyeline" style={{ marginBottom: "12px" }}>About Me</p>
+          <p className="eyeline" style={{ marginBottom: "12px" }}>{t("about.eyeline")}</p>
           {(settings?.nickname || settings?.name) && (
             <p style={{ fontSize: "15px", color: "var(--text-muted)", marginBottom: "16px" }}>
-              สวัสดี ผมชื่อ{" "}
+              {t("about.greeting")}{" "}
               <span style={{ color: "var(--text-high)", fontWeight: 600 }}>
                 {settings.nickname ?? settings.name}
               </span>{" "}
@@ -142,7 +144,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
               marginBottom: "28px",
             }}
           >
-            Precision<br />meets<br /><span style={{ color: "#553F83" }}>Craft.</span>
+            {t("about.h1")}<br />{t("about.h2")}<br /><span style={{ color: "#553F83" }}>{t("about.h3")}</span>
           </h2>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "16px" }}>
             {settings?.bio ?? "ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ “รู้สึกดี” — ไม่ใช่แค่ใช้งานได้ แต่ต้องมีความละเอียดอ่อนในทุกรายละเอียด ตั้งแต่ typography spacing จนถึง database query plan"}
@@ -205,7 +207,7 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
               onMouseEnter={(e) => (e.currentTarget.style.background = "#6b52a3")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "#553F83")}
             >
-              ทำงานด้วยกัน →
+              {t("about.cta")}
             </a>
           </div>
         </motion.div>

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { TextScramble } from "./TextScramble";
 import type { SiteSettings } from "../lib/sanity";
@@ -67,6 +68,7 @@ function MagneticButton({
 }
 
 export default function Hero({ settings }: { settings?: SiteSettings | null }) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 800], ["0%", "-20%"]);
@@ -165,7 +167,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
                 transition={{ duration: 1.4, repeat: Infinity }}
                 style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", flexShrink: 0, display: "inline-block" }}
               />
-              {settings?.availabilityText ?? "Available · Freelance & Full-time"}
+              {settings?.availabilityText ?? t("hero.availability")}
             </motion.span>
           </motion.div>
         )}
@@ -179,7 +181,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
           transition={{ duration: 0.6, ease, delay: 0.1 }}
         >
           <TextScramble
-            text={[settings?.jobTitle, settings?.location, new Date().getFullYear().toString()].filter(Boolean).join(" · ") || "Full-Stack Developer · Bangkok · 2026"}
+            text={[settings?.jobTitle, settings?.location, new Date().getFullYear().toString()].filter(Boolean).join(" · ") || t("hero.eyeline")}
             delay={0.5}
           />
         </motion.p>
@@ -218,7 +220,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
               maxWidth: "400px",
             }}
           >
-            {settings?.heroTagline ?? settings?.bio ?? "ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure"}
+            {settings?.heroTagline ?? settings?.bio ?? t("hero.tagline")}
           </p>
 
           <div style={{ display: "flex", gap: "12px" }}>
@@ -239,7 +241,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
                   textDecoration: "none",
                 }}
               >
-                ดูผลงาน
+                {t("hero.cta_work")}
               </a>
             ) : (
               <MagneticButton
@@ -267,7 +269,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
                   e.currentTarget.style.borderColor = "#553F83";
                 }}
               >
-                ดูผลงาน
+                {t("hero.cta_work")}
               </MagneticButton>
             )}
             <a
@@ -288,7 +290,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#553F83")}
               onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)")}
             >
-              ติดต่อ
+              {t("hero.cta_contact")}
             </a>
           </div>
         </motion.div>

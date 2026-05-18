@@ -2,116 +2,63 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import LabDemoPanel from "./LabDemoPanel";
 import GitHeatmap from "./GitHeatmap";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/* ── Panel data ───────────────────────────────────────────── */
-const panels = [
-  {
-    id: "frontend",
-    label: "LAB MODULE · HIS",
-    context: "VUE.JS, NODE.JS",
-    accent: "#F04E00",
-    questions: [
-      "HOW DID YOU BUILD THE LAB MODULE?",
-      "HOW ARE REFERENCE RANGES CALCULATED?",
-      "HOW DID YOU HANDLE CRITICAL VALUES?",
-    ],
-    status: "LIVE AT SEMED",
-    detail: "Hospital Information System",
-  },
-  {
-    id: "fullstack",
-    label: "ASK ME ANYTHING",
-    context: "NAPAT · PORTFOLIO",
-    accent: "#FFE600",
-    questions: [],
-    status: "ONLINE",
-    detail: "",
-  },
-  {
-    id: "mobile",
-    label: "COMMIT ACTIVITY",
-    context: "GITHUB · 2024",
-    accent: "#0085FF",
-    questions: [],
-    status: "ACTIVE",
-    detail: "",
-  },
-] as const;
-
-type PanelId = (typeof panels)[number]["id"];
-
-/* ── Q&A data ─────────────────────────────────────────────── */
-const BLOCKED_WORDS = ["หี", "หน้าหี", "สัตว์", "ไอ้สัตว์", "เย็ด", "มึง", "กู", "หำ", "ควย", "สัส", "fuck", "shit", "bitch", "asshole"];
-
-const QA = [
-  // งาน
-  { q: "ทำงานที่ไหนอยู่?",          keywords: ["ทำงาน", "semed", "บริษัท", "ที่ไหน", "ที่ทำงาน", "งานอะไร"],    answer: "ตอนนี้ทำที่ Semed Living Care Hospital ครับ ตำแหน่ง Full-Stack Developer ทำมาตั้งแต่ปี 2024" },
-  { q: "ใช้ stack อะไรบ้าง?",       keywords: ["stack", "เทค", "ภาษา", "tech", "ใช้อะไร", "framework"],         answer: "ถนัด Vue.js, React, Next.js ครับ ฝั่ง backend ใช้ Node.js กับ Python ส่วน database ก็ MySQL PostgreSQL" },
-  { q: "มีโปรเจคอะไรบ้าง?",         keywords: ["โปรเจค", "ผลงาน", "project", "ทำอะไร", "งานที่ผ่านมา"],         answer: "ที่ Semed ทำมาประมาณ 10 กว่าระบบครับ ทำคนเดียวหมดเลย ส่วนตัวก็มี QR-Gen ที่ใช้งานจริงอยู่ แล้วก็ MooPrompt FlowTrak" },
-  { q: "จบการศึกษาจากไหน?",         keywords: ["จบ", "เรียน", "มหาวิทยาลัย", "การศึกษา", "degree", "วุฒิ"],      answer: "จบ CS จากมหาวิทยาลัยรังสิตครับ ปี 2025" },
-  { q: "พร้อมรับงานไหม?",           keywords: ["ว่าง", "รับงาน", "available", "พร้อม", "hire", "จ้าง", "สมัคร"],  answer: "พร้อมครับ ทั้ง freelance full-time remote หรือ onsite ติดต่อมาได้เลยที่ contact ด้านล่าง" },
-  { q: "ทำงานนอกเวลาได้ไหม?",       keywords: ["นอกเวลา", "ล่วงเวลา", "ot", "วันหยุด", "overtime"],              answer: "ได้บางครั้งครับ ถ้าจำเป็นจริงๆ แต่ก็ขึ้นอยู่กับสถานการณ์ด้วย" },
-  { q: "เงินเดือนที่ต้องการ?",      keywords: ["เงินเดือน", "salary", "ค่าตอบแทน", "รายได้"],                    answer: "ขึ้นอยู่กับ scope งานและบริษัทครับ คุยกันได้เลย" },
-
-  // ตัวตน
-  { q: "ชื่ออะไร?",                 keywords: ["ชื่อ", "name", "เรียกว่า", "นามสกุล"],                            answer: "ชื่อณภัทร แย้มบู่ครับ เรียก เจเจ หรือ JJAY ก็ได้" },
-  { q: "อายุเท่าไหร่?",             keywords: ["อายุ", "age", "กี่ปี", "เกิด"],                                    answer: "22 ปีครับ" },
-  { q: "อยู่ที่ไหน?",               keywords: ["อยู่", "ที่อยู่", "จังหวัด", "location", "กรุงเทพ"],               answer: "อยู่กรุงเทพครับ ไป onsite ได้หรือจะ remote ก็โอเค" },
-
-  // งานอดิเรก
-  { q: "งานอดิเรกคืออะไร?",         keywords: ["งานอดิเรก", "hobby", "ว่างทำอะไร", "อดิเรก", "เวลาว่าง"],         answer: "ส่วนใหญ่เล่นเกมครับ นอกนั้นก็ดูหนัง หรือออกไปกินข้าวกับเพื่อน" },
-  { q: "เล่นเกมไหม?",               keywords: ["เกม", "game", "pubg", "gaming", "เล่นเกม"],                        answer: "เล่นครับ ตอนนี้เล่น PUBG เป็นหลัก ชอบแนว FPS ยิงกันจ๋าๆ" },
-  { q: "ดูหนังไหม?",                keywords: ["หนัง", "ซีรีส์", "ดูอะไร", "netflix", "movie"],                   answer: "ดูครับ ชอบแนว action ยิงกันจ๋าๆ พวก John Wick Extraction อะไรแบบนี้" },
-  { q: "ชอบกินอะไร?",               keywords: ["กิน", "อาหาร", "food", "ชอบกิน", "ร้านอาหาร"],                    answer: "ชอบหมูกระทะกับชาบูครับ กินได้บ่อยมาก" },
-  { q: "ชอบดื่มอะไร?",              keywords: ["ดื่ม", "เบียร์", "เครื่องดื่ม", "beer", "drink"],                 answer: "ชอบเบียร์ครับ กินกับเพื่อนบ้างตามโอกาสมั้ง" },
-
-  // เป้าหมาย
-  { q: "เป้าหมายในชีวิตคืออะไร?",   keywords: ["เป้าหมาย", "goal", "อนาคต", "ฝัน", "อยากเป็น"],                  answer: "อยากมีงานมั่นคง มีธุรกิจของตัวเอง มีครอบครัว ใช้ชีวิตได้แบบที่อยากเป็น ฟังดูธรรมดาแต่ก็แค่อยากทำให้ได้จริงๆ ครับ" },
-  { q: "เป้าหมายด้านการงาน?",       keywords: ["เป้าหมายงาน", "career", "อาชีพ", "ระยะยาว", "developer"],          answer: "อยากโตเป็น Senior Developer และมี side project ที่ทำรายได้จริงๆ ได้ครับ" },
+/* ── Panel config (non-translatable) ─────────────────────── */
+const PANEL_CONFIG = [
+  { id: "frontend"  as const, accent: "#F04E00" },
+  { id: "fullstack" as const, accent: "#FFE600" },
+  { id: "mobile"    as const, accent: "#0085FF" },
 ];
+type PanelId = "frontend" | "fullstack" | "mobile";
+type PanelDisplay = { id: PanelId; accent: string; label: string };
 
-const FALLBACK = "ยังไม่ค่อยเข้าใจคำถามครับ\nลองถามใหม่ หรือติดต่อผมโดยตรง\nที่ contact section ด้านล่างได้เลย";
+/* ── Chat types ───────────────────────────────────────────── */
+type QAItem = { q: string; keywords: string[]; answer: string };
+type Message = { role: "user" | "bot"; text: string };
 
-const COMMANDS: Record<string, string> = {
-  "/help":    "คำสั่งที่ใช้ได้:\n/help · /about · /stack · /work · /contact · /clear",
-  "/about":   "ชื่อณภัทร แย้มบู่ (เจเจ) ครับ\nFull-Stack Developer ที่ Semed\nจบ CS มหาวิทยาลัยรังสิต ปี 2025",
-  "/stack":   "Frontend: Vue.js, React, Next.js\nBackend: Node.js, Python\nDB: MySQL, PostgreSQL\nOther: Docker, AWS, Prisma",
-  "/work":    "ที่ Semed: 10+ ระบบ solo\nPersonal: QR-Gen (live), MooPrompt,\nFlowTrak, Senior Project",
-  "/contact": "ติดต่อได้ที่ contact section ด้านล่างครับ\nหรือ email โดยตรงได้เลย",
-  "/beer":    "นัดวันมาเลยครับ",
-  "/clear":   "",
-};
+/* ── Blocked words (language-agnostic) ───────────────────── */
+const BLOCKED_WORDS = ["หี", "หน้าหี", "สัตว์", "ไอ้สัตว์", "เย็ด", "มึง", "กู", "หำ", "ควย", "สัส", "fuck", "shit", "bitch", "asshole"];
 
 function isBlocked(text: string): boolean {
   const low = text.toLowerCase();
   return BLOCKED_WORDS.some((w) => low.includes(w));
 }
 
-function findAnswer(q: string) {
+function findAnswer(q: string, qa: QAItem[], fallback: string): string {
   const low = q.toLowerCase().replace(/[?!.,]/g, "");
   const words = low.split(/\s+/);
-  // score each QA by how many keywords match
-  let best = { score: 0, answer: FALLBACK };
-  for (const qa of QA) {
-    const score = qa.keywords.reduce((s, k) => {
-      if (low.includes(k)) return s + 2;       // full phrase match = higher score
+  let best = { score: 0, answer: fallback };
+  for (const item of qa) {
+    const score = item.keywords.reduce((s, k) => {
+      if (low.includes(k)) return s + 2;
       if (words.some((w) => w.includes(k) || k.includes(w))) return s + 1;
       return s;
     }, 0);
-    if (score > best.score) best = { score, answer: qa.answer };
+    if (score > best.score) best = { score, answer: item.answer };
   }
   return best.answer;
 }
 
-type Message = { role: "user" | "bot"; text: string };
+/* ── On-accent map ────────────────────────────────────────── */
+const ON_ACCENT: Record<string, { fg: string; fgMuted: string; fgFaint: string; line: string; badge: string }> = {
+  "#F04E00": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
+  "#FFE600": { fg: "#0F0D12", fgMuted: "rgba(15,13,18,0.65)",   fgFaint: "rgba(15,13,18,0.35)",   line: "rgba(0,0,0,0.12)", badge: "rgba(0,0,0,0.08)" },
+  "#0085FF": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
+};
 
-/* ── Chat panel (yellow — same visual as ActiveContent) ───── */
+/* ── Chat panel ───────────────────────────────────────────── */
 function ChatPanel() {
+  const { t } = useTranslation();
+  const qa = t("chat.qa", { returnObjects: true }) as QAItem[];
+  const commands = t("chat.commands", { returnObjects: true }) as Record<string, string>;
+  const fallback = t("chat.fallback");
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -128,16 +75,16 @@ function ChatPanel() {
     if (!text.trim() || isTyping) return;
     if (text.trim() === "/clear") { setMessages([]); setInput(""); return; }
     if (text.trim() === "/") {
-      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: COMMANDS["/help"] }]);
+      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: commands["/help"] ?? "" }]);
       setInput("");
       return;
     }
     setInput("");
     if (isBlocked(text)) {
-      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: "ไม่ตอบคำถามแบบนี้ครับ" }]);
+      setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: t("chat.blocked") }]);
       return;
     }
-    const answer = COMMANDS[text.trim().toLowerCase()] ?? findAnswer(text);
+    const answer = commands[text.trim().toLowerCase()] ?? findAnswer(text, qa, fallback);
     setMessages((prev) => [...prev, { role: "user", text }, { role: "bot", text: "" }]);
     setIsTyping(true);
     let i = 0;
@@ -165,12 +112,12 @@ function ChatPanel() {
       transition={{ duration: 0.25 }}
       style={{ display: "flex", flexDirection: "column", height: "100%" }}
     >
-      {/* Header — same as ActiveContent */}
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${on.line}` }}>
-        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: on.fgMuted }}>AGENT CONTEXT</span>
+        <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.1em", color: on.fgMuted }}>{t("chat.agent_context")}</span>
         <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.08em", color: on.fgMuted }}>
-          CURRENT CONTEXT:{" "}
-          <span style={{ background: on.fg, color: "#FFE600", padding: "2px 8px", borderRadius: "2px" }}>NAPAT · PORTFOLIO</span>
+          {t("chat.current_context")}{" "}
+          <span style={{ background: on.fg, color: "#FFE600", padding: "2px 8px", borderRadius: "2px" }}>{t("demo.panel_fullstack_ctx")}</span>
         </span>
       </div>
 
@@ -190,14 +137,14 @@ function ChatPanel() {
                 initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 style={{ fontFamily: "var(--font-mono), monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", marginBottom: "8px" }}
               >
-                ASK ME ANYTHING
+                {t("chat.ask_label")}
               </motion.p>
-              {QA.map((qa, i) => (
+              {qa.map((item, i) => (
                 <motion.button
-                  key={qa.q}
+                  key={i}
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.12 + i * 0.08, ease }}
-                  onClick={() => handleSend(qa.q)}
+                  onClick={() => handleSend(item.q)}
                   style={{
                     fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.06em",
                     padding: "7px 12px", background: "rgba(255,255,255,0.05)",
@@ -208,7 +155,7 @@ function ChatPanel() {
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
                 >
-                  {qa.q}
+                  {item.q}
                 </motion.button>
               ))}
             </>
@@ -217,7 +164,7 @@ function ChatPanel() {
               {messages.map((msg, i) => (
                 <div key={i} style={{ display: "flex", flexDirection: "column", gap: "2px", alignItems: msg.role === "user" ? "flex-end" : "flex-start" }}>
                   <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "8px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.2)" }}>
-                    {msg.role === "user" ? "YOU" : "NAPAT"}
+                    {msg.role === "user" ? t("chat.msg_you") : t("chat.msg_napat")}
                   </span>
                   <div style={{
                     maxWidth: "85%", padding: "8px 12px", borderRadius: "2px",
@@ -243,9 +190,8 @@ function ChatPanel() {
 
         {/* Input bar */}
         <div style={{ display: "flex", gap: "8px", marginTop: "8px", position: "relative" }}>
-          {/* Command suggestions — floats above input */}
           {input.startsWith("/") && (() => {
-            const filtered = Object.keys(COMMANDS).filter((cmd) => cmd.startsWith(input.toLowerCase()));
+            const filtered = Object.keys(commands).filter((cmd) => cmd.startsWith(input.toLowerCase()));
             if (filtered.length === 0) return null;
             return (
               <div style={{
@@ -279,13 +225,13 @@ function ChatPanel() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 if (input.startsWith("/")) {
-                  const filtered = Object.keys(COMMANDS).filter((cmd) => cmd.startsWith(input.toLowerCase()));
+                  const filtered = Object.keys(commands).filter((cmd) => cmd.startsWith(input.toLowerCase()));
                   if (filtered.length === 1) { handleSend(filtered[0]); return; }
                 }
                 handleSend(input);
               }
             }}
-            placeholder="ASK THE AI AGENT A QUESTION..."
+            placeholder={t("chat.placeholder")}
             disabled={isTyping}
             style={{
               flex: 1, fontFamily: "var(--font-mono), monospace", fontSize: "10px", letterSpacing: "0.06em",
@@ -315,11 +261,11 @@ function ChatPanel() {
         <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: on.fgMuted }}>
           STATUS:{" "}
           <span style={{ background: on.fg, color: "#FFE600", padding: "2px 8px", borderRadius: "2px" }}>
-            {isTyping ? "TYPING..." : "ONLINE"}
+            {isTyping ? t("chat.typing") : t("chat.online")}
           </span>
         </span>
         <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: "10px", color: on.fgMuted, cursor: "pointer" }}>
-          LEARN MORE →
+          {t("chat.learn_more")}
         </span>
       </div>
     </motion.div>
@@ -345,13 +291,7 @@ function Brackets() {
 /* ── Dot grid background ──────────────────────────────────── */
 function DotGrid({ opacity = 0.18 }: { opacity?: number }) {
   return (
-    <svg
-      style={{
-        position: "absolute", inset: 0,
-        width: "100%", height: "100%",
-        opacity, pointerEvents: "none",
-      }}
-    >
+    <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity, pointerEvents: "none" }}>
       <defs>
         <pattern id="dotgrid" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="1" fill="#ffffff" />
@@ -362,47 +302,28 @@ function DotGrid({ opacity = 0.18 }: { opacity?: number }) {
   );
 }
 
-/* ── On-accent map (fixed — not theme-dependent) ──────────── */
-const ON_ACCENT: Record<string, { fg: string; fgMuted: string; fgFaint: string; line: string; badge: string }> = {
-  "#F04E00": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
-  "#FFE600": { fg: "#0F0D12", fgMuted: "rgba(15,13,18,0.65)",   fgFaint: "rgba(15,13,18,0.35)",   line: "rgba(0,0,0,0.12)", badge: "rgba(0,0,0,0.08)" },
-  "#0085FF": { fg: "#fff",    fgMuted: "rgba(255,255,255,0.65)", fgFaint: "rgba(255,255,255,0.35)", line: "rgba(0,0,0,0.15)", badge: "rgba(0,0,0,0.2)"  },
-};
-
 /* ── Inactive panel ───────────────────────────────────────── */
-function InactivePanel({
-  panel,
-  onClick,
-}: {
-  panel: (typeof panels)[number];
-  onClick: () => void;
-}) {
+function InactivePanel({ panel, onClick }: { panel: PanelDisplay; onClick: () => void }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       onClick={onClick}
       style={{
         position: "relative", overflow: "hidden",
-        background: "#111",
-        cursor: "pointer",
+        background: "#111", cursor: "pointer",
         display: "flex", flexDirection: "column",
-        justifyContent: "space-between",
-        padding: "20px",
-        height: "100%",
+        justifyContent: "space-between", padding: "20px", height: "100%",
         transition: "background 0.2s",
       }}
       whileHover={{ background: "#181818" }}
     >
       <DotGrid opacity={0.14} />
       <div style={{ position: "relative", zIndex: 1 }} />
-
-      {/* Dashed center box */}
       <div style={{
         position: "absolute", zIndex: 1,
-        top: "50%", left: "50%",
-        transform: "translate(-50%, -50%)",
+        top: "50%", left: "50%", transform: "translate(-50%, -50%)",
         width: "70%", height: "40%",
-        border: "1px dashed rgba(255,255,255,0.18)",
-        borderRadius: "2px",
+        border: "1px dashed rgba(255,255,255,0.18)", borderRadius: "2px",
         background: "rgba(0,0,0,0.35)",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
@@ -410,28 +331,19 @@ function InactivePanel({
           fontFamily: "var(--font-mono), monospace",
           fontSize: "13px", letterSpacing: "0.1em",
           color: "rgba(255,255,255,0.35)",
-          textTransform: "uppercase",
-          whiteSpace: "nowrap",
+          textTransform: "uppercase", whiteSpace: "nowrap",
         }}>
           {panel.label}
         </span>
       </div>
-
-      {/* Click to chat */}
-      <div style={{
-        position: "absolute", zIndex: 1,
-        bottom: "20px", left: 0, right: 0,
-        display: "flex", justifyContent: "center",
-      }}>
+      <div style={{ position: "absolute", zIndex: 1, bottom: "20px", left: 0, right: 0, display: "flex", justifyContent: "center" }}>
         <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "10px", letterSpacing: "0.1em",
           color: "rgba(255,255,255,0.35)",
-          background: "rgba(0,0,0,0.5)",
-          padding: "4px 12px",
-          borderRadius: "2px",
+          background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "2px",
         }}>
-          [ CLICK TO CHAT ]
+          {t("demo.click_to_chat")}
         </span>
       </div>
     </motion.div>
@@ -440,9 +352,15 @@ function InactivePanel({
 
 /* ── Main export ──────────────────────────────────────────── */
 export default function ProjectDemo() {
+  const { t } = useTranslation();
   const [active, setActive] = useState<PanelId>("fullstack");
-  const activePanel = panels.find((p) => p.id === active)!;
   const isMobile = useIsMobile();
+
+  const panels: PanelDisplay[] = PANEL_CONFIG.map((p) => ({
+    ...p,
+    label: t(`demo.panel_${p.id}_label`),
+  }));
+  const activePanel = panels.find((p) => p.id === active)!;
 
   return (
     <section style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
@@ -452,9 +370,7 @@ export default function ProjectDemo() {
         display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
       }}>
-        <div style={{
-          padding: isMobile ? "40px 24px" : "56px 64px",
-        }}>
+        <div style={{ padding: isMobile ? "40px 24px" : "56px 64px" }}>
           <p style={{
             fontFamily: "var(--font-mono), monospace",
             fontSize: "10px", letterSpacing: "0.12em",
@@ -462,16 +378,16 @@ export default function ProjectDemo() {
             color: "rgba(255,255,255,0.25)",
             marginBottom: "20px",
           }}>
-            Project Demos
+            {t("demo.heading")}
           </p>
           <h2 style={{
             fontSize: "clamp(28px, 3.5vw, 48px)",
             fontWeight: 700, letterSpacing: "-0.04em",
             lineHeight: 1.0, color: "#fff",
           }}>
-            เลือก demo<br />
-            แล้วลองเล่น<br />
-            <span style={{ color: activePanel.accent }}>ได้เลย.</span>
+            {t("demo.h1")}<br />
+            {t("demo.h2")}<br />
+            <span style={{ color: activePanel.accent }}>{t("demo.h3")}</span>
           </h2>
         </div>
         {!isMobile && (
@@ -480,8 +396,7 @@ export default function ProjectDemo() {
               fontSize: "17px", fontWeight: 300,
               color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: "380px",
             }}>
-              ลองเล่นได้เลย — Lab simulator จริงจาก HIS,
-              ถามผมได้เลย, และดู commit history
+              {t("demo.subheading")}
             </p>
           </div>
         )}
@@ -505,8 +420,7 @@ export default function ProjectDemo() {
               key={panel.id}
               layout
               style={{
-                position: "relative",
-                overflow: "hidden",
+                position: "relative", overflow: "hidden",
                 background: isActive ? panel.accent : "#111",
                 borderRight: !isMobile && !isRight ? "1px solid rgba(255,255,255,0.08)" : "none",
               }}
@@ -530,7 +444,7 @@ export default function ProjectDemo() {
         })}
       </div>
 
-      {/* Narrow bottom strip */}
+      {/* Bottom tab strip */}
       <div style={{
         display: "grid", gridTemplateColumns: "1fr 1fr 1fr",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
@@ -544,8 +458,7 @@ export default function ProjectDemo() {
               style={{
                 position: "relative",
                 padding: isMobile ? "14px 8px" : "18px 24px",
-                background: "transparent",
-                border: "none",
+                background: "transparent", border: "none",
                 borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
                 cursor: "pointer",
                 fontFamily: "var(--font-mono), monospace",
@@ -555,7 +468,6 @@ export default function ProjectDemo() {
                 transition: "color 0.2s",
               }}
             >
-              {/* Active top border */}
               {isActive && (
                 <motion.span
                   layoutId="demo-tab-indicator"

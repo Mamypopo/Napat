@@ -1,0 +1,300 @@
+{
+  "nav": {
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "navbar": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "hero": {
+    "cta_work": "View Work",
+    "cta_contact": "Contact",
+    "availability": "Available · Freelance & Full-time",
+    "eyeline": "Full-Stack Developer · Bangkok · 2026",
+    "tagline": "I build digital products that are beautiful, precise, and performant — from interface to infrastructure."
+  },
+  "projects": {
+    "heading": "Projects",
+    "selected_work": "Selected Work",
+    "side_projects": "Side Projects",
+    "case_study_badge": "Case Study",
+    "project_badge": "Project",
+    "count_label": "{{large}} CASE STUDIES · {{small}} PROJECTS",
+    "visit": "Visit →",
+    "view_details": "View Details →"
+  },
+  "techstack": {
+    "heading": "Tech Stack",
+    "subheading": "Tools I use in production",
+    "note": "* primary skills — used daily in production",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "database": "Database",
+    "cloud": "Cloud & DevOps",
+    "tools": "Tools"
+  },
+  "about": {
+    "eyeline": "About Me",
+    "greeting": "Hi, my name is",
+    "h1": "Precision",
+    "h2": "meets",
+    "h3": "Craft.",
+    "cta": "Let's work together →",
+    "stats_0": "Projects Delivered",
+    "stats_1": "Years of Experience",
+    "stats_2": "Happy Clients",
+    "stats_3": "Coffees Consumed"
+  },
+  "demo": {
+    "heading": "Project Demos",
+    "subheading": "Try it yourself — Real Lab simulator from HIS, ask me anything, and view commit history",
+    "h1": "Pick a demo",
+    "h2": "then try it",
+    "h3": "out.",
+    "click_to_chat": "[ CLICK TO CHAT ]",
+    "panel_frontend_label": "LAB MODULE · HIS",
+    "panel_frontend_ctx": "VUE.JS, NODE.JS",
+    "panel_frontend_status": "LIVE AT SEMED",
+    "panel_frontend_detail": "Hospital Information System",
+    "panel_fullstack_label": "ASK ME ANYTHING",
+    "panel_fullstack_ctx": "NAPAT · PORTFOLIO",
+    "panel_fullstack_status": "ONLINE",
+    "panel_fullstack_detail": "",
+    "panel_mobile_label": "COMMIT ACTIVITY",
+    "panel_mobile_ctx": "GITHUB · 2024",
+    "panel_mobile_status": "ACTIVE",
+    "panel_mobile_detail": ""
+  },
+  "chat": {
+    "qa": [
+      { "q": "Where do you work?", "keywords": ["work", "company", "job", "semed", "where", "employed"], "answer": "Currently at Semed Living Care Hospital as a Full-Stack Developer since 2024." },
+      { "q": "What's your tech stack?", "keywords": ["stack", "tech", "language", "framework", "tools", "use", "know"], "answer": "I specialize in Vue.js, React, Next.js on the frontend, Node.js and Python on the backend, with MySQL and PostgreSQL as my go-to databases." },
+      { "q": "What projects have you built?", "keywords": ["project", "portfolio", "built", "work", "done", "system", "made"], "answer": "At Semed I built 10+ systems solo. Personal projects include QR-Gen (live), MooPrompt, and FlowTrak." },
+      { "q": "Where did you study?", "keywords": ["study", "university", "degree", "education", "graduate", "school"], "answer": "CS graduate from Rangsit University, class of 2025." },
+      { "q": "Are you available for hire?", "keywords": ["available", "hire", "freelance", "job", "open", "recruit", "position"], "answer": "Yes! Open to freelance, full-time, remote or onsite. Reach out via the contact section below." },
+      { "q": "Can you work overtime?", "keywords": ["overtime", "extra", "weekend", "ot", "hours"], "answer": "Sometimes, when necessary. It depends on the situation." },
+      { "q": "What salary do you expect?", "keywords": ["salary", "pay", "compensation", "rate", "money"], "answer": "It depends on the scope and company. Let's talk!" },
+      { "q": "What's your name?", "keywords": ["name", "call", "who", "you"], "answer": "I'm Napat Yaemboo — you can call me JJ or JJAY." },
+      { "q": "How old are you?", "keywords": ["age", "old", "born", "year"], "answer": "22 years old." },
+      { "q": "Where do you live?", "keywords": ["live", "location", "city", "bangkok", "where", "based"], "answer": "Based in Bangkok. Open to onsite or remote." },
+      { "q": "What are your hobbies?", "keywords": ["hobby", "free", "fun", "leisure", "interest", "outside"], "answer": "Mainly gaming, watching movies, and hanging out with friends." },
+      { "q": "Do you play games?", "keywords": ["game", "gaming", "pubg", "fps", "play"], "answer": "Yes! Mostly PUBG — love FPS action games." },
+      { "q": "What movies do you watch?", "keywords": ["movie", "film", "watch", "netflix", "series", "show"], "answer": "Action films — John Wick, Extraction, that kind of thing." },
+      { "q": "What's your favorite food?", "keywords": ["food", "eat", "favorite", "like", "restaurant", "dish"], "answer": "BBQ pork (moo kratha) and shabu. Could eat them every day." },
+      { "q": "What do you drink?", "keywords": ["drink", "beer", "beverage", "alcohol"], "answer": "Beer sometimes, with friends." },
+      { "q": "What are your life goals?", "keywords": ["goal", "dream", "future", "plan", "life", "want"], "answer": "Stable job, my own business, a family, and the freedom to live the way I want. Sounds simple — but I mean it." },
+      { "q": "What are your career goals?", "keywords": ["career", "senior", "grow", "developer", "long", "term", "ambition"], "answer": "Grow into a Senior Developer and build side projects that generate real income." }
+    ],
+    "commands": {
+      "/help": "Available commands:\n/help · /about · /stack · /work · /contact · /clear",
+      "/about": "Name: Napat Yaemboo (JJAY)\nFull-Stack Developer at Semed\nCS, Rangsit University · 2025",
+      "/stack": "Frontend: Vue.js, React, Next.js\nBackend: Node.js, Python\nDB: MySQL, PostgreSQL\nOther: Docker, Azure, Prisma",
+      "/work": "Semed: 10+ systems built solo\nPersonal: QR-Gen (live), MooPrompt,\nFlowTrak, Senior Project",
+      "/contact": "Reach out via the contact section below\nor email me directly.",
+      "/beer": "Let's set a date.",
+      "/clear": ""
+    },
+    "fallback": "Not sure I understood that.\nTry rephrasing, or reach out directly\nvia the contact section below.",
+    "blocked": "I won't respond to that.",
+    "placeholder": "Ask me anything...",
+    "agent_context": "AGENT CONTEXT",
+    "current_context": "CURRENT CONTEXT:",
+    "ask_label": "ASK ME ANYTHING",
+    "msg_you": "YOU",
+    "msg_napat": "NAPAT",
+    "typing": "TYPING...",
+    "online": "ONLINE",
+    "learn_more": "LEARN MORE →"
+  },
+  "lab": {
+    "header": "LAB MODULE · HIS",
+    "panel_label": "PANEL:",
+    "info_step": "INFO",
+    "patient_info": "PATIENT INFO",
+    "age_label": "AGE (YEARS)",
+    "age_placeholder": "e.g. 35",
+    "gender_label": "GENDER",
+    "male": "MALE",
+    "female": "FEMALE",
+    "next_btn": "NEXT — Enter Lab Results →",
+    "col_param": "PARAMETER",
+    "col_ref": "REF RANGE",
+    "col_value": "VALUE",
+    "interpretation": "INTERPRETATION",
+    "back_btn": "← Change patient data ({{gender}}, {{age}} yr)",
+    "reset_btn": "RESET TAB ×",
+    "critical_alert": "CRITICAL VALUE — Notify physician immediately",
+    "ref_note": "REF: WHO · ADULT RANGE",
+    "footer_module": "HIS MODULE · LAB →"
+  },
+  "contact": {
+    "available": "AVAILABLE FOR WORK",
+    "not_available": "NOT AVAILABLE",
+    "h1": "Let's work",
+    "h2": "together.",
+    "subheading": "Open to freelance or full-time opportunities in frontend, backend, and fullstack development.",
+    "copy_email": "COPY EMAIL",
+    "copied": "COPIED!",
+    "resume": "RESUME (PDF)",
+    "form_label": "Send a message",
+    "success_title": "Message sent!",
+    "success_body": "I'll get back to you as soon as possible.",
+    "error_title": "Failed to send",
+    "error_body": "Please try again, or email me directly.",
+    "name_label": "Name",
+    "email_label": "Email",
+    "message_label": "Message",
+    "message_placeholder": "Hi, I'd like to discuss...",
+    "submit": "Send Message →",
+    "submitting": "Sending..."
+  },
+  "heatmap": {
+    "commits": "COMMITS",
+    "active_days": "ACTIVE DAYS",
+    "longest_streak": "LONGEST STREAK",
+    "year_label": "YEAR:",
+    "mock_data": "· MOCK DATA",
+    "less": "Less",
+    "more": "More",
+    "status_label": "STATUS:",
+    "status_active": "ACTIVE",
+    "github_link": "GITHUB ACTIVITY →",
+    "tooltip_commits": "{{count}} commit",
+    "tooltip_commits_plural": "{{count}} commits",
+    "tooltip_no_commits": "No commits"
+  },
+  "footer": {
+    "keep_in_touch": "Keep in touch",
+    "systems_ok": "All systems operational"
+  },
+  "pinned": {
+    "eyeline": "How I Work",
+    "heading1": "How I approach",
+    "heading2": "every project.",
+    "subtitle": "Scroll to explore each discipline — or click the left nav to jump to a section.",
+    "cta": "View Work",
+    "items": [
+      {
+        "label": "DESIGN SYSTEM",
+        "title": "Structure\nfirst,\nalways",
+        "desc": "Start with tokens and code structure before anything else — clear folder layout, well-separated concerns. So future-me comes back in 3 months and still understands everything.",
+        "bullets": ["Design tokens before components", "Predictable folder structure", "Components own one responsibility", "No magic numbers in the codebase"]
+      },
+      {
+        "label": "FRONTEND DEV",
+        "title": "Good UI\ndoesn't need\nexplaining",
+        "desc": "Every interaction should feel smooth and intuitive — from button press to error message. Great UX means the user never notices anything is wrong.",
+        "bullets": ["Animations with intent, not just effect", "Error messages humans actually understand", "Mobile-first every component", "Always test on real devices"]
+      },
+      {
+        "label": "BACKEND & API",
+        "title": "Design from\nuse case,\nnot framework",
+        "desc": "Design the API from use cases first — clear structure, complete error handling. Makes frontend work easy and debugging fast, even as a solo developer.",
+        "bullets": ["Schema design before code, always", "Validate every external input", "Error messages the frontend can reuse", "API docs that stay up to date"]
+      },
+      {
+        "label": "DEPLOYMENT",
+        "title": "Deploy and\nnever babysit\nthe server",
+        "desc": "Deployment shouldn't be nerve-wracking — keep Dev and Production clearly separated, manage env properly, then push with confidence.",
+        "bullets": ["Dev / Production always clearly split", "Secrets never hardcoded", "Deploy and walk away", "Know when it breaks before users do"]
+      },
+      {
+        "label": "CODE QUALITY",
+        "title": "Code that's\nstill readable\nmonths later",
+        "desc": "Good code is both readable and fast — if a function has a heavy query or is hard to follow, fix it immediately rather than letting it accumulate.",
+        "bullets": ["Meaningful function and variable names", "Catch heavy queries before users do", "Refactor when the opportunity arises", "Leave comments, because you'll forget too"]
+      }
+    ]
+  },
+  "showcase": {
+    "eyeline": "Background",
+    "heading1": "My ",
+    "heading2": "Journey",
+    "subtitle": "Education · Experience · Projects",
+    "tabs": {
+      "education": "Education",
+      "experience": "Experience",
+      "freelance": "Projects"
+    },
+    "education": {
+      "period": "2022 — 2025",
+      "role": "Bachelor of Computer Science",
+      "org": "Rangsit University",
+      "location": "Pathum Thani, Thailand",
+      "description": "Studied Computer Science at Rangsit University, covering everything from programming fundamentals through software engineering and web development.",
+      "highlights": [
+        "Senior project: University volunteer system — lecturers post, students apply, documents auto-generated"
+      ],
+      "badge": "GRADUATED",
+      "milestone_labels": ["2022", "ENROLLED", "2023", "2024", "SENIOR PROJECT", "GRADUATED", "2025"],
+      "node_labels": ["ALGORITHMS", "DATA STRUCTURES", "DATABASES", "WEB DEV", "PYTHON", "JAVASCRIPT", "VUE.JS", "RSU · PTT"],
+      "node_details": [
+        "Sorting, graph, dynamic programming — foundation of every system",
+        "Tree, hash map, linked list — applied to real database design",
+        "Relational model, SQL, normalization — designing schemas correctly",
+        "HTML, CSS, JavaScript — the start of the frontend journey",
+        "First language — algorithm assignments and data projects",
+        "Started web path — extended into Vue and React",
+        "First framework used in production — carried into real work",
+        "Rangsit University, Pathum Thani — B.Sc. Computer Science 2022–2025"
+      ],
+      "metric_labels": ["Bachelor's Degree", "Graduated", "Major", "Senior Project"]
+    },
+    "experience": {
+      "period": "2024 — Present",
+      "role": "Full-Stack Developer",
+      "org": "Semed Living Care Hospital",
+      "location": "Bangkok, Thailand",
+      "description": "Built a complete healthcare software suite from scratch — designed, planned, developed, and deployed 10+ systems solo. Both web applications and desktop programs, all in active production.",
+      "highlights": [
+        "Built end-to-end HIS — Lab, Checkup, Medical Certificate — live in production",
+        "Integrated Department of Employment API for foreign worker health screening",
+        "Real-time checkup system for mobile teams — clients see live progress on tablet",
+        "Barcode interceptor — captures values cross-application, injects into HIS automatically"
+      ],
+      "badge": "FULL-TIME",
+      "milestone_labels": ["2024", "PARTTIME", "FIRST SHIP", "2025", "2026", "HIS LAUNCH", "PRESENT"],
+      "node_labels": ["VUE.JS", "NODE.JS", "REACT", "PYTHON", "REALTIME", "REST API", "MYSQL", "SEMED"],
+      "node_details": [
+        "Primary frontend — used in HIS, Checkup, and most clinic systems",
+        "Backend API — connects internal systems and Dept. of Employment API",
+        "Used in some web tools — QR-based ordering, dashboard",
+        "AI translation service, barcode interceptor, automation scripts",
+        "WebSocket / polling — clients see test results + field teams go live",
+        "Gov API integration — send/receive foreign worker data with Dept. of Employment",
+        "Primary database — designed schema for the full end-to-end HIS",
+        "Semed Living Care Hospital — 10+ systems built solo, all in production"
+      ],
+      "metric_labels": ["Systems Built", "Built from Scratch", "API Integrated", "End-to-End"]
+    },
+    "freelance": {
+      "period": "2024 — Now",
+      "role": "Personal Projects",
+      "org": "Independent",
+      "location": "Bangkok, Thailand",
+      "description": "Built side projects outside of work hours, focused on web tools that solve real problems and ship to real users — from realtime food ordering to QR code tools.",
+      "highlights": [
+        "MooPrompt — BBQ pork restaurant ordering via QR, orders sent to kitchen in realtime",
+        "FlowTrak — real-time organizational task tracking system",
+        "QR-Gen — create and style multiple QR code types (in active use)",
+        "Senior Project — university volunteer system: post, apply, approve, auto-generate documents"
+      ],
+      "badge": "OPEN TO WORK",
+      "milestone_labels": ["2026", "QR-GEN", "MOOPROMPT", "FLOWTRAK", "SENIOR PROJ", "PRESENT"],
+      "node_labels": ["QR-GEN", "MOOPROMPT", "FLOWTRAK", "SENIOR PROJ", "VUE.JS", "REACT", "NODE.JS", "LIVE"],
+      "node_details": [
+        "Create and style QR codes in multiple formats — in active use",
+        "BBQ pork ordering system — scan QR → order reaches kitchen in realtime",
+        "Track organizational tasks — realtime status updates for all members",
+        "Rangsit volunteer system — post, apply, approve, auto-generate documents",
+        "Primary framework for most side projects",
+        "Used in MooPrompt and FlowTrak",
+        "Backend API for all projects — realtime via WebSocket",
+        "All projects deployed and in active use — solo built throughout"
+      ],
+      "metric_labels": ["Projects Built", "In Production", "Built Alone", "All This Year"]
+    }
+  }
+}

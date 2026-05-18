@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { TextShimmer } from "./TextShimmer";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import { SiGithub, SiLine } from "react-icons/si";
@@ -29,6 +30,7 @@ const inputBase: React.CSSProperties = {
 };
 
 export default function ContactCTA({ settings }: { settings?: SiteSettings | null }) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -111,7 +113,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
               display: "inline-block",
             }} />
             <TextShimmer style={{ ...MONO, fontSize: "11px", letterSpacing: "0.1em" }}>
-              {isAvailable ? "AVAILABLE FOR WORK" : "NOT AVAILABLE"}
+              {isAvailable ? t("contact.available") : t("contact.not_available")}
             </TextShimmer>
           </div>
 
@@ -156,8 +158,8 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
             lineHeight: 1.0, color: "var(--text-high)", marginBottom: "24px",
           }}
         >
-          มาทำงาน<br />
-          <span style={{ color: "#F04E00" }}>ด้วยกันไหม.</span>
+          {t("contact.h1")}<br />
+          <span style={{ color: "#F04E00" }}>{t("contact.h2")}</span>
         </motion.h2>
 
         <motion.p
@@ -171,8 +173,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
             maxWidth: "480px", marginBottom: "52px",
           }}
         >
-          พร้อมรับโปรเจกต์ freelance หรือ full-time
-          ทั้ง frontend, backend, และ fullstack
+          {t("contact.subheading")}
         </motion.p>
 
         {/* CTA Buttons */}
@@ -195,7 +196,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
             }}
           >
             <HiOutlineMail size={16} />
-            {copied ? "COPIED!" : "COPY EMAIL"}
+            {copied ? t("contact.copied") : t("contact.copy_email")}
           </motion.button>
 
           <motion.a
@@ -211,7 +212,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
             }}
           >
             <HiOutlineDownload size={16} />
-            RESUME (PDF)
+            {t("contact.resume")}
           </motion.a>
         </motion.div>
 
@@ -253,7 +254,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
           transition={{ duration: 0.5, ease, delay: 0.1 }}
         >
           <p style={{ ...MONO, fontSize: "10px", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: "28px" }}>
-            ส่งข้อความ
+            {t("contact.form_label")}
           </p>
 
           {status === "success" ? (
@@ -269,8 +270,8 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
               }}
             >
               <span style={{ fontSize: "20px", color: "#4ade80" }}>✓</span>
-              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>ส่งแล้ว!</p>
-              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>จะติดต่อกลับโดยเร็วที่สุดครับ</p>
+              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{t("contact.success_title")}</p>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>{t("contact.success_body")}</p>
             </motion.div>
           ) : status === "error" ? (
             <motion.div
@@ -285,15 +286,15 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
               }}
             >
               <span style={{ fontSize: "20px", color: "#f87171" }}>✕</span>
-              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>ส่งไม่สำเร็จ</p>
-              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>กรุณาลองอีกครั้ง หรือติดต่อผ่านอีเมลโดยตรงครับ</p>
+              <p style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)" }}>{t("contact.error_title")}</p>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>{t("contact.error_body")}</p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "28px" }}>
                 <div>
                   <label style={{ ...MONO, fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-subtle)", display: "block", marginBottom: "8px" }}>
-                    ชื่อ
+                    {t("contact.name_label")}
                   </label>
                   <input
                     type="text"
@@ -308,7 +309,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
                 </div>
                 <div>
                   <label style={{ ...MONO, fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-subtle)", display: "block", marginBottom: "8px" }}>
-                    อีเมล
+                    {t("contact.email_label")}
                   </label>
                   <input
                     type="email"
@@ -325,12 +326,12 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
 
               <div>
                 <label style={{ ...MONO, fontSize: "9px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-subtle)", display: "block", marginBottom: "8px" }}>
-                  ข้อความ
+                  {t("contact.message_label")}
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="สวัสดีครับ อยากพูดคุยเรื่อง..."
+                  placeholder={t("contact.message_placeholder")}
                   value={form.message}
                   onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   style={{ ...inputBase, resize: "vertical", minHeight: "100px" }}
@@ -356,7 +357,7 @@ export default function ContactCTA({ settings }: { settings?: SiteSettings | nul
                     transition: "background 0.2s",
                   }}
                 >
-                  {status === "submitting" ? "กำลังส่ง..." : "ส่งข้อความ →"}
+                  {status === "submitting" ? t("contact.submitting") : t("contact.submit")}
                 </motion.button>
               </div>
             </form>

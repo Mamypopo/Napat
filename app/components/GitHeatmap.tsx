@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-mono), monospace" };
 const CELL = 9;
@@ -68,6 +69,7 @@ type CalendarWeek = { contributionDays: CalendarDay[] };
 type CalendarData = { totalContributions: number; weeks: CalendarWeek[] };
 
 export default function GitHeatmap() {
+  const { t, i18n } = useTranslation();
   const [hovered, setHovered] = useState<{ index: number; rect: DOMRect } | null>(null);
   const [calendar, setCalendar] = useState<CalendarData | null>(null);
 
@@ -137,9 +139,9 @@ export default function GitHeatmap() {
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.1)",
       }}>
-        <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.5)" }}>COMMIT ACTIVITY</span>
+        <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.5)" }}>{t("demo.panel_mobile_label")}</span>
         <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.08em", color: "rgba(255,255,255,0.5)" }}>
-          YEAR: <span style={{ background: "#fff", color: "#0085FF", padding: "2px 8px", borderRadius: "2px" }}>{year}</span>
+          {t("heatmap.year_label")} <span style={{ background: "#fff", color: "#0085FF", padding: "2px 8px", borderRadius: "2px" }}>{year}</span>
         </span>
       </div>
 
@@ -148,9 +150,9 @@ export default function GitHeatmap() {
         {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, flexShrink: 0 }}>
           {[
-            { label: "COMMITS", value: total },
-            { label: "ACTIVE DAYS", value: activeDays },
-            { label: "LONGEST STREAK", value: `${maxStreak}d` },
+            { label: t("heatmap.commits"), value: total },
+            { label: t("heatmap.active_days"), value: activeDays },
+            { label: t("heatmap.longest_streak"), value: `${maxStreak}d` },
           ].map(({ label, value }) => (
             <div key={label} style={{
               background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)",
@@ -169,7 +171,7 @@ export default function GitHeatmap() {
           display: "flex", flexDirection: "column", gap: 8, overflow: "hidden", minHeight: 0,
         }}>
           <p style={{ ...MONO, fontSize: "8px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", flexShrink: 0 }}>
-            JAN {year} — DEC {year} {!calendar && "· MOCK DATA"}
+            JAN {year} — DEC {year} {!calendar && t("heatmap.mock_data")}
           </p>
 
           <div style={{ overflowX: "auto", overflowY: "hidden", flex: 1 }}>
@@ -234,11 +236,11 @@ export default function GitHeatmap() {
 
           {/* Legend */}
           <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-            <span style={{ ...MONO, fontSize: "7px", color: "rgba(255,255,255,0.2)" }}>Less</span>
+            <span style={{ ...MONO, fontSize: "7px", color: "rgba(255,255,255,0.2)" }}>{t("heatmap.less")}</span>
             {[0, 2, 5, 8, 12].map((v) => (
               <div key={v} style={{ width: CELL, height: CELL, borderRadius: "1px", background: getColor(v) }} />
             ))}
-            <span style={{ ...MONO, fontSize: "7px", color: "rgba(255,255,255,0.2)" }}>More</span>
+            <span style={{ ...MONO, fontSize: "7px", color: "rgba(255,255,255,0.2)" }}>{t("heatmap.more")}</span>
           </div>
         </div>
       </div>
@@ -261,7 +263,7 @@ export default function GitHeatmap() {
             pointerEvents: "none", zIndex: 9999,
             whiteSpace: "nowrap",
           }}>
-            {d.toLocaleDateString("th-TH", { day: "numeric", month: "short" })} · {count} commit{count !== 1 ? "s" : ""}
+            {d.toLocaleDateString(i18n.language === "th" ? "th-TH" : "en-US", { day: "numeric", month: "short" })} · {count === 0 ? t("heatmap.tooltip_no_commits") : count === 1 ? t("heatmap.tooltip_commits", { count }) : t("heatmap.tooltip_commits_plural", { count })}
           </div>
         );
       })()}
@@ -272,9 +274,9 @@ export default function GitHeatmap() {
         padding: "12px 20px", borderTop: "1px solid rgba(255,255,255,0.08)",
       }}>
         <span style={{ ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.35)" }}>
-          STATUS: <span style={{ background: "#fff", color: "#0085FF", padding: "2px 8px", borderRadius: "2px" }}>ACTIVE</span>
+          {t("heatmap.status_label")} <span style={{ background: "#fff", color: "#0085FF", padding: "2px 8px", borderRadius: "2px" }}>{t("heatmap.status_active")}</span>
         </span>
-        <span style={{ ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.35)" }}>GITHUB ACTIVITY →</span>
+        <span style={{ ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.35)" }}>{t("heatmap.github_link")}</span>
       </div>
     </motion.div>
   );

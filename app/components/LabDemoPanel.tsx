@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import * as Select from "@radix-ui/react-select";
 import { LAB_PANELS } from "../lib/labConfig";
 import type { Gender } from "../lib/labConfig";
@@ -60,6 +61,7 @@ function computeTabStats(panelId: string, vals: Record<string, string>, age: num
 }
 
 export default function LabDemoPanel() {
+  const { t } = useTranslation();
   const [step, setStep] = useState<"info" | "lab">("info");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState<Gender | "">("");
@@ -98,12 +100,12 @@ export default function LabDemoPanel() {
         borderBottom: "1px solid rgba(0,0,0,0.15)",
       }}>
         <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.1em", color: "rgba(0,0,0,0.5)" }}>
-          LAB MODULE · HIS
+          {t("lab.header")}
         </span>
         <span style={{ ...MONO, fontSize: "10px", letterSpacing: "0.08em", color: "rgba(0,0,0,0.5)" }}>
-          PANEL:{" "}
+          {t("lab.panel_label")}{" "}
           <span style={{ background: "#ffffff", color: "#0a0a0a", padding: "2px 8px", borderRadius: "2px" }}>
-            {step === "info" ? "INFO" : activeTab.toUpperCase()}
+            {step === "info" ? t("lab.info_step") : activeTab.toUpperCase()}
           </span>
         </span>
       </div>
@@ -129,14 +131,14 @@ export default function LabDemoPanel() {
               }}>
                 <Brackets />
                 <p style={{ ...MONO, fontSize: "10px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  ข้อมูลผู้ป่วย
+                  {t("lab.patient_info")}
                 </p>
                 {/* Age */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>อายุ (ปี)</label>
+                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{t("lab.age_label")}</label>
                   <input
                     type="number" value={age} onChange={(e) => setAge(e.target.value)}
-                    placeholder="เช่น 35" min={1} max={120}
+                    placeholder={t("lab.age_placeholder")} min={1} max={120}
                     style={{
                       ...MONO, background: "rgba(255,255,255,0.05)",
                       border: "1px solid rgba(255,255,255,0.10)", borderRadius: "2px",
@@ -146,7 +148,7 @@ export default function LabDemoPanel() {
                 </div>
                 {/* Gender */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>เพศ</label>
+                  <label style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{t("lab.gender_label")}</label>
                   <div style={{ display: "flex", gap: 8 }}>
                     {(["M", "F"] as const).map((g) => (
                       <button key={g} onClick={() => setGender(g)} style={{
@@ -157,7 +159,7 @@ export default function LabDemoPanel() {
                         color: gender === g ? "#fff" : "rgba(255,255,255,0.45)",
                         cursor: "pointer", ...MONO, fontSize: "11px", letterSpacing: "0.06em", transition: "all 0.15s",
                       }}>
-                        {g === "M" ? "ชาย" : "หญิง"}
+                        {g === "M" ? t("lab.male") : t("lab.female")}
                       </button>
                     ))}
                   </div>
@@ -174,7 +176,7 @@ export default function LabDemoPanel() {
                   cursor: canProceed ? "pointer" : "not-allowed", transition: "all 0.2s",
                 }}
               >
-                ถัดไป — กรอกผล Lab →
+                {t("lab.next_btn")}
               </button>
             </motion.div>
           ) : (
@@ -226,7 +228,7 @@ export default function LabDemoPanel() {
                     padding: "8px 12px", background: "rgba(255,255,255,0.05)",
                     borderBottom: "1px solid rgba(255,255,255,0.08)", position: "sticky", top: 0,
                   }}>
-                    {["PARAMETER", "REF RANGE", "VALUE"].map((h, i) => (
+                    {[t("lab.col_param"), t("lab.col_ref"), t("lab.col_value")].map((h, i) => (
                       <span key={h} style={{ ...MONO, fontSize: "8px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", textAlign: i === 2 ? "right" : "left" }}>{h}</span>
                     ))}
                   </div>
@@ -360,7 +362,7 @@ export default function LabDemoPanel() {
                     initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
                     style={{ padding: "10px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px" }}
                   >
-                    <p style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", marginBottom: 4 }}>INTERPRETATION</p>
+                    <p style={{ ...MONO, fontSize: "9px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", marginBottom: 4 }}>{t("lab.interpretation")}</p>
                     <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
                       {currentPanel.interpret(values, ageNum, genderVal)}
                     </p>
@@ -377,7 +379,7 @@ export default function LabDemoPanel() {
                     color: "rgba(0,0,0,0.6)", cursor: "pointer", textAlign: "left", padding: "6px 0 2px",
                   }}
                 >
-                  ← เปลี่ยนข้อมูลผู้ป่วย ({gender === "M" ? "ชาย" : "หญิง"}, {age} ปี)
+                  {t("lab.back_btn", { gender: gender === "M" ? t("lab.male") : t("lab.female"), age })}
                 </button>
                 {hasAnyValue && (
                   <button
@@ -388,7 +390,7 @@ export default function LabDemoPanel() {
                       color: "rgba(0,0,0,0.5)", cursor: "pointer", padding: "6px 0 2px",
                     }}
                   >
-                    RESET TAB ×
+                    {t("lab.reset_btn")}
                   </button>
                 )}
               </div>
@@ -412,13 +414,13 @@ export default function LabDemoPanel() {
               style={{ width: 5, height: 5, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }}
             />
             <span style={{ ...MONO, fontSize: "9px", letterSpacing: "0.1em", color: "#ef4444" }}>
-              CRITICAL VALUE — รายงานแพทย์ทันที
+              {t("lab.critical_alert")}
             </span>
           </motion.div>
         ) : (
-          <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>REF: WHO · ADULT RANGE</span>
+          <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>{t("lab.ref_note")}</span>
         )}
-        <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>HIS MODULE · LAB →</span>
+        <span style={{ ...MONO, fontSize: "10px", color: "rgba(0,0,0,0.5)" }}>{t("lab.footer_module")}</span>
       </div>
     </motion.div>
   );

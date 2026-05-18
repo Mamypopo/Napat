@@ -1,0 +1,300 @@
+{
+  "nav": {
+    "work": "ผลงาน",
+    "about": "เกี่ยวกับ",
+    "contact": "ติดต่อ"
+  },
+  "navbar": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "hero": {
+    "cta_work": "ดูผลงาน",
+    "cta_contact": "ติดต่อ",
+    "availability": "Available · Freelance & Full-time",
+    "eyeline": "Full-Stack Developer · Bangkok · 2026",
+    "tagline": "ผมสร้าง digital products ที่ทั้งสวยงาม แม่นยำ และมีประสิทธิภาพสูง — จาก interface จนถึง infrastructure"
+  },
+  "projects": {
+    "heading": "ผลงาน",
+    "selected_work": "Selected Work",
+    "side_projects": "Side Projects",
+    "case_study_badge": "Case Study",
+    "project_badge": "Project",
+    "count_label": "{{large}} CASE STUDIES · {{small}} PROJECTS",
+    "visit": "Visit →",
+    "view_details": "ดูรายละเอียด →"
+  },
+  "techstack": {
+    "heading": "Tech Stack",
+    "subheading": "เครื่องมือที่ใช้งานจริงใน production",
+    "note": "* primary skills — ใช้งานทุกวันใน production",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "database": "Database",
+    "cloud": "Cloud & DevOps",
+    "tools": "Tools"
+  },
+  "about": {
+    "eyeline": "About Me",
+    "greeting": "สวัสดี ผมชื่อ",
+    "h1": "Precision",
+    "h2": "meets",
+    "h3": "Craft.",
+    "cta": "ทำงานด้วยกัน →",
+    "stats_0": "โปรเจกต์ที่ส่งมอบ",
+    "stats_1": "ประสบการณ์",
+    "stats_2": "ลูกค้าที่พึงพอใจ",
+    "stats_3": "กาแฟที่ดื่มไป"
+  },
+  "demo": {
+    "heading": "Project Demos",
+    "subheading": "ลองเล่นได้เลย — Lab simulator จริงจาก HIS, ถามผมได้เลย, และดู commit history",
+    "h1": "เลือก demo",
+    "h2": "แล้วลองเล่น",
+    "h3": "ได้เลย.",
+    "click_to_chat": "[ CLICK TO CHAT ]",
+    "panel_frontend_label": "LAB MODULE · HIS",
+    "panel_frontend_ctx": "VUE.JS, NODE.JS",
+    "panel_frontend_status": "LIVE AT SEMED",
+    "panel_frontend_detail": "Hospital Information System",
+    "panel_fullstack_label": "ASK ME ANYTHING",
+    "panel_fullstack_ctx": "NAPAT · PORTFOLIO",
+    "panel_fullstack_status": "ONLINE",
+    "panel_fullstack_detail": "",
+    "panel_mobile_label": "COMMIT ACTIVITY",
+    "panel_mobile_ctx": "GITHUB · 2024",
+    "panel_mobile_status": "ACTIVE",
+    "panel_mobile_detail": ""
+  },
+  "chat": {
+    "qa": [
+      { "q": "ทำงานที่ไหนอยู่?", "keywords": ["ทำงาน", "semed", "บริษัท", "ที่ไหน", "ที่ทำงาน", "งานอะไร"], "answer": "ตอนนี้ทำที่ Semed Living Care Hospital ครับ ตำแหน่ง Full-Stack Developer ทำมาตั้งแต่ปี 2024" },
+      { "q": "ใช้ stack อะไรบ้าง?", "keywords": ["stack", "เทค", "ภาษา", "tech", "ใช้อะไร", "framework"], "answer": "ถนัด Vue.js, React, Next.js ครับ ฝั่ง backend ใช้ Node.js กับ Python ส่วน database ก็ MySQL PostgreSQL" },
+      { "q": "มีโปรเจคอะไรบ้าง?", "keywords": ["โปรเจค", "ผลงาน", "project", "ทำอะไร", "งานที่ผ่านมา"], "answer": "ที่ Semed ทำมาประมาณ 10 กว่าระบบครับ ทำคนเดียวหมดเลย ส่วนตัวก็มี QR-Gen ที่ใช้งานจริงอยู่ แล้วก็ MooPrompt FlowTrak" },
+      { "q": "จบการศึกษาจากไหน?", "keywords": ["จบ", "เรียน", "มหาวิทยาลัย", "การศึกษา", "degree", "วุฒิ"], "answer": "จบ CS จากมหาวิทยาลัยรังสิตครับ ปี 2025" },
+      { "q": "พร้อมรับงานไหม?", "keywords": ["ว่าง", "รับงาน", "available", "พร้อม", "hire", "จ้าง", "สมัคร"], "answer": "พร้อมครับ ทั้ง freelance full-time remote หรือ onsite ติดต่อมาได้เลยที่ contact ด้านล่าง" },
+      { "q": "ทำงานนอกเวลาได้ไหม?", "keywords": ["นอกเวลา", "ล่วงเวลา", "ot", "วันหยุด", "overtime"], "answer": "ได้บางครั้งครับ ถ้าจำเป็นจริงๆ แต่ก็ขึ้นอยู่กับสถานการณ์ด้วย" },
+      { "q": "เงินเดือนที่ต้องการ?", "keywords": ["เงินเดือน", "salary", "ค่าตอบแทน", "รายได้"], "answer": "ขึ้นอยู่กับ scope งานและบริษัทครับ คุยกันได้เลย" },
+      { "q": "ชื่ออะไร?", "keywords": ["ชื่อ", "name", "เรียกว่า", "นามสกุล"], "answer": "ชื่อณภัทร แย้มบู่ครับ เรียก เจเจ หรือ JJAY ก็ได้" },
+      { "q": "อายุเท่าไหร่?", "keywords": ["อายุ", "age", "กี่ปี", "เกิด"], "answer": "22 ปีครับ" },
+      { "q": "อยู่ที่ไหน?", "keywords": ["อยู่", "ที่อยู่", "จังหวัด", "location", "กรุงเทพ"], "answer": "อยู่กรุงเทพครับ ไป onsite ได้หรือจะ remote ก็โอเค" },
+      { "q": "งานอดิเรกคืออะไร?", "keywords": ["งานอดิเรก", "hobby", "ว่างทำอะไร", "อดิเรก", "เวลาว่าง"], "answer": "ส่วนใหญ่เล่นเกมครับ นอกนั้นก็ดูหนัง หรือออกไปกินข้าวกับเพื่อน" },
+      { "q": "เล่นเกมไหม?", "keywords": ["เกม", "game", "pubg", "gaming", "เล่นเกม"], "answer": "เล่นครับ ตอนนี้เล่น PUBG เป็นหลัก ชอบแนว FPS ยิงกันจ๋าๆ" },
+      { "q": "ดูหนังไหม?", "keywords": ["หนัง", "ซีรีส์", "ดูอะไร", "netflix", "movie"], "answer": "ดูครับ ชอบแนว action ยิงกันจ๋าๆ พวก John Wick Extraction อะไรแบบนี้" },
+      { "q": "ชอบกินอะไร?", "keywords": ["กิน", "อาหาร", "food", "ชอบกิน", "ร้านอาหาร"], "answer": "ชอบหมูกระทะกับชาบูครับ กินได้บ่อยมาก" },
+      { "q": "ชอบดื่มอะไร?", "keywords": ["ดื่ม", "เบียร์", "เครื่องดื่ม", "beer", "drink"], "answer": "ชอบเบียร์ครับ กินกับเพื่อนบ้างตามโอกาสมั้ง" },
+      { "q": "เป้าหมายในชีวิตคืออะไร?", "keywords": ["เป้าหมาย", "goal", "อนาคต", "ฝัน", "อยากเป็น"], "answer": "อยากมีงานมั่นคง มีธุรกิจของตัวเอง มีครอบครัว ใช้ชีวิตได้แบบที่อยากเป็น ฟังดูธรรมดาแต่ก็แค่อยากทำให้ได้จริงๆ ครับ" },
+      { "q": "เป้าหมายด้านการงาน?", "keywords": ["เป้าหมายงาน", "career", "อาชีพ", "ระยะยาว", "developer"], "answer": "อยากโตเป็น Senior Developer และมี side project ที่ทำรายได้จริงๆ ได้ครับ" }
+    ],
+    "commands": {
+      "/help": "คำสั่งที่ใช้ได้:\n/help · /about · /stack · /work · /contact · /clear",
+      "/about": "ชื่อณภัทร แย้มบู่ (เจเจ) ครับ\nFull-Stack Developer ที่ Semed\nจบ CS มหาวิทยาลัยรังสิต ปี 2025",
+      "/stack": "Frontend: Vue.js, React, Next.js\nBackend: Node.js, Python\nDB: MySQL, PostgreSQL\nOther: Docker, Azure, Prisma",
+      "/work": "ที่ Semed: 10+ ระบบ solo\nPersonal: QR-Gen (live), MooPrompt,\nFlowTrak, Senior Project",
+      "/contact": "ติดต่อได้ที่ contact section ด้านล่างครับ\nหรือ email โดยตรงได้เลย",
+      "/beer": "นัดวันมาเลยครับ",
+      "/clear": ""
+    },
+    "fallback": "ยังไม่ค่อยเข้าใจคำถามครับ\nลองถามใหม่ หรือติดต่อผมโดยตรง\nที่ contact section ด้านล่างได้เลย",
+    "blocked": "ไม่ตอบคำถามแบบนี้ครับ",
+    "placeholder": "พิมพ์คำถามได้เลย...",
+    "agent_context": "AGENT CONTEXT",
+    "current_context": "CURRENT CONTEXT:",
+    "ask_label": "ASK ME ANYTHING",
+    "msg_you": "YOU",
+    "msg_napat": "NAPAT",
+    "typing": "TYPING...",
+    "online": "ONLINE",
+    "learn_more": "LEARN MORE →"
+  },
+  "lab": {
+    "header": "LAB MODULE · HIS",
+    "panel_label": "PANEL:",
+    "info_step": "INFO",
+    "patient_info": "ข้อมูลผู้ป่วย",
+    "age_label": "อายุ (ปี)",
+    "age_placeholder": "เช่น 35",
+    "gender_label": "เพศ",
+    "male": "ชาย",
+    "female": "หญิง",
+    "next_btn": "ถัดไป — กรอกผล Lab →",
+    "col_param": "PARAMETER",
+    "col_ref": "REF RANGE",
+    "col_value": "VALUE",
+    "interpretation": "INTERPRETATION",
+    "back_btn": "← เปลี่ยนข้อมูลผู้ป่วย ({{gender}}, {{age}} ปี)",
+    "reset_btn": "RESET TAB ×",
+    "critical_alert": "CRITICAL VALUE — รายงานแพทย์ทันที",
+    "ref_note": "REF: WHO · ADULT RANGE",
+    "footer_module": "HIS MODULE · LAB →"
+  },
+  "contact": {
+    "available": "AVAILABLE FOR WORK",
+    "not_available": "NOT AVAILABLE",
+    "h1": "มาทำงาน",
+    "h2": "ด้วยกันไหม.",
+    "subheading": "พร้อมรับโปรเจกต์ freelance หรือ full-time ทั้ง frontend, backend, และ fullstack",
+    "copy_email": "COPY EMAIL",
+    "copied": "COPIED!",
+    "resume": "RESUME (PDF)",
+    "form_label": "ส่งข้อความ",
+    "success_title": "ส่งแล้ว!",
+    "success_body": "จะติดต่อกลับโดยเร็วที่สุดครับ",
+    "error_title": "ส่งไม่สำเร็จ",
+    "error_body": "กรุณาลองอีกครั้ง หรือติดต่อผ่านอีเมลโดยตรงครับ",
+    "name_label": "ชื่อ",
+    "email_label": "อีเมล",
+    "message_label": "ข้อความ",
+    "message_placeholder": "สวัสดีครับ อยากพูดคุยเรื่อง...",
+    "submit": "ส่งข้อความ →",
+    "submitting": "กำลังส่ง..."
+  },
+  "heatmap": {
+    "commits": "COMMITS",
+    "active_days": "ACTIVE DAYS",
+    "longest_streak": "LONGEST STREAK",
+    "year_label": "YEAR:",
+    "mock_data": "· MOCK DATA",
+    "less": "Less",
+    "more": "More",
+    "status_label": "STATUS:",
+    "status_active": "ACTIVE",
+    "github_link": "GITHUB ACTIVITY →",
+    "tooltip_commits": "{{count}} commit",
+    "tooltip_commits_plural": "{{count}} commits",
+    "tooltip_no_commits": "ไม่มี commit"
+  },
+  "footer": {
+    "keep_in_touch": "Keep in touch",
+    "systems_ok": "All systems operational"
+  },
+  "pinned": {
+    "eyeline": "How I Work",
+    "heading1": "วิธีที่ผมทำงาน",
+    "heading2": "ตั้งแต่ต้นจนจบ",
+    "subtitle": "Scroll เพื่อ explore แต่ละ discipline — หรือคลิก nav ซ้ายมือเพื่อข้ามไปยัง section ที่สนใจ",
+    "cta": "ดูผลงาน",
+    "items": [
+      {
+        "label": "DESIGN SYSTEM",
+        "title": "เริ่มจาก\nโครงสร้าง\nก่อนเสมอ",
+        "desc": "เริ่มจาก token และโครงสร้างโค้ดก่อนเสมอ — folder structure ชัด, component แยก concern ดี ทำให้ตัวเองกลับมาอ่าน 3 เดือนข้างหน้าแล้วยังรู้เรื่อง",
+        "bullets": ["Design token ก่อน component เสมอ", "Folder structure ที่ทุกคนเดาได้ถูก", "Component รับผิดชอบแค่สิ่งเดียว", "ไม่มี magic number ใน codebase"]
+      },
+      {
+        "label": "FRONTEND DEV",
+        "title": "UI ที่ดีคือ\nUI ที่ไม่ต้อง\nอธิบาย",
+        "desc": "ทำให้ทุก interaction รู้สึก smooth และ intuitive ตั้งแต่ปุ่มกดจนถึง error message — UX ที่ดีคือ user ไม่รู้สึกว่ามีอะไรผิดปกติเลย",
+        "bullets": ["Animation มีเหตุผล ไม่ใช่แค่ effect", "Error message ที่คนอ่านแล้วเข้าใจทันที", "Mobile-first ทุก component", "ทดสอบบน device จริงเสมอ"]
+      },
+      {
+        "label": "BACKEND & API",
+        "title": "ออกแบบ\nจาก use case\nไม่ใช่ framework",
+        "desc": "ออกแบบ API จาก use case ก่อน — structure ชัด error handling ครบ ทำให้ frontend ทำงานง่ายและ debug เร็ว แม้จะทำคนเดียว",
+        "bullets": ["ออกแบบ schema ก่อน code เสมอ", "Validation ทุก input ที่มาจากข้างนอก", "Error message ที่ frontend เอาไปใช้ต่อได้", "API doc ที่ทันสมัยอยู่เสมอ"]
+      },
+      {
+        "label": "DEPLOYMENT",
+        "title": "Deploy แล้ว\nไม่ต้อง\nนั่งเฝ้า",
+        "desc": "Deploy ไม่ใช่ขั้นตอนที่ต้องลุ้น — แยก Dev กับ Production ชัด จัดการ env ให้ดี แล้ว push ได้อย่างสบายใจ",
+        "bullets": ["Dev / Production แยกชัดเจนเสมอ", "Secret ไม่เคย hardcode ใน code", "Deploy แล้วไม่ต้องนั่งเฝ้า", "ถ้าพังก็รู้ทันที ไม่ใช่รู้จาก user"]
+      },
+      {
+        "label": "CODE QUALITY",
+        "title": "โค้ดที่ดีคือ\nโค้ดที่กลับมา\nอ่านแล้วเข้าใจ",
+        "desc": "โค้ดที่ดีคือโค้ดที่ทั้งอ่านง่ายและทำงานเร็ว — ถ้า function ไหน query หนักหรืออ่านยากก็แก้ทันที ไม่ปล่อยให้สะสม",
+        "bullets": ["ตั้งชื่อ function และ variable ให้สื่อความหมาย", "Query หนักต้องรู้ก่อน user รู้", "Refactor เมื่อมีโอกาส ไม่รอให้พัง", "Comment ไว้เสมอ เพราะตัวเองก็ลืม"]
+      }
+    ]
+  },
+  "showcase": {
+    "eyeline": "Background",
+    "heading1": "เส้นทางที่",
+    "heading2": "เดินมา",
+    "subtitle": "Education · Experience · Projects",
+    "tabs": {
+      "education": "Education",
+      "experience": "Experience",
+      "freelance": "Projects"
+    },
+    "education": {
+      "period": "2022 — 2025",
+      "role": "Bachelor of Computer Science",
+      "org": "Rangsit University",
+      "location": "Pathum Thani, Thailand",
+      "description": "ศึกษาด้าน Computer Science ที่ ม.รังสิต ครอบคลุมตั้งแต่ programming fundamentals จนถึง software engineering และ web development",
+      "highlights": [
+        "Senior project: ระบบจิตอาสามหาวิทยาลัย — อาจารย์โพสต์ นักศึกษาสมัคร ออกเอกสารอัตโนมัติ"
+      ],
+      "badge": "GRADUATED",
+      "milestone_labels": ["2022", "ENROLLED", "2023", "2024", "SENIOR PROJECT", "GRADUATED", "2025"],
+      "node_labels": ["ALGORITHMS", "DATA STRUCTURES", "DATABASES", "WEB DEV", "PYTHON", "JAVASCRIPT", "VUE.JS", "RSU · PTT"],
+      "node_details": [
+        "Sorting, graph, dynamic programming — foundation ของทุก system",
+        "Tree, hash map, linked list — ใช้จริงในการออกแบบ database",
+        "Relational model, SQL, normalization — ออกแบบ schema ได้ถูกต้อง",
+        "HTML, CSS, JavaScript — จุดเริ่มต้นของ frontend journey",
+        "First language — algorithm assignments และ data projects",
+        "เริ่มต้นสาย web — ต่อยอดสู่ Vue และ React",
+        "Framework แรกที่ใช้จริง — ต่อยอดมาใช้งานใน production",
+        "Rangsit University, Pathum Thani — B.Sc. Computer Science 2022–2025"
+      ],
+      "metric_labels": ["Bachelor's Degree", "Graduated", "Major", "Senior Project"]
+    },
+    "experience": {
+      "period": "2024 — Present",
+      "role": "Full-Stack Developer",
+      "org": "Semed Living Care Hospital",
+      "location": "Bangkok, Thailand",
+      "description": "พัฒนาระบบ healthcare software ครบวงจรตั้งแต่ 0 — ออกแบบ วางแผน พัฒนา และ deploy คนเดียวกว่า 10 ระบบ ทั้ง web application และ desktop program ที่ใช้งานจริง",
+      "highlights": [
+        "สร้าง HIS ครบวงจร — Lab, Checkup, ใบรับรองแพทย์ — ใช้งาน production จริง",
+        "เชื่อมต่อ API กรมจัดหางาน สำหรับระบบตรวจสุขภาพแรงงานต่างด้าว",
+        "ระบบ real-time checkup ให้ทีมออกหน่วยบันทึกข้อมูลผ่าน tablet — ลูกค้าดูความคืบหน้าได้ทันที",
+        "Barcode interceptor — ดักจับค่าบาร์โค้ดข้ามโปรแกรม inject เข้า HIS อัตโนมัติ"
+      ],
+      "badge": "FULL-TIME",
+      "milestone_labels": ["2024", "PARTTIME", "FIRST SHIP", "2025", "2026", "HIS LAUNCH", "PRESENT"],
+      "node_labels": ["VUE.JS", "NODE.JS", "REACT", "PYTHON", "REALTIME", "REST API", "MYSQL", "SEMED"],
+      "node_details": [
+        "Frontend หลัก — ใช้ใน HIS, Checkup, และระบบในคลินิกส่วนใหญ่",
+        "Backend API — เชื่อมระบบภายในและ API กรมจัดหางาน",
+        "ใช้ใน web tools บางระบบ — QR-based ordering, dashboard",
+        "AI translation service, barcode interceptor, automation scripts",
+        "WebSocket / polling — ลูกค้าดูผลตรวจ + ทีมออกหน่วย live",
+        "Gov API integration — รับ-ส่งข้อมูลแรงงานต่างด้าวกับกรมจัดหางาน",
+        "Primary database — ออกแบบ schema สำหรับระบบ HIS ครบวงจร",
+        "Semed Living Care Hospital — 10+ systems built solo, all in production"
+      ],
+      "metric_labels": ["Systems Built", "Built from Scratch", "API Integrated", "End-to-End"]
+    },
+    "freelance": {
+      "period": "2024 — Now",
+      "role": "Personal Projects",
+      "org": "Independent",
+      "location": "Bangkok, Thailand",
+      "description": "พัฒนา side projects นอกเวลางาน เน้น web tools ที่แก้ปัญหาจริงและ deploy ใช้งานได้จริง ตั้งแต่ระบบสั่งอาหาร realtime จนถึง QR tools",
+      "highlights": [
+        "MooPrompt — ระบบสั่งอาหารหมูกระทะผ่าน QR ส่ง order realtime ถึงครัว",
+        "FlowTrak — ระบบติดตามงานองค์กร realtime",
+        "QR-Gen — สร้างและตกแต่ง QR Code หลายประเภท (ใช้งานจริง)",
+        "Senior Project — ระบบจิตอาสามหาวิทยาลัย อาจารย์โพสต์ นักศึกษาสมัคร ออกเอกสารอัตโนมัติ"
+      ],
+      "badge": "OPEN TO WORK",
+      "milestone_labels": ["2026", "QR-GEN", "MOOPROMPT", "FLOWTRAK", "SENIOR PROJ", "PRESENT"],
+      "node_labels": ["QR-GEN", "MOOPROMPT", "FLOWTRAK", "SENIOR PROJ", "VUE.JS", "REACT", "NODE.JS", "LIVE"],
+      "node_details": [
+        "สร้างและตกแต่ง QR Code หลายรูปแบบ — ใช้งานจริง",
+        "ระบบสั่งอาหารหมูกระทะ — scan QR → order ถึงครัว realtime",
+        "ติดตาม task ในองค์กร — status update realtime ทุก member",
+        "ระบบจิตอาสา ม.รังสิต — โพสต์ สมัคร อนุมัติ ออกเอกสารอัตโนมัติ",
+        "Framework หลักสำหรับ side projects ส่วนใหญ่",
+        "ใช้ใน MooPrompt และ FlowTrak",
+        "Backend API สำหรับทุก project — realtime ด้วย WebSocket",
+        "ทุก project deploy และใช้งานจริง — solo built ทั้งหมด"
+      ],
+      "metric_labels": ["Projects Built", "In Production", "Built Alone", "All This Year"]
+    }
+  }
+}

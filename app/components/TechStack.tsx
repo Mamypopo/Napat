@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useIsMobile, useIsTablet } from "../hooks/useMediaQuery";
 import {
   SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiTailwindcss, SiBootstrap, SiVuedotjs,
@@ -26,7 +27,7 @@ type Group = {
 
 const GROUPS: Group[] = [
   {
-    label: "Frontend",
+    label: "techstack.frontend",
     skills: [
       { name: "Vue.js",      icon: <SiVuedotjs />,      primary: true },
       { name: "React",       icon: <SiReact />,         primary: true },
@@ -38,7 +39,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    label: "Backend",
+    label: "techstack.backend",
     skills: [
       { name: "Node.js",    icon: <SiNodedotjs />,   primary: true },
       { name: "Express",    icon: <span style={{ fontWeight: 700, fontSize: "11px" }}>Ex</span>, primary: true },
@@ -47,7 +48,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    label: "Database",
+    label: "techstack.database",
     skills: [
       { name: "MySQL",      icon: <SiMysql />,      primary: true },
       { name: "PostgreSQL", icon: <SiPostgresql />, primary: true },
@@ -56,7 +57,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    label: "Cloud & DevOps",
+    label: "techstack.cloud",
     skills: [
       { name: "Docker", icon: <SiDocker />,         primary: true },
       { name: "Azure",  icon: <span style={{ fontWeight: 700, fontSize: "11px" }}>Az</span>, primary: true },
@@ -64,7 +65,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    label: "Tools",
+    label: "techstack.tools",
     skills: [
       { name: "Git",     icon: <SiGit />,     primary: true },
       { name: "Postman", icon: <SiPostman />              },
@@ -110,6 +111,7 @@ function SkillCard({ skill, delay = 0 }: { skill: Skill; delay?: number }) {
 }
 
 export default function TechStack() {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
 
@@ -135,14 +137,13 @@ export default function TechStack() {
           textTransform: "uppercase", color: "var(--text-subtle)",
           marginBottom: "16px",
         }}>
-          Tech Stack
+          {t("techstack.heading")}
         </p>
         <h2 style={{
           fontSize: "clamp(24px, 3vw, 40px)", fontWeight: 700,
           letterSpacing: "-0.03em", color: "var(--text-high)", lineHeight: 1.1,
         }}>
-          เครื่องมือที่ใช้งาน<br />
-          <span style={{ color: "var(--text-subtle)" }}>จริงใน production.</span>
+          {t("techstack.subheading")}
         </h2>
       </motion.div>
 
@@ -165,7 +166,7 @@ export default function TechStack() {
               textTransform: "uppercase", color: "#F04E00",
               marginBottom: "16px",
             }}>
-              {group.label}
+              {t(group.label)}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               {group.skills.map((skill, si) => (
@@ -184,7 +185,7 @@ export default function TechStack() {
         transition={{ duration: 0.5, ease, delay: 0.3 }}
         style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", marginTop: "52px", letterSpacing: "0.06em" }}
       >
-        * primary skills — used daily in production projects
+        {t("techstack.note")}
       </motion.p>
     </section>
   );

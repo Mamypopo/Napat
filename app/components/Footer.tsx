@@ -1,10 +1,12 @@
 "use client";
 
 import { FaInstagram, FaDiscord, FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../hooks/useMediaQuery";
 import type { SiteSettings } from "../lib/sanity";
 
 export default function Footer({ settings }: { settings?: SiteSettings | null }) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
 
   const socials = [
@@ -67,7 +69,7 @@ export default function Footer({ settings }: { settings?: SiteSettings | null })
             textTransform: "uppercase", color: "var(--text-muted)",
             whiteSpace: "nowrap",
           }}>
-            Keep in touch
+            {t("footer.keep_in_touch")}
           </span>
           <nav style={{ display: "flex", gap: "4px" }}>
             {socials.map(({ icon: Icon, label, href }) => (
@@ -128,7 +130,7 @@ export default function Footer({ settings }: { settings?: SiteSettings | null })
               textTransform: "uppercase", color: "var(--text-muted)",
               whiteSpace: "nowrap",
             }}>
-              All systems operational
+              {t("footer.systems_ok")}
             </span>
           </div>
         </div>

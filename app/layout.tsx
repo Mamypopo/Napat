@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans_Thai, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import I18nProvider from "./components/I18nProvider";
 
 const ibmPlexSansThai = IBM_Plex_Sans_Thai({
   variable: "--font-sans",
@@ -57,7 +58,7 @@ export default function RootLayout({
             document.documentElement.classList.add('dark');
           }
         ` }} />
-        {children}
+        <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
   );
