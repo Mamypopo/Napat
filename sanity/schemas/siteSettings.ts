@@ -13,6 +13,7 @@ export const siteSettings = defineType({
     defineField({ name: "bio",        title: "Bio (About section ย่อหน้า 1)", type: "text", rows: 3 }),
     defineField({ name: "bio2",       title: "Bio (ย่อหน้า 2)", type: "text", rows: 3 }),
     defineField({ name: "available",  title: "Available for Work", type: "boolean", initialValue: true }),
+    defineField({ name: "availabilityText", title: "Availability Text (ข้อความบน badge)", type: "string", initialValue: "Available · Freelance & Full-time" }),
     defineField({ name: "avatar",     title: "รูปโปรไฟล์",    type: "image", options: { hotspot: true } }),
     defineField({ name: "heroImage",  title: "Hero Background Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "resumeUrl",  title: "Resume URL (PDF)", type: "url" }),

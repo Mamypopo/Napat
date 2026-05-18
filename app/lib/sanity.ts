@@ -52,6 +52,7 @@ export type SiteSettings = {
   bio: string;
   bio2?: string;
   available: boolean;
+  availabilityText?: string;
   avatar?: string;
   heroImage?: string;
   resumeUrl?: string;

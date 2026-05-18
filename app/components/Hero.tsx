@@ -139,6 +139,37 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
           width: "100%",
         }}
       >
+        {/* Availability badge */}
+        {settings?.available !== false && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease, delay: 0.05 }}
+            style={{ marginBottom: "16px" }}
+          >
+            <motion.span
+              animate={{ boxShadow: ["0 0 0px rgba(74,222,128,0)", "0 0 10px rgba(74,222,128,0.4)", "0 0 0px rgba(74,222,128,0)"] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: "11px", letterSpacing: "0.08em",
+                color: "rgba(255,255,255,0.75)",
+                background: "rgba(74,222,128,0.06)",
+                border: "1px solid rgba(74,222,128,0.3)",
+                padding: "6px 14px", borderRadius: "2px",
+              }}
+            >
+              <motion.span
+                animate={{ opacity: [1, 0.2, 1] }}
+                transition={{ duration: 1.4, repeat: Infinity }}
+                style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", flexShrink: 0, display: "inline-block" }}
+              />
+              {settings?.availabilityText ?? "Available · Freelance & Full-time"}
+            </motion.span>
+          </motion.div>
+        )}
+
         {/* Eyeline */}
         <motion.p
           className="eyeline"
