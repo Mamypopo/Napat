@@ -47,16 +47,20 @@ const skills = [
 ];
 
 export default function AboutSection({ settings }: { settings?: SiteSettings | null }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const isMobile = useIsMobile();
 
   const STATS_DATA = settings?.stats?.length
     ? settings.stats.map((s) => ({
-        label: s.label ?? "",
+        label: (isEn ? s.labelEn : null) ?? s.label ?? "",
         to: s.value ? (Number(s.value.replace(/\D/g, "")) || null) : null,
         suffix: s.value ? s.value.replace(/[0-9]/g, "") : "",
       }))
     : STATS_NUMBERS.map((s, i) => ({ ...s, label: t(`about.stats_${i}`) }));
+
+  const bioText = (isEn ? settings?.bioEn : null) ?? settings?.bio ?? "";
+  const bio2Text = (isEn ? settings?.bio2En : null) ?? settings?.bio2 ?? "";
 
   return (
     <section
@@ -147,10 +151,10 @@ export default function AboutSection({ settings }: { settings?: SiteSettings | n
             {t("about.h1")}<br />{t("about.h2")}<br /><span style={{ color: "#553F83" }}>{t("about.h3")}</span>
           </h2>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "16px" }}>
-            {settings?.bio ?? "ผมคือ Full-Stack Developer ที่หลงใหลใน interface ที่ “รู้สึกดี” — ไม่ใช่แค่ใช้งานได้ แต่ต้องมีความละเอียดอ่อนในทุกรายละเอียด ตั้งแต่ typography spacing จนถึง database query plan"}
+            {bioText}
           </p>
           <p style={{ fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "40px" }}>
-            {settings?.bio2 ?? "เชี่ยวชาญด้าน React ecosystem, Node.js, และ cloud infrastructure พร้อมส่งมอบงานที่ทั้งสวยงามและ performant ในทุกโปรเจกต์"}
+            {bio2Text}
           </p>
 
           {/* Skills */}

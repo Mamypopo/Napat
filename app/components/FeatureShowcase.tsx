@@ -164,21 +164,23 @@ type Scene = {
 };
 
 /* ── Build full scene: geometry + i18n text + Sanity override  */
-function buildScene(cfg: SceneConfig, text: SceneText, sanity?: BackgroundTab | null): Scene {
+function buildScene(cfg: SceneConfig, text: SceneText, isEn: boolean, sanity?: BackgroundTab | null): Scene {
   return {
     period:      sanity?.period      ?? text.period,
     role:        sanity?.role        ?? text.role,
     org:         sanity?.org         ?? text.org,
     location:    sanity?.location    ?? text.location,
-    description: sanity?.description ?? text.description,
-    highlights:  (sanity?.highlights?.length ? sanity.highlights : null) ?? text.highlights,
+    description: (isEn ? sanity?.descriptionEn : null) ?? sanity?.description ?? text.description,
+    highlights:  (isEn && sanity?.highlightsEn?.length ? sanity.highlightsEn : null)
+                 ?? (sanity?.highlights?.length ? sanity.highlights : null)
+                 ?? text.highlights,
     badge:       sanity?.badge       ?? text.badge,
     badgeAccent: sanity?.badgeAccent !== undefined ? sanity.badgeAccent : cfg.badgeAccent,
     milestones:  cfg.milestones.map((m, i) => ({ ...m, label: text.milestone_labels[i] ?? "" })),
     nodes:       cfg.nodes.map((n, i) => ({ ...n, label: text.node_labels[i] ?? "", detail: text.node_details[i] })),
     lines:       cfg.lines.map((l) => ({ ...l })),
     metrics:     sanity?.metrics?.length
-      ? sanity.metrics.map((m) => ({ value: m.value, label: m.label, accent: m.accent ?? false }))
+      ? sanity.metrics.map((m) => ({ value: m.value, label: (isEn ? m.labelEn : null) ?? m.label, accent: m.accent ?? false }))
       : cfg.metric_values.map((m, i) => ({ ...m, label: text.metric_labels[i] ?? "" })),
   };
 }
@@ -331,7 +333,8 @@ function MetricsPanel({ scene, tabKey }: { scene: Scene; tabKey: string }) {
 
 /* ── Main component ───────────────────────────────────────── */
 export default function FeatureShowcase({ background }: { background?: BackgroundData | null }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const [activeTab, setActiveTab] = useState<TabId>("education");
   const [paused, setPaused] = useState(false);
   const ref = useRef(null);
@@ -345,9 +348,9 @@ export default function FeatureShowcase({ background }: { background?: Backgroun
   };
 
   const activeScenes: Record<TabId, Scene> = {
-    education:  buildScene(SCENES_CONFIG.education,  sceneTexts.education,  background?.education),
-    experience: buildScene(SCENES_CONFIG.experience, sceneTexts.experience, background?.experience),
-    freelance:  buildScene(SCENES_CONFIG.freelance,  sceneTexts.freelance,  background?.freelance),
+    education:  buildScene(SCENES_CONFIG.education,  sceneTexts.education,  isEn, background?.education),
+    experience: buildScene(SCENES_CONFIG.experience, sceneTexts.experience, isEn, background?.experience),
+    freelance:  buildScene(SCENES_CONFIG.freelance,  sceneTexts.freelance,  isEn, background?.freelance),
   };
 
   const advance = useCallback(() => {

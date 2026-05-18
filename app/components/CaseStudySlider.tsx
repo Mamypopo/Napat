@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useIsMobile } from "../hooks/useMediaQuery";
@@ -96,7 +97,7 @@ const staticSlides: Slide[] = [
   },
 ];
 
-function projectToSlide(p: Project): Slide {
+function projectToSlide(p: Project, isEn: boolean): Slide {
   return {
     id: p.id,
     category: p.category.toUpperCase(),
@@ -107,7 +108,7 @@ function projectToSlide(p: Project): Slide {
       { value: p.tags[0] ?? "-", label: "TECH" },
       { value: p.role ?? "Dev", label: "ROLE"  },
     ],
-    quote: p.sliderQuote ?? p.desc,
+    quote: (isEn ? p.sliderQuoteEn : null) ?? p.sliderQuote ?? (isEn ? p.descEn : null) ?? p.desc,
     sub: p.category,
     accent: p.accentColor ?? "#553F83",
     href: p.type === "case-study" ? `/projects/${p.slug}` : (p.url ?? "#"),
@@ -232,8 +233,10 @@ function StatsCard({ slide }: { slide: Slide }) {
 
 /* ── Main component ───────────────────────────────────────── */
 export default function CaseStudySlider({ featuredProjects = [] }: { featuredProjects?: Project[] }) {
+  const { i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const slides: Slide[] = featuredProjects.length > 0
-    ? featuredProjects.map(projectToSlide)
+    ? featuredProjects.map((p) => projectToSlide(p, isEn))
     : staticSlides;
 
   const [current, setCurrent] = useState(0);

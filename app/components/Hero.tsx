@@ -68,7 +68,8 @@ function MagneticButton({
 }
 
 export default function Hero({ settings }: { settings?: SiteSettings | null }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const isMobile = useIsMobile();
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 800], ["0%", "-20%"]);
@@ -167,7 +168,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
                 transition={{ duration: 1.4, repeat: Infinity }}
                 style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", flexShrink: 0, display: "inline-block" }}
               />
-              {settings?.availabilityText ?? t("hero.availability")}
+              {(isEn ? settings?.availabilityTextEn : null) ?? settings?.availabilityText ?? t("hero.availability")}
             </motion.span>
           </motion.div>
         )}
@@ -220,7 +221,7 @@ export default function Hero({ settings }: { settings?: SiteSettings | null }) {
               maxWidth: "400px",
             }}
           >
-            {settings?.heroTagline ?? settings?.bio ?? t("hero.tagline")}
+            {(isEn ? settings?.heroTaglineEn : null) ?? settings?.heroTagline ?? (isEn ? settings?.bioEn : null) ?? settings?.bio ?? t("hero.tagline")}
           </p>
 
           <div style={{ display: "flex", gap: "12px" }}>

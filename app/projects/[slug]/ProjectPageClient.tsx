@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import type { Project } from "../../lib/projects";
 import { imgWithFallback } from "../../lib/sanity";
@@ -180,6 +181,8 @@ export default function ProjectPageClient({
   prev: Project | null;
   next: Project | null;
 }) {
+  const { i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const isMobile = useIsMobile();
   const px = isMobile ? "24px" : "64px";
   const py = isMobile ? "40px" : "64px";
@@ -247,7 +250,7 @@ export default function ProjectPageClient({
               marginBottom: "48px", maxWidth: "640px",
             }}
           >
-            {project.desc}
+            {(isEn ? project.descEn : null) ?? project.desc}
           </motion.p>
 
           {/* Problem / Solution */}
@@ -258,7 +261,7 @@ export default function ProjectPageClient({
                   <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
                     Problem
                   </p>
-                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{project.problem}</p>
+                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.problemEn : null) ?? project.problem}</p>
                 </div>
               )}
               {project.solution && (
@@ -266,7 +269,7 @@ export default function ProjectPageClient({
                   <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
                     Solution
                   </p>
-                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{project.solution}</p>
+                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.solutionEn : null) ?? project.solution}</p>
                 </div>
               )}
             </motion.div>
@@ -278,7 +281,7 @@ export default function ProjectPageClient({
               <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
                 Impact / Outcome
               </p>
-              <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{project.outcome}</p>
+              <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.outcomeEn : null) ?? project.outcome}</p>
             </motion.div>
           )}
 
@@ -319,9 +322,9 @@ export default function ProjectPageClient({
                       <span style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-high)", display: "block" }}>
                         {mod.name}
                       </span>
-                      {mod.desc && (
+                      {(mod.desc || mod.descEn) && (
                         <span style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.6, marginTop: "4px", display: "block" }}>
-                          {mod.desc}
+                          {(isEn ? mod.descEn : null) ?? mod.desc}
                         </span>
                       )}
                     </div>

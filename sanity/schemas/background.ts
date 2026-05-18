@@ -5,9 +5,14 @@ const tabFields = [
   defineField({ name: "role",        title: "Role / Degree",               type: "string" }),
   defineField({ name: "org",         title: "Organization / University",   type: "string" }),
   defineField({ name: "location",    title: "Location",                    type: "string" }),
-  defineField({ name: "description", title: "Description",                 type: "text", rows: 3 }),
+  defineField({ name: "description",   title: "Description (TH)",             type: "text", rows: 3 }),
+  defineField({ name: "descriptionEn", title: "Description (EN)",             type: "text", rows: 3 }),
   defineField({
-    name: "highlights", title: "Highlights (bullet points)",
+    name: "highlights", title: "Highlights (TH)",
+    type: "array", of: [{ type: "string" }],
+  }),
+  defineField({
+    name: "highlightsEn", title: "Highlights (EN)",
     type: "array", of: [{ type: "string" }],
   }),
   defineField({ name: "badge",       title: "Badge text (เช่น GRADUATED)", type: "string" }),
@@ -18,9 +23,10 @@ const tabFields = [
     of: [{
       type: "object",
       fields: [
-        { name: "value",  title: "ค่า (เช่น -40%)",  type: "string" },
-        { name: "label",  title: "Label",             type: "string" },
-        { name: "accent", title: "สี Purple?",        type: "boolean", initialValue: false },
+        { name: "value",   title: "ค่า (เช่น -40%)", type: "string" },
+        { name: "label",   title: "Label (TH)",       type: "string" },
+        { name: "labelEn", title: "Label (EN)",       type: "string" },
+        { name: "accent",  title: "สี Purple?",       type: "boolean", initialValue: false },
       ],
       preview: { select: { title: "value", subtitle: "label" } },
     }],

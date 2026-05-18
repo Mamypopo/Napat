@@ -7,21 +7,26 @@ export type Project = {
   year: string;
   tags: string[];
   desc: string;
+  descEn?: string;
   img: string;
   images?: string[];
   span: number; // grid column span (out of 12)
   url?: string;
   // case-study only
-  modules?: { name: string; desc?: string }[];
+  modules?: { name: string; desc?: string; descEn?: string }[];
   role?: string;
   problem?: string;
+  problemEn?: string;
   solution?: string;
+  solutionEn?: string;
   outcome?: string;
+  outcomeEn?: string;
   duration?: string;
   scale?: string;
   teamSize?: string;
   featured?: boolean;
   sliderQuote?: string;
+  sliderQuoteEn?: string;
   accentColor?: string;
   sliderStats?: { value: string; label: string }[];
 };

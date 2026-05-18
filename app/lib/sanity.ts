@@ -31,10 +31,12 @@ export type BackgroundTab = {
   org?: string;
   location?: string;
   description?: string;
+  descriptionEn?: string;
   highlights?: string[];
+  highlightsEn?: string[];
   badge?: string;
   badgeAccent?: boolean;
-  metrics?: { value: string; label: string; accent?: boolean }[];
+  metrics?: { value: string; label: string; labelEn?: string; accent?: boolean }[];
 };
 
 export type BackgroundData = {
@@ -49,10 +51,14 @@ export type SiteSettings = {
   jobTitle: string;
   location: string;
   heroTagline?: string;
+  heroTaglineEn?: string;
   bio: string;
+  bioEn?: string;
   bio2?: string;
+  bio2En?: string;
   available: boolean;
   availabilityText?: string;
+  availabilityTextEn?: string;
   avatar?: string;
   heroImage?: string;
   resumeUrl?: string;
@@ -68,7 +74,7 @@ export type SiteSettings = {
   discord?: string;
   facebook?: string;
   skills?: SiteSettingsSkill[];
-  stats?: { value: string; label: string }[];
+  stats?: { value: string; label: string; labelEn?: string }[];
 };
 
 // ── Queries ──────────────────────────────────────────────────────────────────
@@ -81,7 +87,10 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       "heroImage": heroImage.asset->url,
       "resumeFile": resumeFile.asset->url,
       "skills": skills[]{ name, level },
-      heroTagline
+      heroTagline, heroTaglineEn,
+      bio, bioEn, bio2, bio2En,
+      availabilityText, availabilityTextEn,
+      "stats": stats[]{ value, label, labelEn }
     }`,
     {},
     { next: { revalidate: 60 } }
@@ -91,9 +100,9 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
 export async function getBackground(): Promise<BackgroundData | null> {
   return client.fetch(
     `*[_type == "background"][0] {
-      education { period, role, org, location, description, highlights, badge, badgeAccent, metrics },
-      experience { period, role, org, location, description, highlights, badge, badgeAccent, metrics },
-      freelance  { period, role, org, location, description, highlights, badge, badgeAccent, metrics }
+      education { period, role, org, location, description, descriptionEn, highlights, highlightsEn, badge, badgeAccent, "metrics": metrics[]{ value, label, labelEn, accent } },
+      experience { period, role, org, location, description, descriptionEn, highlights, highlightsEn, badge, badgeAccent, "metrics": metrics[]{ value, label, labelEn, accent } },
+      freelance  { period, role, org, location, description, descriptionEn, highlights, highlightsEn, badge, badgeAccent, "metrics": metrics[]{ value, label, labelEn, accent } }
     }`,
     {},
     { next: { revalidate: 60 } }
@@ -105,9 +114,9 @@ export async function getFeaturedProjects(): Promise<Project[]> {
     `*[_type == "project" && featured == true] | order(order asc) {
       "id": slug.current,
       "slug": slug.current,
-      name, type, category, year, span, tags, desc,
+      name, type, category, year, span, tags, desc, descEn,
       "img": coalesce(img.asset->url, ""),
-      url, featured, sliderQuote, accentColor,
+      url, featured, sliderQuote, sliderQuoteEn, accentColor,
       "sliderStats": sliderStats[]{ value, label }
     }`,
     {},
@@ -127,15 +136,15 @@ export async function getProjects(): Promise<Project[]> {
       year,
       span,
       tags,
-      desc,
+      desc, descEn,
       "img": coalesce(img.asset->url, ""),
       "images": images[].asset->url,
       url,
       role,
-      "modules": modules[]{ name, desc },
-      problem,
-      solution,
-      outcome,
+      "modules": modules[]{ name, desc, descEn },
+      problem, problemEn,
+      solution, solutionEn,
+      outcome, outcomeEn,
       duration,
       scale,
       teamSize
@@ -157,15 +166,15 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       year,
       span,
       tags,
-      desc,
+      desc, descEn,
       "img": coalesce(img.asset->url, ""),
       "images": images[].asset->url,
       url,
       role,
-      "modules": modules[]{ name, desc },
-      problem,
-      solution,
-      outcome,
+      "modules": modules[]{ name, desc, descEn },
+      problem, problemEn,
+      solution, solutionEn,
+      outcome, outcomeEn,
       duration,
       scale,
       teamSize

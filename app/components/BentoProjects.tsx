@@ -14,7 +14,8 @@ const ease = [0.22, 1, 0.36, 1] as const;
 /* ── Project modal — Classic Split ─────────────────────────── */
 
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   const allImages = project.images && project.images.length > 0 ? project.images : [project.img].filter(Boolean) as string[];
   const [activeImg, setActiveImg] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -141,7 +142,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               {project.name}
             </h3>
             <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "24px" }}>
-              {project.desc}
+              {(isEn ? project.descEn : null) ?? project.desc}
             </p>
 
             {/* Tags */}
