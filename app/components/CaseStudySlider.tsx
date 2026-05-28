@@ -102,7 +102,7 @@ function projectToSlide(p: Project, isEn: boolean): Slide {
     id: p.id,
     category: p.category.toUpperCase(),
     title: p.name,
-    bg: imgWithFallback(p.img, p.name),
+    bg: imgWithFallback(p.img, p.nameEn ?? p.name),
     stats: p.sliderStats ?? [
       { value: p.year,          label: "YEAR" },
       { value: p.tags[0] ?? "-", label: "TECH" },
@@ -425,7 +425,7 @@ export default function CaseStudySlider({ featuredProjects = [] }: { featuredPro
               lineHeight: 1.7,
               marginBottom: "12px",
             }}>
-              "{slide.quote}"
+              &ldquo;{slide.quote}&rdquo;
             </p>
             <p style={{
               fontFamily: "var(--font-mono), monospace",

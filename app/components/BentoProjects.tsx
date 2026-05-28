@@ -281,7 +281,7 @@ function BentoCell({
         }}
       >
         <Image
-          src={imgWithFallback(project.img, project.name)}
+          src={imgWithFallback(project.img, project.nameEn ?? project.name)}
           alt={project.name}
           fill
           style={{

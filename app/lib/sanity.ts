@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder as imageUrlBuilder } from "@sanity/image-url";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SanityImageSource = any;
 import type { Project } from "./projects";
@@ -16,8 +16,8 @@ export const urlFor = (source: SanityImageSource) => builder.image(source);
 
 export function imgWithFallback(src: string | null | undefined, name = "Project"): string {
   if (src) return src;
-  const label = encodeURIComponent(name.slice(0, 20));
-  return `https://placehold.co/900x600/111111/553F83?text=${label}`;
+  const label = encodeURIComponent(name.slice(0, 24));
+  return `https://placehold.co/900x600/111111/553F83.png?text=${label}`;
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -114,7 +114,7 @@ export async function getFeaturedProjects(): Promise<Project[]> {
     `*[_type == "project" && featured == true] | order(order asc) {
       "id": slug.current,
       "slug": slug.current,
-      name, type, category, year, span, tags, desc, descEn,
+      name, nameEn, type, category, year, span, tags, desc, descEn,
       "img": coalesce(img.asset->url, ""),
       url, featured, sliderQuote, sliderQuoteEn, accentColor,
       "sliderStats": sliderStats[]{ value, label }
@@ -130,7 +130,7 @@ export async function getProjects(): Promise<Project[]> {
     `*[_type == "project"] | order(order asc) {
       "id": slug.current,
       "slug": slug.current,
-      name,
+      name, nameEn,
       type,
       category,
       year,
@@ -160,7 +160,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     `*[_type == "project" && slug.current == $slug][0] {
       "id": slug.current,
       "slug": slug.current,
-      name,
+      name, nameEn,
       type,
       category,
       year,

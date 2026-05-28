@@ -193,7 +193,7 @@ export default function ProjectPageClient({
       {/* Hero image */}
       <div style={{ position: "relative", height: isMobile ? "45vw" : "55vh", minHeight: isMobile ? "220px" : "320px", overflow: "hidden" }}>
         <Image
-          src={imgWithFallback(project.img, project.name)}
+          src={imgWithFallback(project.img, project.nameEn ?? project.name)}
           alt={project.name}
           fill
           style={{ objectFit: "cover", filter: "brightness(0.55) contrast(1.1)" }}

@@ -2,6 +2,7 @@ export type Project = {
   id: string;
   slug: string;
   name: string;
+  nameEn?: string;
   type: "case-study" | "project";
   category: string;
   year: string;

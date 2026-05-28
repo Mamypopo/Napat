@@ -5,8 +5,9 @@ export const project = defineType({
   title: "Project",
   type: "document",
   fields: [
-    defineField({ name: "name",     title: "ชื่อโปรเจกต์", type: "string",  validation: (r) => r.required() }),
-    defineField({ name: "slug",     title: "Slug",          type: "slug",    options: { source: "name" }, validation: (r) => r.required() }),
+    defineField({ name: "name",   title: "ชื่อโปรเจกต์ (TH)", type: "string", validation: (r) => r.required() }),
+    defineField({ name: "nameEn", title: "ชื่อโปรเจกต์ (EN)", type: "string" }),
+    defineField({ name: "slug",   title: "Slug",               type: "slug",   options: { source: "name" }, validation: (r) => r.required() }),
     defineField({ name: "type",     title: "ประเภท",        type: "string",  options: { list: [{ value: "case-study", title: "Case Study" }, { value: "project", title: "Project" }] }, validation: (r) => r.required() }),
     defineField({ name: "category", title: "Category",      type: "string",  validation: (r) => r.required() }),
     defineField({ name: "year",     title: "ปี",            type: "string",  validation: (r) => r.required() }),
