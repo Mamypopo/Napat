@@ -223,6 +223,7 @@ export default function ProjectPageClient({
               fontSize: isMobile ? "clamp(28px, 8vw, 48px)" : "clamp(36px, 6vw, 80px)",
               fontWeight: 700, letterSpacing: "-0.04em",
               lineHeight: 1.0, color: "#fff",
+              fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif",
             }}
           >
             {project.name}
