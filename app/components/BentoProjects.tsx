@@ -240,7 +240,8 @@ function BentoCell({
   onOpenModal: (p: Project) => void;
   isMobile: boolean;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -332,7 +333,7 @@ function BentoCell({
           {project.name}
         </h3>
         <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.65, marginBottom: "14px" }}>
-          {project.desc}
+          {(isEn ? project.descEn : null) ?? project.desc}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
           {project.tags.slice(0, isLarge ? 4 : 2).map((tag) => (
