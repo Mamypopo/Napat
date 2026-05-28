@@ -139,7 +139,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               fontSize: "24px", fontWeight: 700, letterSpacing: "-0.03em",
               color: "var(--text-high)", marginBottom: "16px", lineHeight: 1.2,
             }}>
-              {project.name}
+              {(isEn ? project.nameEn : null) ?? project.name}
             </h3>
             <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: 1.75, marginBottom: "24px" }}>
               {(isEn ? project.descEn : null) ?? project.desc}
@@ -330,7 +330,7 @@ function BentoCell({
             marginBottom: "6px",
           }}
         >
-          {project.name}
+          {(isEn ? project.nameEn : null) ?? project.name}
         </h3>
         <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.65, marginBottom: "14px" }}>
           {(isEn ? project.descEn : null) ?? project.desc}
