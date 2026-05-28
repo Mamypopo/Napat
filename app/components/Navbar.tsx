@@ -185,7 +185,7 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
               </Link>
             ))}
             <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <LangToggle />
+              <LangToggle onHero={false} />
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ ...MONO, fontSize: "10px", color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                   {isDark ? t("navbar.dark") : t("navbar.light")}
@@ -231,7 +231,7 @@ export default function Navbar({ settings }: { settings?: SiteSettings | null })
         })}
       </nav>
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <LangToggle />
+        <LangToggle onHero={onHero} />
         {themeBtn}
       </div>
     </header>
