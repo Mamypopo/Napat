@@ -365,7 +365,7 @@ export default function CaseStudySlider({ featuredProjects = [] }: { featuredPro
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.5, ease }}
-              style={{ fontSize: "clamp(36px, 10vw, 56px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff" }}
+              style={{ fontSize: "clamp(36px, 10vw, 56px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff", fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif" }}
             >
               {slide.title}
             </motion.h2>
@@ -391,7 +391,7 @@ export default function CaseStudySlider({ featuredProjects = [] }: { featuredPro
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.5, ease }}
-                style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff" }}
+                style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff", fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif" }}
               >
                 {slide.title}
               </motion.h2>
