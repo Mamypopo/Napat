@@ -1,11 +1,27 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "../../hooks/useMediaQuery";
+import LangToggle from "../../components/LangToggle";
 
 export default function BackButton({ category }: { category: string }) {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    setIsDark(!document.documentElement.classList.contains("light"));
+  }, []);
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.classList.contains("light") ? "dark" : "light";
+    html.classList.remove("light", "dark");
+    html.classList.add(next);
+    localStorage.setItem("theme", next);
+    setIsDark(next === "dark");
+  }
 
   return (
     <div
@@ -14,34 +30,66 @@ export default function BackButton({ category }: { category: string }) {
         borderBottom: "1px solid var(--hairline)",
         display: "flex",
         alignItems: "center",
-        gap: "12px",
+        justifyContent: "space-between",
       }}
     >
-      <button
-        onClick={() => router.back()}
-        style={{
-          background: "none", border: "none", padding: 0,
-          cursor: "pointer",
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <button
+          onClick={() => router.back()}
+          style={{
+            background: "none", border: "none", padding: 0,
+            cursor: "pointer",
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: "11px", letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--text-muted)",
+            display: "flex", alignItems: "center", gap: "6px",
+            transition: "color 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-high)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+        >
+          ← Back
+        </button>
+        <span style={{ color: "var(--hairline)" }}>·</span>
+        <span style={{
           fontFamily: "var(--font-mono), monospace",
           fontSize: "11px", letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--text-muted)",
-          display: "flex", alignItems: "center", gap: "6px",
-          transition: "color 0.2s",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-high)")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
-      >
-        ← Back
-      </button>
-      <span style={{ color: "var(--hairline)" }}>·</span>
-      <span style={{
-        fontFamily: "var(--font-mono), monospace",
-        fontSize: "11px", letterSpacing: "0.08em",
-        textTransform: "uppercase", color: "var(--text-subtle)",
-      }}>
-        {category}
-      </span>
+          textTransform: "uppercase", color: "var(--text-subtle)",
+        }}>
+          {category}
+        </span>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <LangToggle />
+        <button
+          onClick={toggleTheme}
+          style={{
+            width: "36px", height: "36px",
+            border: "1px solid var(--hairline)",
+            background: "transparent", borderRadius: "2px",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            color: "var(--text-muted)", transition: "border-color 0.2s, color 0.2s",
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#553F83"; e.currentTarget.style.color = "#553F83"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--hairline)"; e.currentTarget.style.color = "var(--text-muted)"; }}
+        >
+          {isDark ? (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
