@@ -6,8 +6,8 @@ import { useIsMobile, useIsTablet } from "../hooks/useMediaQuery";
 import {
   SiReact, SiNextdotjs, SiTypescript, SiJavascript, SiTailwindcss, SiBootstrap, SiVuedotjs,
   SiNodedotjs, SiSocketdotio, SiPython,
-  SiPostgresql, SiMysql, SiMongodb, SiPrisma,
-  SiDocker, SiVercel,
+  SiPostgresql, SiMysql, SiMongodb, SiPrisma, SiSupabase,
+  SiDocker, SiVercel, SiElectron,
   SiGit, SiPostman, SiSanity,
 } from "react-icons/si";
 
@@ -54,6 +54,7 @@ const GROUPS: Group[] = [
       { name: "PostgreSQL", icon: <SiPostgresql />, primary: true },
       { name: "MongoDB",    icon: <SiMongodb />                  },
       { name: "Prisma",     icon: <SiPrisma />                   },
+      { name: "Supabase",   icon: <SiSupabase />                 },
     ],
   },
   {
@@ -61,7 +62,8 @@ const GROUPS: Group[] = [
     skills: [
       { name: "Docker", icon: <SiDocker />,         primary: true },
       { name: "Azure",  icon: <span style={{ fontWeight: 700, fontSize: "11px" }}>Az</span>, primary: true },
-      { name: "Vercel", icon: <SiVercel />                       },
+      { name: "Vercel",    icon: <SiVercel />                      },
+      { name: "Electron",  icon: <SiElectron />                  },
     ],
   },
   {
