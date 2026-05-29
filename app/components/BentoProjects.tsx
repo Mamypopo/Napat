@@ -332,7 +332,11 @@ function BentoCell({
         >
           {(isEn ? project.nameEn : null) ?? project.name}
         </h3>
-        <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.65, marginBottom: "14px" }}>
+        <p style={{
+          fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.65, marginBottom: "14px",
+          display: "-webkit-box", WebkitLineClamp: isMobile ? 2 : 3,
+          WebkitBoxOrient: "vertical", overflow: "hidden",
+        }}>
           {(isEn ? project.descEn : null) ?? project.desc}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
