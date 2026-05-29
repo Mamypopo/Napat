@@ -138,7 +138,7 @@ function SlideBg({ slide, direction }: { slide: Slide; direction: number }) {
         src={slide.bg}
         alt={slide.title}
         fill
-        style={{ objectFit: "cover", filter: "brightness(0.28) contrast(1.1)" }}
+        style={{ objectFit: "cover", filter: "brightness(0.38) contrast(1.05)" }}
         priority
       />
       {/* Gradient */}
@@ -329,8 +329,8 @@ export default function CaseStudySlider({ featuredProjects = [] }: { featuredPro
         ))}
       </div>
 
-      {/* ── Category eyeline top-left ────────────────────────── */}
-      <AnimatePresence mode="wait">
+      {/* ── Category eyeline top-left (desktop only) ───────── */}
+      {!isMobile && <AnimatePresence mode="wait">
         <motion.div
           key={slide.id + "-cat"}
           initial={{ opacity: 0, x: -16 }}
@@ -347,135 +347,94 @@ export default function CaseStudySlider({ featuredProjects = [] }: { featuredPro
         >
           {slide.category}
         </motion.div>
-      </AnimatePresence>
+      </AnimatePresence>}
 
-      {/* ── Main content layout ──────────────────────────────── */}
-      {isMobile ? (
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 5,
-          display: "flex", flexDirection: "column",
-          justifyContent: "center", alignItems: "flex-start",
-          padding: `80px ${px} 100px`,
-          gap: "24px",
-        }}>
+      {/* ── Bottom bar: title+quote left, stats right ────────── */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+        display: "flex", alignItems: "flex-end", justifyContent: "space-between",
+        padding: isMobile ? `0 ${px} 40px` : `0 ${px} 52px`,
+        gap: "32px",
+        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
+      }}>
+        {/* Left: title + quote */}
+        <div style={{ flex: 1, minWidth: 0 }}>
           <AnimatePresence mode="wait">
-            <motion.h2
-              key={slide.id + "-title"}
+            <motion.div
+              key={slide.id + "-left"}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.5, ease }}
-              style={{ fontSize: "clamp(36px, 10vw, 56px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff", fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif" }}
             >
-              {slide.title}
-            </motion.h2>
-          </AnimatePresence>
-          <AnimatePresence mode="wait">
-            <StatsCard key={slide.id} slide={slide} />
+              <h2 style={{
+                fontSize: isMobile ? "clamp(28px, 8vw, 48px)" : "clamp(32px, 4vw, 60px)",
+                fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.0,
+                color: "#fff", marginBottom: "16px",
+                fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif",
+              }}>
+                {slide.title}
+              </h2>
+              <p style={{
+                fontSize: "14px", fontWeight: 300,
+                color: "rgba(255,255,255,0.6)", lineHeight: 1.65,
+                marginBottom: "8px",
+                display: isMobile ? "-webkit-box" : "block",
+                WebkitLineClamp: isMobile ? 2 : undefined,
+                WebkitBoxOrient: isMobile ? "vertical" : undefined,
+                overflow: isMobile ? "hidden" : undefined,
+              }}>
+                &ldquo;{slide.quote}&rdquo;
+              </p>
+              <p style={{
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: "10px", letterSpacing: "0.1em",
+                textTransform: "uppercase", color: "rgba(255,255,255,0.3)",
+                marginBottom: "16px",
+              }}>
+                {slide.sub}
+              </p>
+              {slide.href && (
+                <a
+                  href={slide.href}
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: "11px", letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.6)",
+                    textDecoration: "none",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: "2px",
+                    padding: "8px 16px",
+                    display: "inline-block",
+                    transition: "border-color 0.2s, color 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = slide.accent;
+                    e.currentTarget.style.color = slide.accent;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+                  }}
+                >
+                  VIEW PROJECT →
+                </a>
+              )}
+            </motion.div>
           </AnimatePresence>
         </div>
-      ) : (
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 5,
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
-          padding: `0 ${px}`,
-          gap: "48px",
-        }}>
-          <div>
-            <AnimatePresence mode="wait">
-              <motion.h2
-                key={slide.id + "-title"}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.5, ease }}
-                style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 0.95, color: "#fff", fontFamily: "var(--font-sans), 'IBM Plex Sans Thai', sans-serif" }}
-              >
-                {slide.title}
-              </motion.h2>
-            </AnimatePresence>
-          </div>
+
+        {/* Right: stats card — hidden on mobile */}
+        {!isMobile && (
           <div style={{ flexShrink: 0 }}>
             <AnimatePresence mode="wait">
               <StatsCard key={slide.id} slide={slide} />
             </AnimatePresence>
           </div>
-          <div />
-        </div>
-      )}
-
-      {/* ── Quote bottom-left ────────────────────────────────── */}
-      <div style={{
-        position: "absolute", bottom: isMobile ? "32px" : "48px", left: px,
-        zIndex: 10, maxWidth: isMobile ? "calc(100% - 32px)" : "480px",
-      }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slide.id + "-quote"}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.5, ease, delay: 0.15 }}
-          >
-            <p style={{
-              fontSize: "16px", fontWeight: 300,
-              color: "rgba(255,255,255,0.65)",
-              lineHeight: 1.7,
-              marginBottom: "12px",
-            }}>
-              &ldquo;{slide.quote}&rdquo;
-            </p>
-            <p style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "10px", letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.3)",
-            }}>
-              {slide.sub}
-            </p>
-          </motion.div>
-        </AnimatePresence>
+        )}
       </div>
 
-      {/* ── View project bottom-right — hidden on mobile (quote takes full width) */}
-      {!isMobile && <div style={{
-        position: "absolute", bottom: "48px", right: px, zIndex: 10,
-      }}>
-        <AnimatePresence mode="wait">
-          <motion.a
-            key={String(slide.id) + "-cta"}
-            href={slide.href ?? "#"}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease }}
-            style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "11px", letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.6)",
-              textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: "99px",
-              padding: "10px 20px",
-              display: "inline-block",
-              transition: "border-color 0.2s, color 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = slide.accent;
-              e.currentTarget.style.color = slide.accent;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-            }}
-          >
-            VIEW PROJECT →
-          </motion.a>
-        </AnimatePresence>
-      </div>}
 
       {/* ── Prev / Next arrow buttons (desktop only — mobile uses swipe) ── */}
       {!isMobile && [{ fn: prev, label: "←", side: "left" }, { fn: next, label: "→", side: "right" }].map(({ fn, label, side }) => (
