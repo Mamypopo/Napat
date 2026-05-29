@@ -247,7 +247,7 @@ export default function ProjectPageClient({
             {...fadeUp(0.1)}
             style={{
               fontSize: isMobile ? "16px" : "18px",
-              color: "var(--text-muted)", lineHeight: 1.8,
+              color: "var(--text-mid)", lineHeight: 1.8,
               marginBottom: "48px", maxWidth: "640px",
             }}
           >
@@ -258,19 +258,15 @@ export default function ProjectPageClient({
           {(project.problem || project.solution) && (
             <motion.div {...fadeUp(0.15)} style={{ marginBottom: "48px", display: "flex", flexDirection: "column", gap: "32px" }}>
               {project.problem && (
-                <div>
-                  <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
-                    Problem
-                  </p>
-                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.problemEn : null) ?? project.problem}</p>
+                <div style={{ borderLeft: "2px solid #553F83", paddingLeft: "20px" }}>
+                  <p className="eyeline" style={{ color: "#553F83", marginBottom: "10px" }}>Problem</p>
+                  <p style={{ fontSize: "15px", color: "var(--text-mid)", lineHeight: 1.75 }}>{(isEn ? project.problemEn : null) ?? project.problem}</p>
                 </div>
               )}
               {project.solution && (
-                <div>
-                  <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
-                    Solution
-                  </p>
-                  <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.solutionEn : null) ?? project.solution}</p>
+                <div style={{ borderLeft: "2px solid #553F83", paddingLeft: "20px" }}>
+                  <p className="eyeline" style={{ color: "#553F83", marginBottom: "10px" }}>Solution</p>
+                  <p style={{ fontSize: "15px", color: "var(--text-mid)", lineHeight: 1.75 }}>{(isEn ? project.solutionEn : null) ?? project.solution}</p>
                 </div>
               )}
             </motion.div>
@@ -279,10 +275,8 @@ export default function ProjectPageClient({
           {/* Outcome */}
           {project.outcome && (
             <motion.div {...fadeUp(0.17)} style={{ marginBottom: "48px" }}>
-              <p style={{ ...MONO, fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase", color: "#553F83", marginBottom: "12px" }}>
-                Impact / Outcome
-              </p>
-              <p style={{ fontSize: "15px", color: "var(--text-muted)", lineHeight: 1.75 }}>{(isEn ? project.outcomeEn : null) ?? project.outcome}</p>
+              <p className="eyeline" style={{ color: "#553F83", marginBottom: "10px" }}>Impact / Outcome</p>
+              <p style={{ fontSize: "15px", color: "var(--text-mid)", lineHeight: 1.75 }}>{(isEn ? project.outcomeEn : null) ?? project.outcome}</p>
             </motion.div>
           )}
 
