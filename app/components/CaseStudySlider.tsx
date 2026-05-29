@@ -101,7 +101,7 @@ function projectToSlide(p: Project, isEn: boolean): Slide {
   return {
     id: p.id,
     category: p.category.toUpperCase(),
-    title: p.name,
+    title: p.sliderName ?? p.nameEn ?? p.name,
     bg: imgWithFallback(p.img, p.nameEn ?? p.name),
     stats: p.sliderStats ?? [
       { value: p.year,          label: "YEAR" },

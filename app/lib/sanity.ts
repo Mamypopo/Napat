@@ -116,7 +116,7 @@ export async function getFeaturedProjects(): Promise<Project[]> {
       "slug": slug.current,
       name, nameEn, type, category, year, span, tags, desc, descEn,
       "img": coalesce(img.asset->url, ""),
-      url, featured, sliderQuote, sliderQuoteEn, accentColor,
+      url, featured, sliderName, sliderQuote, sliderQuoteEn, accentColor,
       "sliderStats": sliderStats[]{ value, label }
     }`,
     {},

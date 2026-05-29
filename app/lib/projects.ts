@@ -26,6 +26,7 @@ export type Project = {
   scale?: string;
   teamSize?: string;
   featured?: boolean;
+  sliderName?: string;
   sliderQuote?: string;
   sliderQuoteEn?: string;
   accentColor?: string;
